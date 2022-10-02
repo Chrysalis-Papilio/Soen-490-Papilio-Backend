@@ -4,9 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "dev": "nodemon run app.js",
-    "lint": "eslint ./ --fix",
+    "lint": "eslint ./**/*.ts --fix",
     "build": "tsc",
     "start": "node ./dist/app.js"
   },
