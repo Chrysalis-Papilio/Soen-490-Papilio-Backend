@@ -37,5 +37,4 @@ const Query = async (connection: mysql.Connection, query: string) =>
         });
     });
 
-
 export { Connect, Query };
