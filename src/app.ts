@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use("/user", userRouter);
 app.use("/activity", activityRouter);
 
-database.sync({force: true}).then();
+database.sync({alter: true});
 
 app.listen(3000, () => {
     console.log("Server listening on port 3000...");
