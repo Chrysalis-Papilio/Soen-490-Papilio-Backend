@@ -1,4 +1,4 @@
-import {DataTypes, Model} from "Sequelize";
+import {DataTypes, Model} from "sequelize";
 const database = require("../database");
 
 class User extends Model {
