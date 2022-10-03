@@ -1,6 +1,8 @@
 import express from "express";
 import bodyParser from "body-parser";
+import dotenv from "dotenv";
 
+dotenv.config();
 const app = express();
 const userRouter = require("./routes/user-routes");
 const activityRouter = require("./routes/activity-routes");
