@@ -1,4 +1,4 @@
-import {DataTypes, DATE, Model} from "sequelize";
+import {DataTypes, Model} from "sequelize";
 const database = require("../database");
 
 class Activity extends Model {

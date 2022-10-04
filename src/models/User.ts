@@ -45,14 +45,16 @@ User.init({
         validate: {
             isNumeric: true,
             len: [10, 10]
-        }
+        },
+        unique: true
     },
     email: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
             isEmail: true,
-        }
+        },
+        unique: true
     },
     watchlist_id: {
         type: DataTypes.INTEGER
