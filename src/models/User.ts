@@ -1,3 +1,1 @@
-class User {
-
-}
+export type userModel = {};

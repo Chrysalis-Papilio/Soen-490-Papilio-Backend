@@ -1,9 +1,8 @@
-import express from "express";
+import express from 'express';
+import * as userController from '../controllers/user';
 
 const router = express.Router();
 
-router.get("/profile/:userId", (req, res) => {
-    res.send(`GET /user/profile/${req.params.userId}`);
-});
+router.get('/user/get', userController.getAllUsers);
 
-module.exports = router;
+export = router;

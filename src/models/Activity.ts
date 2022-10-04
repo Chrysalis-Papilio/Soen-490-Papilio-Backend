@@ -1,3 +1,1 @@
-class Activity {
-
-}
+class Activity {}
