@@ -7,13 +7,18 @@ router.get("/profile/:userId", (req, res) => {
 });
 
 router.post("/createSampleUser", async (_, res) => {
-    const sample = await User.create({
-        firstName: "Sample",
-        lastName: "User",
-        phone: "5145551234",
-        email: "sample@gmail.com"
-    });
-    res.send(sample.toJSON());
+    try {
+        await User.sync();
+        const sample = await User.create({
+            firstName: "Sample",
+            lastName: "User",
+            phone: "5145551234",
+            email: "sample@gmail.com"
+        });
+        res.send(sample.toJSON());
+    } catch (e) {
+        res.send(e);
+    }
 })
 
 module.exports = router;
