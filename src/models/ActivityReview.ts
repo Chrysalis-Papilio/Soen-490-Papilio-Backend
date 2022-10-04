@@ -29,5 +29,13 @@ ActivityReview.init({
     sequelize: database
 })
 
-ActivityReview.belongsTo(Activity);
-ActivityReview.belongsTo(User);
+ActivityReview.belongsTo(Activity, {
+    as: 'Activity',
+    foreignKey: 'activity_id',
+    onDelete: 'CASCADE'
+});
+ActivityReview.belongsTo(User, {
+    as: 'User',
+    foreignKey: 'user_id',
+    onDelete: 'CASCADE'
+});

@@ -19,6 +19,10 @@ Watchlist.init({
     sequelize: database
 })
 
-Watchlist.belongsTo(User);
+Watchlist.belongsTo(User, {
+    as: 'User',
+    foreignKey: 'user_id',
+    onDelete: 'CASCADE'
+});
 
 module.exports = Watchlist;

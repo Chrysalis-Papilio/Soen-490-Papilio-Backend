@@ -1,5 +1,4 @@
 import {DataTypes, Model} from "sequelize";
-const ActivityReview = require("./ActivityReview");
 const database = require("../database");
 
 class Activity extends Model {
@@ -56,11 +55,6 @@ Activity.init({
             // TODO: needs to find a way to implement
         }
     }
-})
-
-Activity.hasMany(ActivityReview, {
-    foreignKey: 'activity_id',
-    onDelete: 'CASCADE'
 })
 
 module.exports = Activity;
