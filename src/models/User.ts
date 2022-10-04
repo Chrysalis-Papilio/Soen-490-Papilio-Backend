@@ -1,5 +1,6 @@
 import {DataTypes, Model} from "sequelize";
 const Watchlist = require("./Watchlist");
+const ActivityReview = require("./ActivityReview");
 const database = require("../database");
 
 class User extends Model {
@@ -63,5 +64,9 @@ User.hasOne(Watchlist, {
     foreignKey: 'user_id',
     onDelete: 'CASCADE'
 });
+User.hasMany(ActivityReview, {
+    foreignKey: 'user_id',
+    onDelete: 'CASCADE'
+})
 
 module.exports = User;
