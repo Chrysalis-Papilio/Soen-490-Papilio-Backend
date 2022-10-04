@@ -9,7 +9,7 @@
     "lint": "eslint ./**/*.ts --fix",
     "build": "tsc --build",
     "clean": "tsc --build --clean",
-    "start": "tsc --build --clean && tsc --build && prettier --write src/ && node ./dist/Server.js"
+    "start": "tsc --build --clean && tsc --build && prettier --write src/ && node ./dist/app.js"
   },
   "repository": {
     "type": "git",
@@ -44,6 +44,7 @@
     "express": "^4.18.1",
     "mysql": "^2.18.1",
     "pg": "^8.8.0",
+    "sequelize": "^6.23.2",
     "ts-postgres": "^1.3.0"
   }
 }

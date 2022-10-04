@@ -4,7 +4,7 @@ import logging from './config/logging';
 import config from './config/config';
 import userRoutes from './routes/user';
 import activityRoutes from './routes/activity';
-import { Connect } from './config/psql';
+//  import { Connect } from './config/psql';
 
 const NAMESPACE = 'Server';
 const router = express();
@@ -51,5 +51,4 @@ router.use((req, res) => {
     });
 });
 
-Connect();
 router.listen(config.server.port, () => logging.info(NAMESPACE, `Server is running ${config.server.hostname}:${config.server.port}`));
