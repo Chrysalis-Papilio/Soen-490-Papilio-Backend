@@ -1,4 +1,5 @@
 import {DataTypes, Model} from "sequelize";
+const User = require("./User");
 const database = require("../database");
 
 class Watchlist extends Model {
@@ -17,3 +18,7 @@ Watchlist.init({
 }, {
     sequelize: database
 })
+
+Watchlist.belongsTo(User);
+
+module.exports = Watchlist;

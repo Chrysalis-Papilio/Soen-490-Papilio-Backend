@@ -1,4 +1,5 @@
 import {DataTypes, Model} from "sequelize";
+const Watchlist = require("./Watchlist");
 const database = require("../database");
 
 class User extends Model {
@@ -56,9 +57,11 @@ User.init({
         },
         unique: true
     },
-    watchlist_id: {
-        type: DataTypes.INTEGER
-    }
 }, {sequelize: database});
+
+User.hasOne(Watchlist, {
+    foreignKey: 'user_id',
+    onDelete: 'CASCADE'
+});
 
 module.exports = User;
