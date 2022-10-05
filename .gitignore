@@ -6,3 +6,4 @@ LICENSE
 /.idea
 /node_modules
 /dist
+/.vscode

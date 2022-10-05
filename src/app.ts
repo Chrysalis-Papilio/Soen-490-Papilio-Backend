@@ -1,31 +1,27 @@
-import bodyParser from 'body-parser';
 import express from 'express';
-import logging from './config/logging';
-import config from './config/config';
-import userRoutes from './routes/user';
-import activityRoutes from './routes/activity';
-//  import { Connect } from './config/psql';
+import { userRoute, activityRoute } from './api/routes';
+import { config, logging } from './config';
 
-const NAMESPACE = 'Server';
 const router = express();
+const NAMESPACE = 'app';
 
 /** Log the request */
 router.use((req, res, next) => {
     /** Log the req */
-    logging.info(NAMESPACE, `METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`);
+    logging.info(`Incoming -> METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`);
     res.on('finish', () => {
         /** Log the res */
-        logging.info(NAMESPACE, `METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`);
+        logging.info(`Incoming -> METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`);
     });
 
     next();
 });
 
 /** Parse the body of the request */
-router.use(bodyParser.urlencoded({ extended: true }));
-router.use(bodyParser.json());
+router.use(express.urlencoded({ extended: true }));
+router.use(express.json());
 
-/** Rules of our API */
+/** Rules of API */
 router.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
@@ -39,8 +35,8 @@ router.use((req, res, next) => {
 });
 
 /** Routes go here */
-router.use('/api', userRoutes);
-router.use('/api', activityRoutes);
+router.use('/api', userRoute);
+router.use('/api', activityRoute);
 
 /** Error handling */
 router.use((req, res) => {
@@ -51,4 +47,5 @@ router.use((req, res) => {
     });
 });
 
-router.listen(config.server.port, () => logging.info(NAMESPACE, `Server is running ${config.server.hostname}:${config.server.port}`));
+/** Open port */
+router.listen(config.server.port, () => logging.info(`${NAMESPACE}: Server is running ${config.server.hostname}:${config.server.port}`));
