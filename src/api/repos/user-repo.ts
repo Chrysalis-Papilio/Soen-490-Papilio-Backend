@@ -1,10 +1,9 @@
-// import { queryDatabase } from '../DatabaseServices/psql';
 import logging from '../../config/logging';
 import { User } from '../models/User';
 
 const NAMESPACE: String = 'repos/userRepos';
 
-//Get all accounts from table account
+// Get all accounts from table account
 const getAllUsers = async () => {
     logging.info(`${NAMESPACE}: Querying all users.`);
     await User.sync();
@@ -12,7 +11,7 @@ const getAllUsers = async () => {
     return result;
 };
 
-//Get all accounts from table account
+// Get all accounts from table account
 const createSampleUser = async () => {
     logging.info(`${NAMESPACE}: Creating a sample user.`);
     await User.sync({ alter: true });

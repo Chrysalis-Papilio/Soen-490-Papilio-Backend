@@ -7,7 +7,7 @@ const NAMESPACE: string = 'controllers/userController';
 const getAllUsers = async (_: Request, res: Response) => {
     logging.info(`${NAMESPACE}: Controlling all users from PSQL Database`);
     try {
-        //  Call to service layer
+        // Call to service layer
         const result = await userService.getAllUsers();
 
         // Return a response to client.
@@ -26,7 +26,7 @@ const getAllUsers = async (_: Request, res: Response) => {
 const createSampleUser = async (_: Request, res: Response) => {
     logging.info(`${NAMESPACE}: Creating a sample user`);
     try {
-        //  Call to service layer
+        // Call to service layer
         const result = await userService.createSampleUser();
 
         // Return a response to client.

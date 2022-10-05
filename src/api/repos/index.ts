@@ -1,2 +1,2 @@
-export * as userRepos from './userRepos';
+export * as userRepos from './user-repo';
 //  export * from './acitivtyRepos'

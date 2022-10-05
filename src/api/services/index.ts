@@ -1,2 +1,2 @@
-export * as userService from './userService';
+export * as userService from './user-services';
 //  export * from './activityService';
