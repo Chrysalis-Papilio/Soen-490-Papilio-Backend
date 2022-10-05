@@ -1,42 +1,15 @@
-const info = (namespace: string, message: string, object?: any) => {
-    if (object) {
-        console.info(`[${getTimeStamp()}] [INFO] [${namespace}] ${message}`, object);
-    } else {
-        console.info(`[${getTimeStamp()}] [INFO] [${namespace}] ${message}`);
-    }
-};
+import chalk from 'chalk';
 
-const warn = (namespace: string, message: string, object?: any) => {
-    if (object) {
-        console.warn(`[${getTimeStamp()}] [WARN] [${namespace}] ${message}`, object);
-    } else {
-        console.warn(`[${getTimeStamp()}] [WARN] [${namespace}] ${message}`);
-    }
-};
+export default class Logging {
+    //  Standard Log
+    public static log = (args: any) => this.info(args);
 
-const error = (namespace: string, message: string, object?: any) => {
-    if (object) {
-        console.error(`[${getTimeStamp()}] [ERROR] [${namespace}] ${message}`, object);
-    } else {
-        console.error(`[${getTimeStamp()}] [ERROR] [${namespace}] ${message}`);
-    }
-};
+    //  Info log (blue)
+    public static info = (args: any) => console.log(chalk.blue(`[${new Date().toLocaleDateString()}] [INFO] `), typeof args === 'string' ? chalk.blueBright(args) : args);
 
-const debug = (namespace: string, message: string, object?: any) => {
-    if (object) {
-        console.debug(`[${getTimeStamp()}] [DEBUG] [${namespace}] ${message}`, object);
-    } else {
-        console.debug(`[${getTimeStamp()}] [DEBUG] [${namespace}] ${message}`);
-    }
-};
+    //  Warn log (yellow)
+    public static warn = (args: any) => console.log(chalk.yellow(`[${new Date().toLocaleDateString()}] [WARN] `), typeof args === 'string' ? chalk.yellowBright(args) : args);
 
-const getTimeStamp = (): string => {
-    return new Date().toISOString();
-};
-
-export default {
-    info,
-    warn,
-    error,
-    debug
-};
+    //  Error log (red)
+    public static error = (args: any) => console.log(chalk.red(`[${new Date().toLocaleDateString()}] [ERROR] `), typeof args === 'string' ? chalk.redBright(args) : args);
+}

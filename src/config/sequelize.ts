@@ -3,4 +3,4 @@ import config from './config';
 
 const sequelize = new Sequelize(`${config.sequelize.database}`);
 
-export { sequelize };
+export default sequelize;

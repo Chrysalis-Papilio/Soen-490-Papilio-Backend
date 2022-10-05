@@ -9,7 +9,7 @@
     "lint": "eslint ./**/*.ts --fix",
     "build": "tsc --build",
     "clean": "tsc --build --clean",
-    "start": "tsc --build --clean && tsc --build && prettier --write src/ && node ./dist/app.js"
+    "start": "tsc --build --clean && tsc --build && prettier --write src/ && node dist/app.js"
   },
   "repository": {
     "type": "git",
