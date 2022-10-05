@@ -2,11 +2,11 @@ import express from 'express';
 import { userRoute, activityRoute } from './api/routes';
 import { config, logging } from './config';
 
-const router = express();
+const app = express();
 const NAMESPACE = 'app';
 
 /** Log the request */
-router.use((req, res, next) => {
+app.use((req, res, next) => {
     /** Log the req */
     logging.info(`Incoming -> METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`);
     res.on('finish', () => {
@@ -18,11 +18,11 @@ router.use((req, res, next) => {
 });
 
 /** Parse the body of the request */
-router.use(express.urlencoded({ extended: true }));
-router.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 /** Rules of API */
-router.use((req, res, next) => {
+app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 
@@ -35,11 +35,11 @@ router.use((req, res, next) => {
 });
 
 /** Routes go here */
-router.use('/api', userRoute);
-router.use('/api', activityRoute);
+app.use('/api', userRoute);
+app.use('/api', activityRoute);
 
 /** Error handling */
-router.use((req, res) => {
+app.use((req, res) => {
     const error = new Error('REST API endpoint does not exist.');
     console.log(req);
     res.status(404).json({
@@ -48,4 +48,4 @@ router.use((req, res) => {
 });
 
 /** Open port */
-router.listen(config.server.port, () => logging.info(`${NAMESPACE}: Server is running ${config.server.hostname}:${config.server.port}`));
+app.listen(config.server.port, () => logging.info(`${NAMESPACE}: Server is running ${config.server.hostname}:${config.server.port}`));
