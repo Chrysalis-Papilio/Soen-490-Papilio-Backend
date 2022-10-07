@@ -1,7 +1,7 @@
 import logging from '../../config/logging';
 import { User } from '../models/User';
 
-const NAMESPACE: String = 'repos/userRepos';
+const NAMESPACE: string = 'repos/userRepos';
 
 // Get all accounts from table account
 const getAllUsers = async () => {
@@ -36,7 +36,7 @@ const createSimpleUser = async (user: any) => {
 };
 
 // Get User from email
-const getUserByEmail = async (email: String) => {
+const getUserByEmail = async (email: string) => {
     logging.info(`${NAMESPACE}: Getting the user whose email matches.`);
     await User.sync({ alter: true });
     return await User.findOne({ where: { email: email } });

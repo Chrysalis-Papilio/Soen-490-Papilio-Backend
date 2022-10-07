@@ -18,7 +18,7 @@ const createSimpleUser = async (user: any) => {
     return userRepos.createSimpleUser(user);
 };
 
-const getUserByEmail = async (email: String) => {
+const getUserByEmail = async (email: string) => {
     logging.info(`${NAMESPACE}: Servicing findUserByEmail`);
     return userRepos.getUserByEmail(email);
 };

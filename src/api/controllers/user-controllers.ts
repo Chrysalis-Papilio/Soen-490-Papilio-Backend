@@ -123,9 +123,9 @@ const updateUserProfile = async (req: Request, res: Response) => {
 };
 
 class MissingAttributeError extends Error {
-    declare controller: String;
+    declare controller: string;
 
-    constructor(att: String, controller: String) {
+    constructor(att: string, controller: string) {
         super();
         this.message = `Missing ${att} in request input.`;
         this.controller = controller;
