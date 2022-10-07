@@ -32,8 +32,8 @@ const createSimpleUser = async (user: any) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        countryCode: user.countryCode ? user.countryCode : null,
-        phone: user.phone ? user.phone : null
+        countryCode: user.countryCode ? user.countryCode : undefined,
+        phone: user.phone ? user.phone : undefined
     });
 };
 
