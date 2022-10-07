@@ -13,4 +13,9 @@ const createSampleUser = async () => {
     return userRepos.createSampleUser();
 };
 
-export { getAllUsers, createSampleUser };
+const createSimpleUser = async (user: any) => {
+    logging.info(`${NAMESPACE}: Servicing creatingSimpleUser`);
+    return userRepos.createSimpleUser(user);
+};
+
+export { getAllUsers, createSampleUser, createSimpleUser };

@@ -7,4 +7,6 @@ router.get('/user/get', userController.getAllUsers);
 
 router.post('/user/createSampleUser', userController.createSampleUser);
 
+router.post('/user/createSimpleUser', userController.createSimpleUser);
+
 export = router;
