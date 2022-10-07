@@ -23,4 +23,15 @@ const getUserByEmail = async (email: String) => {
     return userRepos.getUserByEmail(email);
 };
 
-export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail };
+const updateUserProfile = async (fields: string[], user: any) => {
+    logging.info(`${NAMESPACE}: Servicing updateUserProfile`);
+    let matcher = {};
+    fields.forEach((field: string) => {
+        // @ts-ignore
+        matcher[field] = user[field];
+    });
+    console.log(matcher, user);
+    return userRepos.updateUser(matcher, user);
+};
+
+export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail, updateUserProfile };

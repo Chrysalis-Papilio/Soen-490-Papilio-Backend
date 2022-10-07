@@ -37,9 +37,19 @@ const createSimpleUser = async (user: any) => {
 
 // Get User from email
 const getUserByEmail = async (email: String) => {
-    logging.info(`${NAMESPACE}: Getting User from email.`);
+    logging.info(`${NAMESPACE}: Getting the user whose email matches.`);
     await User.sync({ alter: true });
     return await User.findOne({ where: { email: email } });
 };
 
-export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail };
+// Update User
+// matcher: {email: 'email@here.com'} or {firstName: 'John', lastName: 'Doe'} or ...
+const updateUser = async (matcher: any, user: any) => {
+    logging.info(`${NAMESPACE}: Updating a user's attributes.`);
+    await User.sync({ alter: true });
+    return await User.update(user, {
+        where: matcher
+    });
+};
+
+export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail, updateUser };

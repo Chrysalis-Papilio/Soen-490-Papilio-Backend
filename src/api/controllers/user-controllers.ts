@@ -106,6 +106,21 @@ const getUserByEmail = async (req: Request, res: Response) => {
     }
 };
 
+const updateUserProfile = async (req: Request, res: Response) => {
+    logging.info(`${NAMESPACE}: Updating the User profile`);
+    const fields: string[] = req.body.fields;
+    const user = req.body.user;
+    try {
+        // Call service layer
+        const result = await userService.updateUserProfile(fields, user);
+
+        // Return result
+        return res.status(200).json(result);
+    } catch (e) {
+        return res.status(500).json({ error: e });
+    }
+};
+
 class MissingAttributeError extends Error {
     declare controller: String;
 
@@ -116,4 +131,4 @@ class MissingAttributeError extends Error {
     }
 }
 
-export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail };
+export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail, updateUserProfile };
