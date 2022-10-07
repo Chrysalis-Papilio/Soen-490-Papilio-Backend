@@ -7,21 +7,19 @@ const NAMESPACE: String = 'repos/userRepos';
 const getAllUsers = async () => {
     logging.info(`${NAMESPACE}: Querying all users.`);
     await User.sync();
-    const result = User.findAll();
-    return result;
+    return User.findAll();
 };
 
 // Create a sample user with hardcoded info (test-only)
 const createSampleUser = async () => {
     logging.info(`${NAMESPACE}: Creating a sample user.`);
     await User.sync({ alter: true });
-    const result = await User.create({
+    return await User.create({
         firstName: 'Sample',
         lastName: 'User',
         phone: '5145551237',
         email: 'sample4@gmail.com'
     });
-    return result;
 };
 
 // Create a simple user with verified input
@@ -37,4 +35,11 @@ const createSimpleUser = async (user: any) => {
     });
 };
 
-export { getAllUsers, createSampleUser, createSimpleUser };
+// Get User from email
+const getUserByEmail = async (email: String) => {
+    logging.info(`${NAMESPACE}: Getting User from email.`);
+    await User.sync({ alter: true });
+    return await User.findOne({ where: { email: email } });
+};
+
+export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail };

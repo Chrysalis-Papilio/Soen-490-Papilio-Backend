@@ -18,4 +18,9 @@ const createSimpleUser = async (user: any) => {
     return userRepos.createSimpleUser(user);
 };
 
-export { getAllUsers, createSampleUser, createSimpleUser };
+const getUserByEmail = async (email: String) => {
+    logging.info(`${NAMESPACE}: Servicing findUserByEmail`);
+    return userRepos.getUserByEmail(email);
+};
+
+export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail };
