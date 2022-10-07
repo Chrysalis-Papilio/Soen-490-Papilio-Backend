@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { userService } from '../services';
 import { logging } from '../../config';
-import { UniqueConstraintError, ValidationError } from 'sequelize';
 
 const NAMESPACE: string = 'controllers/userController';
 const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
@@ -60,19 +59,10 @@ const createSimpleUser = async (req: Request, res: Response) => {
         return res.status(200).json(result);
     } catch (e) {
         // Return error caught during check or service layer call
-        if (e instanceof UniqueConstraintError) {
-            logging.error('UniqueConstraintError with Sequelize.');
-            return res.status(400).json({ error: e });
-        }
-        if (e instanceof ValidationError) {
-            logging.error('ValidationError with Sequelize.');
-            return res.status(400).json({ error: e });
-        }
-        if (e instanceof MissingAttributeError) {
+        if (e instanceof Error) {
             logging.error(e.message);
             return res.status(400).json({ error: e });
         }
-        // @ts-ignore
         return res.status(500).json({ error: e });
     }
 };
@@ -111,12 +101,23 @@ const updateUserProfile = async (req: Request, res: Response) => {
     const fields: string[] = req.body.fields;
     const user = req.body.user;
     try {
+        // Check request body
+        if (fields.length === 0) throw new MissingAttributeError('fields', 'updateUserProfile');
+        fields.forEach((f: string) => {
+            if (!['firstName', 'lastName', 'firebase_id', 'email'].includes(f)) throw new TypeError(`${f} cannot be used in fields.`);
+        });
+        ['id'].forEach((f: string) => {
+            if (user[f]) throw new TypeError(`Cannot update ${f} field.`);
+        });
+
         // Call service layer
         const result = await userService.updateUserProfile(fields, user);
 
         // Return result
         return res.status(200).json(result);
     } catch (e) {
+        if (e instanceof TypeError) return res.status(400).json({ error: { message: e.message } });
+        if (e instanceof Error) return res.status(400).json({ error: e });
         return res.status(500).json({ error: e });
     }
 };
