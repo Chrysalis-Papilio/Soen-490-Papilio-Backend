@@ -48,7 +48,7 @@ const createSimpleUser = async (req: Request, res: Response) => {
     const user = req.body;
     try {
         // Check for required request body
-        if (!user.firstName) throw new MissingAttributeError('fileName', 'createSimpleUser');
+        if (!user.firstName) throw new MissingAttributeError('firstName', 'createSimpleUser');
         if (!user.lastName) throw new MissingAttributeError('lastName', 'createSimpleUser');
         if (!user.email) throw new MissingAttributeError('email', 'createSimpleUser');
 
@@ -58,11 +58,11 @@ const createSimpleUser = async (req: Request, res: Response) => {
         // Return result
         return res.status(200).json(result);
     } catch (e) {
+        // @ts-ignore e could be Error or Exception
+        logging.error(e.message);
+
         // Return error caught during check or service layer call
-        if (e instanceof Error) {
-            logging.error(e.message);
-            return res.status(400).json({ error: e });
-        }
+        if (e instanceof Error) return res.status(400).json({ error: e });
         return res.status(500).json({ error: e });
     }
 };
@@ -83,15 +83,12 @@ const getUserByEmail = async (req: Request, res: Response) => {
         // Return result
         return res.status(200).json(result);
     } catch (e) {
+        // @ts-ignore e could be Error or Exception
+        logging.error(e.message);
+
         // Return error caught during check or user-service call
-        if (e instanceof MissingAttributeError) {
-            logging.error('Where is the email, Lebowski?');
-            return res.status(400).json({ error: e });
-        }
-        if (e instanceof TypeError) {
-            logging.error(e.message);
-            return res.status(400).json({ error: { message: e.message } });
-        }
+        if (e instanceof MissingAttributeError) return res.status(400).json({ error: e });
+        if (e instanceof TypeError) return res.status(400).json({ error: { message: e.message } });
         return res.status(500).json({ error: e });
     }
 };
@@ -115,6 +112,10 @@ const updateUserProfile = async (req: Request, res: Response) => {
         // Return result
         return res.status(200).json(result);
     } catch (e) {
+        // @ts-ignore e could be Error or Exception
+        logging.error(e.message);
+
+        // Return error caught during check or user-service call
         if (e instanceof TypeError) return res.status(400).json({ error: { message: e.message } });
         if (e instanceof Error) return res.status(400).json({ error: e });
         return res.status(500).json({ error: e });
