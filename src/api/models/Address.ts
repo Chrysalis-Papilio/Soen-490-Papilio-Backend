@@ -1,8 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../config';
 
-const Business = require('./Business');
-
 class Address extends Model {
     declare id: number;
 }
@@ -54,11 +52,5 @@ Address.init(
         sequelize
     }
 );
-
-Address.belongsTo(Business, {
-    as: 'Business',
-    foreignKey: 'business_id',
-    onDelete: 'CASCADE'
-});
 
 module.exports = Address;
