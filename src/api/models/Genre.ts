@@ -1,22 +1,26 @@
-import {DataTypes, Model} from 'sequelize';
-import {sequelize} from '../../config';
+import { DataTypes, Model } from 'sequelize';
+import { sequelize } from '../../config';
 
 class Genre extends Model {
     declare id: number;
 }
 
-Genre.init({
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+Genre.init(
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
+        }
     },
-    name: {
-        type: DataTypes.STRING,
-        allowNull: false
+    {
+        sequelize
     }
-}, {
-    sequelize
-})
+);
 
 module.exports = Genre;

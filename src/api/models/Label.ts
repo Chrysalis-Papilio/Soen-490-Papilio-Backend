@@ -1,22 +1,26 @@
-import {DataTypes, Model} from 'sequelize';
-import {sequelize} from '../../config';
+import { DataTypes, Model } from 'sequelize';
+import { sequelize } from '../../config';
 
 class Label extends Model {
     declare id: number;
 }
 
-Label.init({
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+Label.init(
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
+        }
     },
-    name: {
-        type: DataTypes.STRING,
-        allowNull: false
+    {
+        sequelize
     }
-}, {
-    sequelize
-})
+);
 
 module.exports = Label;
