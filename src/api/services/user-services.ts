@@ -30,7 +30,6 @@ const updateUserProfile = async (fields: string[], user: any) => {
         // @ts-ignore
         matcher[field] = user[field];
     });
-    console.log(matcher, user);
     return userRepos.updateUser(matcher, user);
 };
 
