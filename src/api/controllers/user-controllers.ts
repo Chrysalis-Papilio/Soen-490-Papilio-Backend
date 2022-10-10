@@ -106,9 +106,8 @@ const updateUserProfile = async (req: Request, res: Response) => {
         fields.forEach((f: string) => {
             if (!['firstName', 'lastName', 'firebase_id', 'email'].includes(f)) throw new TypeError(`${f} cannot be used in fields.`);
         });
-        ['id'].forEach((f: string) => {
-            if (user[f]) throw new TypeError(`Cannot update ${f} field.`);
-        });
+        if (user['id']) throw new TypeError(`Cannot update id field.`);
+        if (user['firebase_id'] && !fields.includes('firebase_id')) throw new TypeError('Cannot update firebase_id field.');
 
         // Call service layer
         const result = await userService.updateUserProfile(fields, user);
