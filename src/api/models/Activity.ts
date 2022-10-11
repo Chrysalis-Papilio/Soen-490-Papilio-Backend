@@ -1,14 +1,20 @@
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import { sequelize } from '../../config';
+import { Genre } from './Genre';
+import { Label } from './Label';
 
-class Activity extends Model {
+class Activity extends Model<InferAttributes<Activity>, InferCreationAttributes<Activity>> {
     declare id: number;
+    declare title: string;
+    declare description: string;
+    declare startTime: Date;
+    declare endTime: Date | null;
 }
 
 Activity.init(
     {
         id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true
         },
@@ -34,13 +40,6 @@ Activity.init(
                 }
             }
         },
-        genre_ids: {
-            type: DataTypes.ARRAY(DataTypes.INTEGER),
-            allowNull: false
-        },
-        label_ids: {
-            type: DataTypes.ARRAY(DataTypes.INTEGER)
-        },
         startTime: {
             type: DataTypes.DATE,
             allowNull: false,
@@ -60,4 +59,8 @@ Activity.init(
     }
 );
 
-module.exports = Activity;
+Activity.belongsToMany(Genre, { through: 'Activity_Genres' });
+
+Activity.belongsToMany(Label, { through: 'Activity_Labels' });
+
+export { Activity };

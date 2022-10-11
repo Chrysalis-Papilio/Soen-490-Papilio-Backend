@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../config';
+import { Activity } from './Activity';
 
 class Genre extends Model {
     declare id: number;
@@ -23,4 +24,6 @@ Genre.init(
     }
 );
 
-module.exports = Genre;
+Genre.belongsToMany(Activity, { through: 'Activity_Genres' });
+
+export { Genre };

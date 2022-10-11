@@ -30,4 +30,4 @@ Business.belongsTo(Address, {
     foreignKey: 'address_id'
 });
 
-module.exports = Business;
+export { Business };

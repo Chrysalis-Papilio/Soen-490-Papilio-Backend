@@ -27,4 +27,4 @@ Watchlist.belongsTo(User, {
     onDelete: 'CASCADE'
 });
 
-module.exports = Watchlist;
+export { Watchlist };

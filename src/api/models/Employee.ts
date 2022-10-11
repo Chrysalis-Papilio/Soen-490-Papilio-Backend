@@ -46,4 +46,4 @@ Employee.belongsTo(Business, {
     foreignKey: 'business_id'
 });
 
-module.exports = Employee;
+export { Employee };

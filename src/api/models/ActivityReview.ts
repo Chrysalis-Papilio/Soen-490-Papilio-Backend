@@ -41,3 +41,5 @@ ActivityReview.belongsTo(User, {
     foreignKey: 'user_id',
     onDelete: 'CASCADE'
 });
+
+export { ActivityReview };

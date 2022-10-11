@@ -53,4 +53,4 @@ Address.init(
     }
 );
 
-module.exports = Address;
+export { Address };

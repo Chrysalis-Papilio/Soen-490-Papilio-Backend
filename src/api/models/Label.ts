@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../config';
+import { Activity } from './Activity';
 
 class Label extends Model {
     declare id: number;
@@ -23,4 +24,6 @@ Label.init(
     }
 );
 
-module.exports = Label;
+Label.belongsToMany(Activity, { through: 'Activity_Labels' });
+
+export { Label };
