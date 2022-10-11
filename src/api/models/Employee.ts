@@ -1,8 +1,6 @@
 import { CreationOptional, DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../config';
 
-const { Business } = require('./Business');
-
 class Employee extends Model {
     declare id: CreationOptional<number>;
 }
@@ -33,17 +31,11 @@ Employee.init(
         role: {
             // TODO: Not sure on this one yet, could be ENUM or INT
             type: DataTypes.STRING,
-            allowNull: false
         }
     },
     {
         sequelize
     }
 );
-
-Employee.belongsTo(Business, {
-    as: 'Business',
-    foreignKey: 'business_id'
-});
 
 export { Employee };
