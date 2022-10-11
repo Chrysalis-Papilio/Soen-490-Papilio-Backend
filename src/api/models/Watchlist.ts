@@ -1,10 +1,10 @@
-import { DataTypes, Model } from 'sequelize';
+import {CreationOptional, DataTypes, Model} from 'sequelize';
 import { sequelize } from '../../config';
 
 const User = require('./User');
 
 class Watchlist extends Model {
-    declare id: number;
+    declare id: CreationOptional<number>;
 }
 
 Watchlist.init(

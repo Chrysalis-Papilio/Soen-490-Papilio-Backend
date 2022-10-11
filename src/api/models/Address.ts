@@ -1,8 +1,8 @@
-import { DataTypes, Model } from 'sequelize';
+import {CreationOptional, DataTypes, Model} from 'sequelize';
 import { sequelize } from '../../config';
 
 class Address extends Model {
-    declare id: number;
+    declare id: CreationOptional<number>;
 }
 
 Address.init(

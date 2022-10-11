@@ -1,10 +1,10 @@
-import { DataTypes, Model } from 'sequelize';
+import {CreationOptional, DataTypes, Model} from 'sequelize';
 import { sequelize } from '../../config';
 
 const { Business } = require('./Business');
 
 class Employee extends Model {
-    declare id: number;
+    declare id: CreationOptional<number>;
 }
 
 Employee.init(
