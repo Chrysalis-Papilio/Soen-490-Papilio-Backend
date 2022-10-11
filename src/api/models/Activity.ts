@@ -1,14 +1,21 @@
-import { DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
+import { Association, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute } from 'sequelize';
 import { sequelize } from '../../config';
 import { Genre } from './Genre';
 import { Label } from './Label';
+import { ActivityReview } from './ActivityReview';
 
-class Activity extends Model<InferAttributes<Activity>, InferCreationAttributes<Activity>> {
+class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews' }>, InferCreationAttributes<Activity, { omit: 'activityReviews' }>> {
     declare id: number;
     declare title: string;
     declare description: string;
     declare startTime: Date;
     declare endTime: Date | null;
+
+    declare activityReviews?: NonAttribute<ActivityReview[]>;
+
+    declare static associations: {
+        activityReviews: Association<Activity, ActivityReview>;
+    };
 }
 
 Activity.init(
@@ -58,6 +65,12 @@ Activity.init(
         }
     }
 );
+
+Activity.hasMany(ActivityReview, {
+    as: 'activityReviews',
+    foreignKey: 'activity_id',
+    sourceKey: 'id'
+});
 
 Activity.belongsToMany(Genre, { through: 'Activity_Genres' });
 
