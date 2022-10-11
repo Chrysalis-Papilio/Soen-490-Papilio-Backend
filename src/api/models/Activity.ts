@@ -14,6 +14,7 @@ import {
     HasManyCountAssociationsMixin,
     HasManyCreateAssociationMixin,
     HasManyGetAssociationsMixin,
+    HasManyHasAssociationMixin,
     HasManyRemoveAssociationMixin,
     HasManyRemoveAssociationsMixin,
     InferAttributes,
@@ -42,6 +43,7 @@ class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews'
     declare removeActivityReviews: HasManyRemoveAssociationsMixin<ActivityReview, number>;
     declare countActivityReviews: HasManyCountAssociationsMixin;
     declare createActivityReview: HasManyCreateAssociationMixin<ActivityReview, 'activity_id'>;
+    declare hasActivityReview: HasManyHasAssociationMixin<ActivityReview, number>;
 
     declare addGenre: BelongsToManyAddAssociationMixin<Genre, number>;
     declare addGenres: BelongsToManyAddAssociationsMixin<Genre, number>;
