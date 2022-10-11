@@ -13,4 +13,24 @@ const createSampleUser = async () => {
     return userRepos.createSampleUser();
 };
 
-export { getAllUsers, createSampleUser };
+const createSimpleUser = async (user: any) => {
+    logging.info(`${NAMESPACE}: Servicing creatingSimpleUser`);
+    return userRepos.createSimpleUser(user);
+};
+
+const getUserByEmail = async (email: string) => {
+    logging.info(`${NAMESPACE}: Servicing findUserByEmail`);
+    return userRepos.getUserByEmail(email);
+};
+
+const updateUserProfile = async (fields: string[], user: any) => {
+    logging.info(`${NAMESPACE}: Servicing updateUserProfile`);
+    let matcher = {};
+    fields.forEach((field: string) => {
+        // @ts-ignore
+        matcher[field] = user[field];
+    });
+    return userRepos.updateUser(matcher, user);
+};
+
+export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail, updateUserProfile };
