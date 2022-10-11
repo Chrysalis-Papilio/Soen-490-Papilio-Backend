@@ -3,9 +3,13 @@ import {
     CreationOptional,
     DataTypes,
     HasManyAddAssociationMixin,
-    HasManyAddAssociationsMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin,
-    HasManyGetAssociationsMixin, HasManyHasAssociationMixin,
-    HasManyRemoveAssociationMixin, HasManyRemoveAssociationsMixin,
+    HasManyAddAssociationsMixin,
+    HasManyCountAssociationsMixin,
+    HasManyCreateAssociationMixin,
+    HasManyGetAssociationsMixin,
+    HasManyHasAssociationMixin,
+    HasManyRemoveAssociationMixin,
+    HasManyRemoveAssociationsMixin,
     HasOneCreateAssociationMixin,
     HasOneGetAssociationMixin,
     HasOneSetAssociationMixin,
@@ -14,9 +18,9 @@ import {
     Model,
     NonAttribute
 } from 'sequelize';
-import {sequelize} from '../../config';
-import {Address} from './Address';
-import {Employee} from "./Employee";
+import { sequelize } from '../../config';
+import { Address } from './Address';
+import { Employee } from './Employee';
 
 class Business extends Model<InferAttributes<Business, { omit: 'employees' }>, InferCreationAttributes<Business, { omit: 'employees' }>> {
     declare id: CreationOptional<number>;
@@ -39,7 +43,7 @@ class Business extends Model<InferAttributes<Business, { omit: 'employees' }>, I
 
     declare static associations: {
         employees: Association<Business, Employee>;
-    }
+    };
 }
 
 Business.init(
@@ -67,6 +71,6 @@ Business.hasMany(Employee, {
     as: 'employees',
     foreignKey: 'business_id',
     sourceKey: 'id'
-})
+});
 
-export {Business};
+export { Business };
