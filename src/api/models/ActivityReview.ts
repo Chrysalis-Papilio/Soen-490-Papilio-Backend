@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../../config';
+import sequelize from '../../config/sequelize';
 
 const Activity = require('./Activity');
 const User = require('./User');

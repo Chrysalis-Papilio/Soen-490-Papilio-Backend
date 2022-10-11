@@ -1,135 +1,82 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { userService } from '../services';
-import { logging } from '../../config';
+import { APIError } from '../../errors/api-error';
+import { httpStatusCode } from '../../types/httpStatusCodes';
 
-const NAMESPACE: string = 'controllers/userController';
 const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
 
-const getAllUsers = async (_: Request, res: Response) => {
-    logging.info(`${NAMESPACE}: Controlling all users from Postgres Database`);
+const getAllUsers = async (_: Request, res: Response, next: NextFunction) => {
     try {
-        // Call to service layer
+        /**  Call to service layer */
         const result = await userService.getAllUsers();
 
-        // Return a response to client.
-        return res.status(200).json(result);
-    } catch (error) {
-        const err = error as Error;
-        logging.error(err.message);
-
-        // Return a response to client.
-        return res.status(500).json({
-            error: error
-        });
+        /**  Return a response to client. */
+        res.send(result);
+    } catch (err) {
+        next(err);
     }
 };
 
-const createSampleUser = async (_: Request, res: Response) => {
-    logging.info(`${NAMESPACE}: Creating a sample user`);
+const createSampleUser = async (_: Request, res: Response, next: NextFunction) => {
     try {
-        // Call to service layer
+        /** Call to service layer */
         const result = await userService.createSampleUser();
 
-        // Return a response to client.
+        /** Return a response to client. */
         return res.status(200).json(result);
-    } catch (error) {
-        const err = error as Error;
-        logging.error(err.message);
-
-        // Return a response to client.
-        return res.status(500).json({
-            error: error
-        });
+    } catch (err) {
+        next(err);
     }
 };
 
-const createSimpleUser = async (req: Request, res: Response) => {
-    logging.info(`${NAMESPACE}: Creating a simple user with request body`);
+const createSimpleUser = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.body;
     try {
-        // Check for required request body
-        if (!user.firstName) throw new MissingAttributeError('fileName', 'createSimpleUser');
-        if (!user.lastName) throw new MissingAttributeError('lastName', 'createSimpleUser');
-        if (!user.email) throw new MissingAttributeError('email', 'createSimpleUser');
-
         // Call service layer
         const result = await userService.createSimpleUser(user);
 
         // Return result
         return res.status(200).json(result);
-    } catch (e) {
-        // Return error caught during check or service layer call
-        if (e instanceof Error) {
-            logging.error(e.message);
-            return res.status(400).json({ error: e });
-        }
-        return res.status(500).json({ error: e });
+    } catch (err) {
+        next(err);
     }
 };
 
-const getUserByEmail = async (req: Request, res: Response) => {
-    logging.info(`${NAMESPACE}: Getting the User with matching email`);
+const getUserByEmail = async (req: Request, res: Response, next: NextFunction) => {
     const email = req.body.email;
     try {
         // Check request body
-        if (!email) throw new MissingAttributeError('email', 'getUserByEmail');
-
+        if (!email) throw new APIError('Missing Email.', 'getUserByEmail', httpStatusCode.BAD_REQUEST, true);
         // Regex match for email
-        if (!email.match(emailRegex)) throw new TypeError('Not an email input.');
-
+        if (!email.match(emailRegex)) throw new APIError('Where is the email, Lebowski?', 'getUserByEmail', httpStatusCode.BAD_REQUEST, true);
         // Call service layer
         const result = await userService.getUserByEmail(email);
-
         // Return result
         return res.status(200).json(result);
-    } catch (e) {
-        // Return error caught during check or user-service call
-        if (e instanceof MissingAttributeError) {
-            logging.error('Where is the email, Lebowski?');
-            return res.status(400).json({ error: e });
-        }
-        if (e instanceof TypeError) {
-            logging.error(e.message);
-            return res.status(400).json({ error: { message: e.message } });
-        }
-        return res.status(500).json({ error: e });
+    } catch (err) {
+        next(err);
     }
 };
 
-const updateUserProfile = async (req: Request, res: Response) => {
-    logging.info(`${NAMESPACE}: Updating the User profile`);
+const updateUserProfile = async (req: Request, res: Response, next: NextFunction) => {
     const fields: string[] = req.body.fields;
     const user = req.body.user;
     try {
         // Check request body
-        if (fields.length === 0) throw new MissingAttributeError('fields', 'updateUserProfile');
+        if (fields.length === 0) throw new APIError('Missing fields.', 'updateUserProfile', httpStatusCode.BAD_REQUEST, true);
         fields.forEach((f: string) => {
-            if (!['firstName', 'lastName', 'firebase_id', 'email'].includes(f)) throw new TypeError(`${f} cannot be used in fields.`);
+            if (!['firstName', 'lastName', 'firebase_id', 'email'].includes(f)) throw new APIError(`${f} cannot be used in fields.`, 'updateUserProfile', httpStatusCode.BAD_REQUEST, true);
         });
         ['id'].forEach((f: string) => {
-            if (user[f]) throw new TypeError(`Cannot update ${f} field.`);
+            if (user[f]) throw new APIError(`Cannot update ${f} field.`, 'updateUserProfile', httpStatusCode.BAD_REQUEST, true);
         });
-
         // Call service layer
         const result = await userService.updateUserProfile(fields, user);
 
         // Return result
         return res.status(200).json(result);
-    } catch (e) {
-        if (e instanceof TypeError) return res.status(400).json({ error: { message: e.message } });
-        if (e instanceof Error) return res.status(400).json({ error: e });
-        return res.status(500).json({ error: e });
+    } catch (err) {
+        next(err);
     }
 };
-
-class MissingAttributeError extends Error {
-    declare controller: string;
-
-    constructor(att: string, controller: string) {
-        super();
-        this.message = `Missing ${att} in request input.`;
-        this.controller = controller;
-    }
-}
-
 export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail, updateUserProfile };

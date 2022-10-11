@@ -1,19 +1,21 @@
 import express from 'express';
 import { userRoute, activityRoute } from './api/routes';
-import { config, logging } from './config';
+import config from './config/config';
+import { logger } from './config/logger';
+import { ErrorHandler } from './errors/error-handler';
 
 const app = express();
+const errorHandler = new ErrorHandler();
 const NAMESPACE = 'app';
 
 /** Log the request */
 app.use((req, res, next) => {
     /** Log the req */
-    logging.info(`Incoming -> METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`);
+    logger.info(`Incoming -> METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`);
     res.on('finish', () => {
         /** Log the res */
-        logging.info(`Incoming -> METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`);
+        logger.info(`Outgoing -> METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`);
     });
-
     next();
 });
 
@@ -25,8 +27,8 @@ app.use(express.json());
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-
     if (req.method == 'OPTIONS') {
+        logger.info('Stop');
         res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
         return res.status(200).json({});
     }
@@ -38,14 +40,22 @@ app.use((req, res, next) => {
 app.use('/api', userRoute);
 app.use('/api', activityRoute);
 
-/** Error handling */
-app.use((req, res) => {
-    const error = new Error('REST API endpoint does not exist.');
-    console.log(req);
-    res.status(404).json({
-        message: error.message
-    });
+/** Open port */
+app.listen(config.server.port, () => {
+    logger.info(`${NAMESPACE}: Server is running ${config.server.hostname}:${config.server.port}`);
 });
 
-/** Open port */
-app.listen(config.server.port, () => logging.info(`${NAMESPACE}: Server is running ${config.server.hostname}:${config.server.port}`));
+/** Error handling */
+app.use(errorHandler.handleError);
+//  app.use(errorHandler.returnError);
+
+process.on('uncaughtException', async (error: Error) => {
+    await errorHandler.handleError; //  Handle the uncaughException
+    logger.info('Gracefully exiting...');
+    if (!errorHandler.isTrusedError(error)) process.exit(1); //  Exit if its a programmer error
+});
+
+/** Get unhandled rejection and throw it to another fallback handler. */
+process.on('unhandledRejection', (reason: Error) => {
+    throw reason;
+});
