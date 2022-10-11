@@ -1,12 +1,4 @@
-import {
-    Association,
-    CreationOptional,
-    DataTypes,
-    InferAttributes,
-    InferCreationAttributes,
-    Model,
-    NonAttribute
-} from 'sequelize';
+import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute } from 'sequelize';
 import { sequelize } from '../../config';
 import { Genre } from './Genre';
 import { Label } from './Label';

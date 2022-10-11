@@ -1,4 +1,4 @@
-import {CreationOptional, DataTypes, Model} from 'sequelize';
+import { CreationOptional, DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../config';
 import { Activity } from './Activity';
 

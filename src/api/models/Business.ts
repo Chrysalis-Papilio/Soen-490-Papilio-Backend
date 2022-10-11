@@ -1,10 +1,10 @@
-import {CreationOptional, DataTypes, Model} from 'sequelize';
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import { sequelize } from '../../config';
+import { Address } from './Address';
 
-const Address = require('./Address');
-
-class Business extends Model {
+class Business extends Model<InferAttributes<Business>, InferCreationAttributes<Business>> {
     declare id: CreationOptional<number>;
+    declare name: string;
 }
 
 Business.init(
@@ -25,9 +25,7 @@ Business.init(
     }
 );
 
-Business.belongsTo(Address, {
-    as: 'BusinessAddress',
-    foreignKey: 'address_id'
-});
+Business.hasOne(Address);
+Address.belongsTo(Business);
 
 export { Business };

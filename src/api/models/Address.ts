@@ -1,8 +1,17 @@
-import {CreationOptional, DataTypes, Model} from 'sequelize';
+import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import { sequelize } from '../../config';
+import { Business } from './Business';
 
-class Address extends Model {
+class Address extends Model<InferAttributes<Address>, InferCreationAttributes<Address>> {
     declare id: CreationOptional<number>;
+    declare mention: string | null;
+    declare lineOne: string;
+    declare lineTwo: string | null;
+    declare city: string;
+    declare state: string;
+    declare country: string;
+    declare postalCode: string;
+    declare BusinessId: ForeignKey<Business['id']>;
 }
 
 Address.init(
