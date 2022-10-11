@@ -1,9 +1,9 @@
-import { CreationOptional, DataTypes, Model } from 'sequelize';
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import { sequelize } from '../../config';
-import { Activity } from './Activity';
 
-class Label extends Model {
+class Label extends Model<InferAttributes<Label>, InferCreationAttributes<Label>> {
     declare id: CreationOptional<number>;
+    declare name: string;
 }
 
 Label.init(
@@ -23,7 +23,5 @@ Label.init(
         sequelize
     }
 );
-
-Label.belongsToMany(Activity, { through: 'Activity_Labels' });
 
 export { Label };

@@ -1,6 +1,5 @@
 import { CreationOptional, DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../config';
-import { Activity } from './Activity';
 
 class Genre extends Model {
     declare id: CreationOptional<number>;
@@ -23,7 +22,5 @@ Genre.init(
         sequelize
     }
 );
-
-Genre.belongsToMany(Activity, { through: 'Activity_Genres' });
 
 export { Genre };

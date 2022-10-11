@@ -1,4 +1,26 @@
-import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute } from 'sequelize';
+import {
+    Association,
+    BelongsToManyAddAssociationMixin,
+    BelongsToManyAddAssociationsMixin,
+    BelongsToManyGetAssociationsMixin,
+    BelongsToManyHasAssociationMixin,
+    BelongsToManyHasAssociationsMixin,
+    BelongsToManyRemoveAssociationMixin,
+    BelongsToManyRemoveAssociationsMixin,
+    CreationOptional,
+    DataTypes,
+    HasManyAddAssociationMixin,
+    HasManyAddAssociationsMixin,
+    HasManyCountAssociationsMixin,
+    HasManyCreateAssociationMixin,
+    HasManyGetAssociationsMixin,
+    HasManyRemoveAssociationMixin,
+    HasManyRemoveAssociationsMixin,
+    InferAttributes,
+    InferCreationAttributes,
+    Model,
+    NonAttribute
+} from 'sequelize';
 import { sequelize } from '../../config';
 import { Genre } from './Genre';
 import { Label } from './Label';
@@ -8,10 +30,34 @@ class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews'
     declare id: CreationOptional<number>;
     declare title: string;
     declare description: string;
-    declare startTime: Date;
+    declare startTime: Date | null;
     declare endTime: Date | null;
 
     declare activityReviews?: NonAttribute<ActivityReview[]>;
+
+    declare getActivityReviews: HasManyGetAssociationsMixin<ActivityReview>;
+    declare addActivityReview: HasManyAddAssociationMixin<ActivityReview, number>;
+    declare addActivityReviews: HasManyAddAssociationsMixin<ActivityReview, number>;
+    declare removeActivityReview: HasManyRemoveAssociationMixin<ActivityReview, number>;
+    declare removeActivityReviews: HasManyRemoveAssociationsMixin<ActivityReview, number>;
+    declare countActivityReviews: HasManyCountAssociationsMixin;
+    declare createActivityReview: HasManyCreateAssociationMixin<ActivityReview, 'activity_id'>;
+
+    declare addGenre: BelongsToManyAddAssociationMixin<Genre, number>;
+    declare addGenres: BelongsToManyAddAssociationsMixin<Genre, number>;
+    declare getGenres: BelongsToManyGetAssociationsMixin<Genre>;
+    declare hasGenre: BelongsToManyHasAssociationMixin<Genre, number>;
+    declare hasGenres: BelongsToManyHasAssociationsMixin<Genre, number>;
+    declare removeGenre: BelongsToManyRemoveAssociationMixin<Genre, number>;
+    declare removeGenres: BelongsToManyRemoveAssociationsMixin<Genre, number>;
+
+    declare addLabel: BelongsToManyAddAssociationMixin<Label, number>;
+    declare addLabels: BelongsToManyAddAssociationsMixin<Label, number>;
+    declare getLabels: BelongsToManyGetAssociationsMixin<Label>;
+    declare hasLabel: BelongsToManyHasAssociationMixin<Label, number>;
+    declare hasLabels: BelongsToManyHasAssociationsMixin<Label, number>;
+    declare removeLabel: BelongsToManyRemoveAssociationMixin<Label, number>;
+    declare removeLabels: BelongsToManyRemoveAssociationsMixin<Label, number>;
 
     declare static associations: {
         activityReviews: Association<Activity, ActivityReview>;
@@ -21,7 +67,7 @@ class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews'
 Activity.init(
     {
         id: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
@@ -49,8 +95,7 @@ Activity.init(
         },
         startTime: {
             type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: new Date(0).toISOString()
+            defaultValue: new Date(Date.now()).toISOString()
         },
         endTime: {
             type: DataTypes.DATE
@@ -66,14 +111,44 @@ Activity.init(
     }
 );
 
+const Activity_Genres = sequelize.define(
+    'Activity_Genres',
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+            allowNull: false
+        }
+    },
+    { timestamps: false }
+);
+
+const Activity_Labels = sequelize.define(
+    'Activity_Labels',
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+            allowNull: false
+        }
+    },
+    { timestamps: false }
+);
+
 Activity.hasMany(ActivityReview, {
     as: 'activityReviews',
     foreignKey: 'activity_id',
     sourceKey: 'id'
 });
 
-Activity.belongsToMany(Genre, { through: 'Activity_Genres' });
+Activity.belongsToMany(Genre, { through: Activity_Genres });
 
-Activity.belongsToMany(Label, { through: 'Activity_Labels' });
+Genre.belongsToMany(Activity, { through: Activity_Genres });
 
-export { Activity };
+Activity.belongsToMany(Label, { through: Activity_Labels });
+
+Label.belongsToMany(Activity, { through: Activity_Labels });
+
+export { Activity, Activity_Genres, Activity_Labels };
