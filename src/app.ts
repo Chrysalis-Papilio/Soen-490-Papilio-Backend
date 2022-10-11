@@ -47,7 +47,6 @@ app.listen(config.server.port, () => {
 
 /** Error handling */
 app.use(errorHandler.handleError);
-//  app.use(errorHandler.returnError);
 
 process.on('uncaughtException', async (error: Error) => {
     await errorHandler.handleError; //  Handle the uncaughException

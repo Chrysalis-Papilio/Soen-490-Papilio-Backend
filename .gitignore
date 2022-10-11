@@ -1,5 +1,6 @@
 # File
 .env
+yarn.lock
 LICENSE
 
 # Folder

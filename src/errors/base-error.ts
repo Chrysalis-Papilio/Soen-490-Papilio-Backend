@@ -2,7 +2,7 @@ import { httpStatusCode } from '../types/httpStatusCodes';
 
 /** Error structure */
 export class BaseError extends Error {
-    public static readonly GENERIC_MESSAGE = 'Sorry, there has been an error while processing your request.';
+    public static readonly GENERIC_MESSAGE = 'Sorry, there has been an error while processing our request.';
     public readonly log: string;
     public readonly methodName!: string;
     public readonly httpCode: httpStatusCode;

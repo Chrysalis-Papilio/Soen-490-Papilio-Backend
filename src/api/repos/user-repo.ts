@@ -1,7 +1,7 @@
 import { User } from '../models/User';
 import { httpStatusCode } from '../../types/httpStatusCodes';
-import { APIError } from '../../errors/api-error';
 import { logger } from '../../config/logger';
+import { APIError } from '../../errors/api-error';
 
 //** Get all accounts from table account */
 const getAllUsers = async () => {
@@ -33,7 +33,7 @@ const createSimpleUser = async (user: any) => {
         logging: false
     }).catch((error) => {
         logger.error(error);
-        throw new APIError('This user already exists.', 'createSimpleUser', httpStatusCode.BAD_REQUEST);
+        throw new APIError('This user already exists.', 'createSimpleUser', httpStatusCode.CONFLICT, true);
     });
     return result;
 };
@@ -45,7 +45,7 @@ const getUserByEmail = async (email: string) => {
         where: { email: email },
         logging: false
     });
-    if (result === null) throw new APIError(`The user (${email}) does not exists.`, 'getUserByEmail', httpStatusCode.BAD_REQUEST);
+    logger.info(`Getting user ${email}: ${result}.`);
     return result;
 };
 

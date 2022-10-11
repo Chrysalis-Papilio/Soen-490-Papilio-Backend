@@ -12,6 +12,7 @@ export class ErrorHandler {
              HTTP CODE: \"${err.httpCode}\" 
              IS_OPERATIONAL: \"${err.isOperational}\" 
             }`);
+
         /** Sending response back to client. */
         const message = err instanceof APIError ? err.message : BaseError.GENERIC_MESSAGE;
         res.status((<BaseError>err).httpCode || 500).send(message);
