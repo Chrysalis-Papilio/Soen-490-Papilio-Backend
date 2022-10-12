@@ -22,7 +22,7 @@ import {
     Model,
     NonAttribute
 } from 'sequelize';
-import { sequelize } from '../../config/sequelize';
+import sequelize from '../../config/sequelize';
 import { Genre } from './Genre';
 import { Label } from './Label';
 import { ActivityReview } from './ActivityReview';

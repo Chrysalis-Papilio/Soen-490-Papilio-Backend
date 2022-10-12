@@ -19,7 +19,7 @@ const createSampleUser = async () => {
         phone: '5145551237',
         email: 'sample4@gmail.com',
         firebase_id: 'totallynotanid',
-        logging: false
+        logging: false,
     });
 };
 

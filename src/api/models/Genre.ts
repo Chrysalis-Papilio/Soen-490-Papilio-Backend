@@ -1,5 +1,5 @@
 import { CreationOptional, DataTypes, Model } from 'sequelize';
-import { sequelize } from '../../config';
+import sequelize from '../../config/sequelize';
 
 class Genre extends Model {
     declare id: CreationOptional<number>;

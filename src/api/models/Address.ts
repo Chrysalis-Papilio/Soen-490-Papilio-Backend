@@ -1,5 +1,5 @@
 import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
-import { sequelize } from '../../config';
+import sequelize from '../../config/sequelize';
 import { Business } from './Business';
 
 class Address extends Model<InferAttributes<Address>, InferCreationAttributes<Address>> {

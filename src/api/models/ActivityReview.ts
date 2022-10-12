@@ -1,5 +1,5 @@
 import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
-import { sequelize } from '../../config/sequelize';
+import sequelize from '../../config/sequelize';
 import { Activity } from './Activity';
 import { User } from './User';
 

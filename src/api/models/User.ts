@@ -15,7 +15,7 @@ import {
     Model,
     NonAttribute
 } from 'sequelize';
-import { sequelize } from '../../config/sequelize';
+import sequelize from '../../config/sequelize';
 import { ActivityReview } from './ActivityReview';
 
 class User extends Model<InferAttributes<User, { omit: 'userReviews' }>, InferCreationAttributes<User, { omit: 'userReviews' }>> {

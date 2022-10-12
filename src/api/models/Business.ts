@@ -18,7 +18,7 @@ import {
     Model,
     NonAttribute
 } from 'sequelize';
-import { sequelize } from '../../config';
+import sequelize from '../../config/sequelize';
 import { Address } from './Address';
 import { Employee } from './Employee';
 

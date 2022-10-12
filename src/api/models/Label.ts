@@ -1,5 +1,5 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
-import { sequelize } from '../../config';
+import sequelize from '../../config/sequelize';
 
 class Label extends Model<InferAttributes<Label>, InferCreationAttributes<Label>> {
     declare id: CreationOptional<number>;
