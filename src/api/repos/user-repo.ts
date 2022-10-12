@@ -20,7 +20,7 @@ const createSampleUser = async () => {
         lastName: 'User',
         phone: '5145551237',
         email: 'sample5@gmail.com',
-        firebase_id: 'nothing'
+        firebase_id: 'notafirebaseid'
     });
     return result;
 };
