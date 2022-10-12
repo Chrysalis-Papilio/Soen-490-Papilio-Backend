@@ -51,7 +51,7 @@ app.use(errorHandler.handleError);
 process.on('uncaughtException', async (error: Error) => {
     await errorHandler.handleError; //  Handle the uncaughException
     logger.info('Gracefully exiting...');
-    if (!errorHandler.isTrusedError(error)) process.exit(1); //  Exit if its a programmer error
+    if (!errorHandler.isTrustedError(error)) process.exit(1); //  Exit if its a programmer error
 });
 
 /** Get unhandled rejection and throw it to another fallback handler. */

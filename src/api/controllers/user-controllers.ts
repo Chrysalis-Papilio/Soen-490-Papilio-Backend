@@ -58,9 +58,9 @@ const createSimpleUser = async (req: Request, res: Response, next: NextFunction)
 const getUserByEmail = async (req: Request, res: Response, next: NextFunction) => {
     const email = req.body.email;
     // Check request body
-    if (!email) throw new APIError('Missing Email.', 'getUserByEmail', httpStatusCode.BAD_REQUEST, true); //  Email presence check
+    if (!email) throw new APIError('Where is the email, Lebowski?', 'getUserByEmail', httpStatusCode.BAD_REQUEST, true); //  Email presence check
     // Regex match for email
-    if (!email.match(emailRegex)) throw new APIError('Where is the email, Lebowski?', 'getUserByEmail', httpStatusCode.BAD_REQUEST, true); //  Email validity check
+    if (!email.match(emailRegex)) throw new APIError('Invalid email.', 'getUserByEmail', httpStatusCode.BAD_REQUEST, true); //  Email validity check
     // Return result
     try {
         const result = await userService.getUserByEmail(email); //  Call to service Layer.
