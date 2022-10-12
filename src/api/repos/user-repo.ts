@@ -2,6 +2,7 @@ import { User } from '../models/User';
 import { httpStatusCode } from '../../types/httpStatusCodes';
 import { logger } from '../../config/logger';
 import { APIError } from '../../errors/api-error';
+import { BaseError } from '../../errors/base-error';
 
 //** Get all accounts from table account */
 const getAllUsers = async () => {
@@ -17,6 +18,7 @@ const createSampleUser = async () => {
         lastName: 'User',
         phone: '5145551237',
         email: 'sample4@gmail.com',
+        firebase_id: 'totallynotanid',
         logging: false
     });
 };
@@ -30,10 +32,13 @@ const createSimpleUser = async (user: any) => {
         email: user.email,
         countryCode: user.countryCode ? user.countryCode : undefined,
         phone: user.phone ? user.phone : undefined,
+        firebase_id: user.firebase_id,
         logging: false
     }).catch((error) => {
-        logger.error(error);
-        throw new APIError('This user already exists.', 'createSimpleUser', httpStatusCode.CONFLICT, true);
+        logger.error(error.message);
+        if (error.message === 'Validation error')
+            throw new APIError('This user already exists.', 'createSimpleUser', httpStatusCode.CONFLICT, true);
+        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
     });
     return result;
 };

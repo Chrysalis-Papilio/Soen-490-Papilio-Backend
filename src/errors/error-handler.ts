@@ -27,7 +27,7 @@ export class ErrorHandler {
     }
 
     /** Make sure the error was intentionally invoked (known error) */
-    public isTrusedError(error: Error) {
+    public isTrustedError(error: Error) {
         return error instanceof BaseError && error.isOperational;
     }
 }
