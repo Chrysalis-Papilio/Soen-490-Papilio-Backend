@@ -19,7 +19,6 @@ const createSampleUser = async () => {
         phone: '5145551237',
         email: 'sample4@gmail.com',
         firebase_id: 'totallynotanid',
-        logging: false
     });
 };
 
@@ -33,7 +32,6 @@ const createSimpleUser = async (user: any) => {
         countryCode: user.countryCode ? user.countryCode : undefined,
         phone: user.phone ? user.phone : undefined,
         firebase_id: user.firebase_id,
-        logging: false
     }).catch((error) => {
         logger.error(error.message);
         if (error.message === 'Validation error')
