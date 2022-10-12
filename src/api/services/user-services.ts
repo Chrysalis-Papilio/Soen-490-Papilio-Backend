@@ -1,35 +1,28 @@
 import { userRepos } from '../repos';
-import { logging } from '../../config';
-
-const NAMESPACE = 'services/user';
+import { logger } from '../../config/logger';
 
 const getAllUsers = async () => {
-    logging.info(`${NAMESPACE}: Servicing getAllUsers`);
     return userRepos.getAllUsers();
 };
 
 const createSampleUser = async () => {
-    logging.info(`${NAMESPACE}: Servicing createSampleUser`);
     return userRepos.createSampleUser();
 };
 
 const createSimpleUser = async (user: any) => {
-    logging.info(`${NAMESPACE}: Servicing creatingSimpleUser`);
     return userRepos.createSimpleUser(user);
 };
-
 const getUserByEmail = async (email: string) => {
-    logging.info(`${NAMESPACE}: Servicing findUserByEmail`);
     return userRepos.getUserByEmail(email);
 };
 
 const updateUserProfile = async (fields: string[], user: any) => {
-    logging.info(`${NAMESPACE}: Servicing updateUserProfile`);
     let matcher = {};
     fields.forEach((field: string) => {
         // @ts-ignore
         matcher[field] = user[field];
     });
+    logger.info(matcher, user);
     return userRepos.updateUser(matcher, user);
 };
 

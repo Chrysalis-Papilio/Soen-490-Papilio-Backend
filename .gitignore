@@ -1,9 +1,9 @@
 # File
 .env
+yarn.lock
 LICENSE
 
 # Folder
 /.idea
 /node_modules
 /dist
-/.vscode
