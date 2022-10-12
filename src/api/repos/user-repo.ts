@@ -7,7 +7,7 @@ import {BaseError} from '../../errors/base-error';
 //** Get all accounts from table account */
 const getAllUsers = async () => {
     await User.sync();
-    return User.findAll({ logging: false });
+    return User.findAll();
 };
 
 // Create a sample user with hardcoded info (test-only)
