@@ -1,10 +1,10 @@
-import {User} from '../models/User';
-import {httpStatusCode} from '../../types/httpStatusCodes';
-import {logger} from '../../config/logger';
-import {APIError} from '../../errors/api-error';
-import {BaseError} from '../../errors/base-error';
+import { User } from '../models/User';
+import { httpStatusCode } from '../../types/httpStatusCodes';
+import { logger } from '../../config/logger';
+import { APIError } from '../../errors/api-error';
+import { BaseError } from '../../errors/base-error';
 
-//** Get all accounts from table account */
+// Get all accounts from table account
 const getAllUsers = async () => {
     await User.sync();
     return User.findAll();
@@ -34,8 +34,7 @@ const createSimpleUser = async (user: any) => {
         firebase_id: user.firebase_id
     }).catch((error) => {
         logger.error(error.message);
-        if (error.message === 'Validation error')
-            throw new APIError('This user already exists.', 'createSimpleUser', httpStatusCode.CONFLICT, true);
+        if (error.message === 'Validation error') throw new APIError('This user already exists.', 'createSimpleUser', httpStatusCode.CONFLICT, true);
         throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
     });
 };
@@ -44,7 +43,7 @@ const createSimpleUser = async (user: any) => {
 const getUserByEmail = async (email: string) => {
     await User.sync();
     const result = await User.findOne({
-        where: { email: email },
+        where: { email: email }
     });
     logger.info(`Getting user ${email}: ${result}.`);
     return result;
@@ -55,7 +54,7 @@ const getUserByEmail = async (email: string) => {
 const updateUser = async (matcher: any, user: any) => {
     await User.sync();
     return await User.update(user, {
-        where: matcher,
+        where: matcher
     });
 };
 
