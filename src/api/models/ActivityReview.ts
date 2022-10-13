@@ -1,11 +1,14 @@
-import { DataTypes, Model } from 'sequelize';
+import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import sequelize from '../../config/sequelize';
+import { Activity } from './Activity';
+import { User } from './User';
 
-const Activity = require('./Activity');
-const User = require('./User');
-
-class ActivityReview extends Model {
-    declare id: number;
+class ActivityReview extends Model<InferAttributes<ActivityReview>, InferCreationAttributes<ActivityReview>> {
+    declare id: CreationOptional<number>;
+    declare comment: string;
+    declare rating: number;
+    declare activity_id: ForeignKey<Activity['id']>;
+    declare user_id: ForeignKey<User['id']>;
 }
 
 ActivityReview.init(
@@ -31,13 +34,4 @@ ActivityReview.init(
     { sequelize }
 );
 
-ActivityReview.belongsTo(Activity, {
-    as: 'Activity',
-    foreignKey: 'activity_id',
-    onDelete: 'CASCADE'
-});
-ActivityReview.belongsTo(User, {
-    as: 'User',
-    foreignKey: 'user_id',
-    onDelete: 'CASCADE'
-});
+export { ActivityReview };
