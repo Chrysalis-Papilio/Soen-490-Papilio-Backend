@@ -1,11 +1,13 @@
 import express from 'express';
 import { userController } from '../controllers';
-import { validate } from '../middlewares/validateResource'
+import { validate } from '../middlewares/validateResource';
 import * as userSchema from '../schemas/user-schema';
 
 const router = express.Router();
 
-router.get('/user/get', userController.getAllUsers);
+//  Throw proper error when req.body has syntax errors.
+
+router.get('/user/getAllUsers', userController.getAllUsers);
 
 router.get('/user/getUserByEmail', validate(userSchema.getUserByEmailSchema), userController.getUserByEmail);
 

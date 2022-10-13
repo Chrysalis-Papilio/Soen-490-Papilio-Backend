@@ -9,7 +9,7 @@ const getAllUsers = async (_: Request, res: Response, next: NextFunction) => {
         const result = await userService.getAllUsers();
 
         /**  Return a response to client. */
-        res.send(result);
+        return res.status(200).json(result);
     } catch (err) {
         next(err);
     }

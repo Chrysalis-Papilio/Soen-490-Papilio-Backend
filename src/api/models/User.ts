@@ -57,15 +57,15 @@ User.init(
         },
         firstName: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false
         },
         lastName: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false
         },
         countryCode: {
             type: DataTypes.STRING(5),
-            defaultValue: '1',
+            defaultValue: '1'
         },
         phone: {
             type: DataTypes.STRING(10),

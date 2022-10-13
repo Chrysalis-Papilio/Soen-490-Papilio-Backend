@@ -1,6 +1,6 @@
-import {object, string} from 'zod';
+import { object, string } from 'zod';
 
-const createUserSchema = object ({
+const createUserSchema = object({
     body: object({
         firstName: string({
             required_error: 'Firstname is required.'
@@ -10,8 +10,7 @@ const createUserSchema = object ({
         }).min(2, 'Last name too short!'),
         email: string({
             required_error: 'Email is required.'
-        })
-        .email('Not a valid email.'),
+        }).email('Not a valid email.'),
         countryCode: string({
             required_error: 'Country Code is required.'
         }).regex(new RegExp('^\\d\\d?$'), 'Invalid country code.'),
@@ -21,20 +20,23 @@ const createUserSchema = object ({
     })
 });
 
-const getUserByEmailSchema = object ({
+const getUserByEmailSchema = object({
     body: object({
         email: string({
             required_error: 'Email is required.'
-        })
-        .email('Not a valid email.'),
+        }).email('Not a valid email.')
     })
 });
 
-const updateUserSchema = object ({
+const updateUserSchema = object({
     body: object({
         fields: string({
             required_error: 'Fields is required.'
-        }).min(1, 'Field element cannot be empty.').array().nonempty('Missing fields').length(1, 'Missing fields'),
+        })
+            .min(1, 'Field element cannot be empty.')
+            .array()
+            .nonempty('Missing fields')
+            .length(1, 'Missing fields'),
         user: object({
             firstName: string({
                 required_error: 'Firstname is required.'
@@ -47,9 +49,9 @@ const updateUserSchema = object ({
             }).regex(new RegExp('^\\d\\d?$'), 'Invalid country code.'),
             email: string({
                 required_error: 'Email is required.'
-            }).email('Not a valid email.'),
+            }).email('Not a valid email.')
         })
     })
 });
 
-export {createUserSchema, getUserByEmailSchema, updateUserSchema}
+export { createUserSchema, getUserByEmailSchema, updateUserSchema };
