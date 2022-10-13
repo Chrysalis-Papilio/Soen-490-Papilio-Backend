@@ -1,9 +1,12 @@
 # File
 .env
 yarn.lock
+jest.config.ts
 LICENSE
+
 
 # Folder
 /.idea
 /node_modules
 /dist
+/coverage

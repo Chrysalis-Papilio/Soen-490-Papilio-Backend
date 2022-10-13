@@ -5,14 +5,14 @@ import * as userSchema from '../schemas/user-schema';
 
 const router = express.Router();
 
-router.get('/user/get', userController.getAllUsers);
+router.get('/getAllUsers', userController.getAllUsers);
 
-router.get('/user/getUserByEmail', validate(userSchema.getUserByEmailSchema), userController.getUserByEmail);
+router.get('/getUserByEmail', validate(userSchema.getUserByEmailSchema), userController.getUserByEmail);
 
-router.post('/user/createSampleUser', userController.createSampleUser);
+router.post('/createSampleUser', userController.createSampleUser);
 
-router.post('/user/createSimpleUser', validate(userSchema.createUserSchema), userController.createSimpleUser);
+router.post('/createSimpleUser', validate(userSchema.createUserSchema), userController.createSimpleUser);
 
-router.post('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
+router.post('/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
 
 export = router;

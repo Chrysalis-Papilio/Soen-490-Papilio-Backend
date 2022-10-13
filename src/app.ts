@@ -1,12 +1,10 @@
 import express from 'express';
 import { userRoute, activityRoute } from './api/routes';
-import config from './config/config';
 import { logger } from './config/logger';
 import { ErrorHandler } from './errors/error-handler';
 
 const app = express();
 const errorHandler = new ErrorHandler();
-const NAMESPACE = 'app';
 
 /** Log the request */
 app.use((req, res, next) => {
@@ -37,24 +35,21 @@ app.use((req, res, next) => {
 });
 
 /** Routes go here */
-app.use('/api', userRoute);
-app.use('/api', activityRoute);
-
-/** Open port */
-app.listen(config.server.port, () => {
-    logger.info(`${NAMESPACE}: Server is running ${config.server.hostname}:${config.server.port}`);
-});
+app.use('/api/user', userRoute);
+app.use('/api/activity', activityRoute);
 
 /** Error handling */
 app.use(errorHandler.handleError);
 
-process.on('uncaughtException', async (error: Error) => {
-    await errorHandler.handleError; //  Handle the uncaughException
+process.on('uncaughtException', async (err: Error) => {
+    await errorHandler.handleError;                             //  Handle the uncaughException
     logger.info('Gracefully exiting...');
-    if (!errorHandler.isTrustedError(error)) process.exit(1); //  Exit if its a programmer error
+    if (!errorHandler.isTrustedError(err)) process.exit(1);   //  Exit if its a programmer error
 });
 
 /** Get unhandled rejection and throw it to another fallback handler. */
 process.on('unhandledRejection', (reason: Error) => {
     throw reason;
 });
+
+export default app;

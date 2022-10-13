@@ -9,7 +9,7 @@ const getAllUsers = async (_: Request, res: Response, next: NextFunction) => {
         const result = await userService.getAllUsers();
 
         /**  Return a response to client. */
-        res.send(result);
+        return res.status(200).json(result);
     } catch (err) {
         next(err);
     }
@@ -44,6 +44,8 @@ const getUserByEmail = async (req: Request, res: Response, next: NextFunction) =
     const email = req.body.email;
     try {
         const result = await userService.getUserByEmail(email); //  Call to service Layer.
+        
+        /** Return a response to client. */
         return res.status(200).json(result); //  Return a response to client.
     } catch (err) {
         next(err); //  Send any error to error-handler
