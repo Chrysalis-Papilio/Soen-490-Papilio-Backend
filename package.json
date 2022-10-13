@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "jest --forceExit --detectOpenHandles --passWithNoTests --watch",
+    "test": "jest --forceExit --detectOpenHandles --passWithNoTests --watch --testTimeout=10000",
     "test:watch": "jest --verbose --watchAll",
     "unit:test": "npm run test unit_test -- --coverage",
     "unit:test:ci": "npm run unit:test -- --ci && npm run build",
