@@ -15,6 +15,6 @@ router.post('/user/createSampleUser', userController.createSampleUser);
 
 router.post('/user/createSimpleUser', validate(userSchema.createUserSchema), userController.createSimpleUser);
 
-router.post('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
+router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
 
 export = router;

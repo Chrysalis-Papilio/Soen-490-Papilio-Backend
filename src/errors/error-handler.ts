@@ -9,6 +9,7 @@ export class ErrorHandler {
         logger.error(`Error message from the centralized error-handling component: {
              LOG: \"${err.log}\" 
              MESSAGE: \"${err.message}\" 
+             METHOD: \"${err.methodName}\" 
              HTTP CODE: \"${err.httpCode}\" 
              IS_OPERATIONAL: \"${err.isOperational}\" 
             }`);

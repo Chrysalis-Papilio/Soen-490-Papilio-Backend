@@ -15,15 +15,18 @@ export const validate = (schema: AnyZodObject) => (req: Request, _: Response, ne
         next();
     } catch (err: any) {
         var messages: String = '';
+        var path: String = '';
         //  Validation errors
         if (err instanceof ZodError) {
             logger.error('issues: ', err.issues);
-            err.issues.forEach((issue) => {
-                messages = messages.concat(issue.message, '\n');
+            err.issues.forEach((issue, index) => {
+                path = err.issues[index].path[1];
+                messages = (err.issues[index].message === 'Required')? messages.concat(`${issue.message} ${path} field.\n`): messages.concat(`${issue.message}.\n`);
+                
             });
-            throw new APIError(`${messages}`, 'Validate middleware.', httpStatusCode.BAD_REQUEST, true);
+            throw new APIError(`${messages.trim()}`, 'Validate', httpStatusCode.BAD_REQUEST, true);
         }
         //  Any other errors
-        throw new BaseError('Zod error.', 'Zod has had an unexpected error', '', httpStatusCode.INTERNAL_SERVER, true);
+        throw new BaseError('Zod error.', 'Zod has had an unexpected error.', '', httpStatusCode.INTERNAL_SERVER, true);
     }
 };
