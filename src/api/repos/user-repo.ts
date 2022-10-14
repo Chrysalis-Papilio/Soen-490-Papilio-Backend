@@ -1,8 +1,8 @@
 import { User } from '../models/User';
 import { httpStatusCode } from '../../types/httpStatusCodes';
-import { logger } from '../../config/logger';
 import { APIError } from '../../errors/api-error';
 import { BaseError } from '../../errors/base-error';
+import { logger } from '../../config/logger';
 
 // Get all accounts from table account
 const getAllUsers = async () => {
@@ -26,15 +26,15 @@ const createSampleUser = async () => {
 const createSimpleUser = async (user: any) => {
     await User.sync();
     return await User.create({
+        firebase_id: user.firebase_id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        countryCode: user.countryCode ? user.countryCode : undefined,
         phone: user.phone ? user.phone : undefined,
-        firebase_id: user.firebase_id
-    }).catch((error) => {
-        logger.error(error.message);
-        if (error.message === 'Validation error') throw new APIError('This user already exists.', 'createSimpleUser', httpStatusCode.CONFLICT, true);
+        countryCode: user.countryCode ? user.countryCode : undefined
+    }).catch((err) => {
+        if (err.message === 'Validation error')
+            throw new APIError('This user already exists.', 'createSimpleUser', httpStatusCode.CONFLICT, true);
         throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
     });
 };
@@ -42,19 +42,27 @@ const createSimpleUser = async (user: any) => {
 //  Get User from email
 const getUserByEmail = async (email: string) => {
     await User.sync();
-    const result = await User.findOne({
+    return await User.findOne({
         where: { email: email }
+    }).catch((err) => {
+        if (err.message === 'Validation error')
+            throw new APIError('This user already exists.', 'createSimpleUser', httpStatusCode.CONFLICT, true);
+        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
     });
-    logger.info(`Getting user ${email}: ${result}.`);
-    return result;
 };
 
 // Update User
 // matcher: {email: 'email@here.com'} or {firstName: 'John', lastName: 'Doe'} or ...
-const updateUser = async (matcher: any, user: any) => {
+const updateUser = async (identifier: any, update: any) => {
     await User.sync();
-    return await User.update(user, {
-        where: matcher
+    return await User.update(update, 
+        {returning: true, where: {id: identifier.id}}
+        )
+        .catch((err) => {
+            logger.error(err)
+            if (err.message === 'Validation error')
+                throw new APIError(`This ${Object.keys(update)} is already in use.`, 'createSimpleUser', httpStatusCode.CONFLICT, true);
+            throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
     });
 };
 

@@ -63,18 +63,18 @@ User.init(
             type: DataTypes.STRING,
             allowNull: false
         },
-        countryCode: {
-            type: DataTypes.STRING(5),
-            defaultValue: '1'
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
         },
         phone: {
             type: DataTypes.STRING(10),
             unique: true
         },
-        email: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true
+        countryCode: {
+            type: DataTypes.STRING(5),
+            defaultValue: '1'
         }
     },
     { sequelize }
