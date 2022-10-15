@@ -21,8 +21,7 @@ export const validate = (schema: AnyZodObject) => (req: Request, _: Response, ne
             logger.error('issues: ', err.issues);
             err.issues.forEach((issue, index) => {
                 path = err.issues[index].path[1];
-                messages = (err.issues[index].message === 'Required')? messages.concat(`${issue.message} ${path} field.\n`): messages.concat(`${issue.message}.\n`);
-                
+                messages = err.issues[index].message === 'Required' ? messages.concat(`${issue.message} ${path} field.\n`) : messages.concat(`${issue.message}.\n`);
             });
             throw new APIError(`${messages.trim()}`, 'Validate', httpStatusCode.BAD_REQUEST, true);
         }

@@ -2,7 +2,7 @@ import { User } from '../models/User';
 import { httpStatusCode } from '../../types/httpStatusCodes';
 import { APIError } from '../../errors/api-error';
 import { BaseError } from '../../errors/base-error';
-import { logger } from '../../config/logger';
+import { ValidationErrorItem } from 'sequelize';
 
 // Get all accounts from table account
 const getAllUsers = async () => {
@@ -33,8 +33,14 @@ const createSimpleUser = async (user: any) => {
         phone: user.phone ? user.phone : undefined,
         countryCode: user.countryCode ? user.countryCode : undefined
     }).catch((err) => {
-        if (err.message === 'Validation error')
-            throw new APIError('This user already exists.', 'createSimpleUser', httpStatusCode.CONFLICT, true);
+        var messages = '';
+        //  console.log(err);
+        if (err.name === 'SequelizeUniqueConstraintError') {
+            err.errors.forEach((value: ValidationErrorItem) => {
+                messages = messages.concat(`${value.path} is already taken. \n`);
+            });
+            throw new APIError(`${messages.trim()}`, 'createSimpleUser', httpStatusCode.CONFLICT, true);
+        }
         throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
     });
 };
@@ -45,8 +51,7 @@ const getUserByEmail = async (email: string) => {
     return await User.findOne({
         where: { email: email }
     }).catch((err) => {
-        if (err.message === 'Validation error')
-            throw new APIError('This user already exists.', 'createSimpleUser', httpStatusCode.CONFLICT, true);
+        console.log(err);
         throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
     });
 };
@@ -55,14 +60,16 @@ const getUserByEmail = async (email: string) => {
 // matcher: {email: 'email@here.com'} or {firstName: 'John', lastName: 'Doe'} or ...
 const updateUser = async (identifier: any, update: any) => {
     await User.sync();
-    return await User.update(update, 
-        {returning: true, where: {id: identifier.id}}
-        )
-        .catch((err) => {
-            logger.error(err)
-            if (err.message === 'Validation error')
-                throw new APIError(`This ${Object.keys(update)} is already in use.`, 'createSimpleUser', httpStatusCode.CONFLICT, true);
-            throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
+    return await User.update(update, { returning: true, where: { id: identifier.id } }).catch((err) => {
+        var messages = '';
+        //  console.log(err);
+        if (err.name === 'SequelizeUniqueConstraintError') {
+            err.errors.forEach((value: ValidationErrorItem) => {
+                messages = messages.concat(`${value.path} is already taken. \n`);
+            });
+            throw new APIError(`${messages.trim()}`, 'createSimpleUser', httpStatusCode.CONFLICT, true);
+        }
+        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
     });
 };
 
