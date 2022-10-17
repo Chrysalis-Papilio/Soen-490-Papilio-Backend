@@ -99,21 +99,21 @@ const updateUserSchema = object({
     body: object({
         //  Identifier attribute
         identifier: object({
+            firebase_id: string({
+                required_error: 'Firebase ID is required',
+                invalid_type_error: 'Firebase ID should be of type string'
+            })
+                .min(1, 'Firebase ID is too short!')
+                .regex(new RegExp('^[0-9]*$'), 'Invalid firebase ID (Positive integer)'),
+        }).strict('Identifier field contains an invalid key'),
+        //  Update attribute
+        update: object({
             id: string({
                 required_error: 'User ID is required',
                 invalid_type_error: 'User ID should be of type string'
             })
                 .min(1, 'ID is too short!')
                 .regex(new RegExp('^[0-9]*$'), 'Invalid ID (Positive integer)')
-        }).strict(),
-        //  Update attribute
-        update: object({
-            firebase_id: string({
-                required_error: 'Firebase ID is required',
-                invalid_type_error: 'Firebase ID should be of type string'
-            })
-                .min(1, 'Firebase ID is too short!')
-                .regex(new RegExp('^[0-9]*$'), 'Invalid firebase ID (Positive integer)')
                 .optional(),
             firstName: string({
                 required_error: 'Firstname is required',
@@ -146,10 +146,10 @@ const updateUserSchema = object({
                 .regex(new RegExp('^([0-9]|[1-9][0-9]|[1-9][0-9][0-9])$'), 'Invalid country code (0-999)')
                 .optional()
         })
-            .strict('Request contains an invalid key')
+            .strict('Update field contains an invalid key')
             .refine(
-                ({ firebase_id, firstName, lastName, email, phone, countryCode }) =>
-                    firebase_id !== undefined || firstName !== undefined || lastName !== undefined || email !== undefined || phone !== undefined || countryCode !== undefined,
+                ({ id, firstName, lastName, email, phone, countryCode }) =>
+                    id !== undefined || firstName !== undefined || lastName !== undefined || email !== undefined || phone !== undefined || countryCode !== undefined,
                 { message: 'One of the fields must be defined' }
             )
     })

@@ -60,17 +60,22 @@ const getUserByEmail = async (email: string) => {
 // matcher: {email: 'email@here.com'} or {firstName: 'John', lastName: 'Doe'} or ...
 const updateUser = async (identifier: any, update: any) => {
     await User.sync();
-    return await User.update(update, { returning: true, where: { id: identifier.id } }).catch((err) => {
+    var result = await User.update(update, { returning: true, where: identifier }).catch((err) => {
         var messages = '';
-        //  console.log(err);
+        console.log(err);
         if (err.name === 'SequelizeUniqueConstraintError') {
             err.errors.forEach((value: ValidationErrorItem) => {
                 messages = messages.concat(`${value.path} is already taken. \n`);
             });
-            throw new APIError(`${messages.trim()}`, 'createSimpleUser', httpStatusCode.CONFLICT, true);
+            throw new APIError(`${messages.trim()}`, 'updateUserProfile', httpStatusCode.CONFLICT, true);
         }
-        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
+        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'updateUserProfile', httpStatusCode.INTERNAL_SERVER, true);
     });
+    if (result[0] === 0)        //  Failure to update
+        throw new APIError('The user does not exist.', 'updateUserProfile', httpStatusCode.CONFLICT, true);
+    else if (result[0] === 1)
+        return result[1];       //  Successful update
+    return result;              //  Unexpected result
 };
 
 export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail, updateUser };

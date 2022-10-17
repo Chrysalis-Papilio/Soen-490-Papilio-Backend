@@ -57,24 +57,48 @@ User.init(
         },
         firstName: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                validFirstName(value: String) {
+                    if (value.length < 2) {
+                        throw new Error('First name too short!');
+                    }
+                }
+            }
         },
         lastName: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                validLastName(value: String) {
+                    if (value.length < 2) {
+                        throw new Error('Last name too short!');
+                    }
+                }
+            }
+        },
+        countryCode: {
+            type: DataTypes.STRING(5),
+            defaultValue: '1',
+            validate: {
+                isNumeric: true
+            }
+        },
+        phone: {
+            type: DataTypes.STRING(10),
+            validate: {
+                isNumeric: true,
+                len: [10, 10]
+            },
+            unique: true
         },
         email: {
             type: DataTypes.STRING,
             allowNull: false,
+            validate: {
+                isEmail: true
+            },
             unique: true
-        },
-        phone: {
-            type: DataTypes.STRING(10),
-            unique: true
-        },
-        countryCode: {
-            type: DataTypes.STRING(5),
-            defaultValue: '1'
         }
     },
     { sequelize }
