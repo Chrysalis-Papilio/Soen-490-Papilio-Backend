@@ -1,5 +1,4 @@
 import { userRepos } from '../repos';
-import { logger } from '../../config/logger';
 
 const getAllUsers = async () => {
     return userRepos.getAllUsers();
@@ -16,14 +15,8 @@ const getUserByEmail = async (email: string) => {
     return userRepos.getUserByEmail(email);
 };
 
-const updateUserProfile = async (fields: string[], user: any) => {
-    let matcher = {};
-    fields.forEach((field: string) => {
-        // @ts-ignore
-        matcher[field] = user[field];
-    });
-    logger.info(matcher, user);
-    return userRepos.updateUser(matcher, user);
+const updateUserProfile = async (identifier: any, update: any) => {
+    return userRepos.updateUser(identifier, update);
 };
 
 export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail, updateUserProfile };

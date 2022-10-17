@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { userService } from '../services';
-import { APIError } from '../../errors/api-error';
-import { httpStatusCode } from '../../types/httpStatusCodes';
 
 const getAllUsers = async (_: Request, res: Response, next: NextFunction) => {
     try {
@@ -53,19 +51,11 @@ const getUserByEmail = async (req: Request, res: Response, next: NextFunction) =
 };
 
 const updateUserProfile = async (req: Request, res: Response, next: NextFunction) => {
-    const fields: string[] = req.body.fields;
-    const user = req.body.user;
-    // Check request body
-    if (fields.length === 0) throw new APIError('Missing fields.', 'updateUserProfile', httpStatusCode.BAD_REQUEST, true);
-    fields.forEach((f: string) => {
-        if (!['firstName', 'lastName', 'firebase_id', 'email'].includes(f)) throw new APIError(`${f} cannot be used in fields.`, 'updateUserProfile', httpStatusCode.BAD_REQUEST, true);
-    });
-    ['id'].forEach((f: string) => {
-        if (user[f]) throw new APIError(`Cannot update ${f} field.`, 'updateUserProfile', httpStatusCode.BAD_REQUEST, true);
-    });
+    const identifier = req.body.identifier;
+    const update = req.body.update;
     try {
         // Call service layer
-        const result = await userService.updateUserProfile(fields, user);
+        const result = await userService.updateUserProfile(identifier, update);
 
         // Return result
         return res.status(200).json(result);

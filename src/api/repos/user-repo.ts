@@ -1,65 +1,81 @@
 import { User } from '../models/User';
 import { httpStatusCode } from '../../types/httpStatusCodes';
-import { logger } from '../../config/logger';
 import { APIError } from '../../errors/api-error';
 import { BaseError } from '../../errors/base-error';
+import { ValidationErrorItem } from 'sequelize';
 
-//** Get all accounts from table account */
+// Get all accounts from table account
 const getAllUsers = async () => {
-    await User.sync({ logging: false });
-    return User.findAll({ logging: false });
+    await User.sync();
+    return User.findAll();
 };
 
 // Create a sample user with hardcoded info (test-only)
 const createSampleUser = async () => {
-    await User.sync({ alter: true, logging: false });
+    await User.sync();
     return await User.create({
         firstName: 'Sample',
         lastName: 'User',
         phone: '5145551237',
         email: 'sample4@gmail.com',
-        firebase_id: 'totallynotanid',
+        firebase_id: 'totallynotanid'
     });
 };
 
 //  Create a simple user with verified input
 const createSimpleUser = async (user: any) => {
-    await User.sync({ alter: true, logging: false });
-    const result = await User.create({
+    await User.sync();
+    return await User.create({
+        firebase_id: user.firebase_id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        countryCode: user.countryCode ? user.countryCode : undefined,
         phone: user.phone ? user.phone : undefined,
-        firebase_id: user.firebase_id,
-    }).catch((error) => {
-        logger.error(error.message);
-        if (error.message === 'Validation error')
-            throw new APIError('This user already exists.', 'createSimpleUser', httpStatusCode.CONFLICT, true);
+        countryCode: user.countryCode ? user.countryCode : undefined
+    }).catch((err) => {
+        var messages = '';
+        //  console.log(err);
+        if (err.name === 'SequelizeUniqueConstraintError') {
+            err.errors.forEach((value: ValidationErrorItem) => {
+                messages = messages.concat(`${value.path} is already taken. \n`);
+            });
+            throw new APIError(`${messages.trim()}`, 'createSimpleUser', httpStatusCode.CONFLICT, true);
+        }
         throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
     });
-    return result;
 };
 
 //  Get User from email
 const getUserByEmail = async (email: string) => {
-    await User.sync({ alter: true, logging: false });
-    const result = await User.findOne({
-        where: { email: email },
-        logging: false
+    await User.sync();
+    return await User.findOne({
+        where: { email: email }
+    }).catch((err) => {
+        console.log(err);
+        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
     });
-    logger.info(`Getting user ${email}: ${result}.`);
-    return result;
 };
 
 // Update User
 // matcher: {email: 'email@here.com'} or {firstName: 'John', lastName: 'Doe'} or ...
-const updateUser = async (matcher: any, user: any) => {
-    await User.sync({ alter: true, logging: false });
-    return await User.update(user, {
-        where: matcher,
-        logging: false
+const updateUser = async (identifier: any, update: any) => {
+    await User.sync();
+    var result = await User.update(update, { returning: true, where: identifier }).catch((err) => {
+        var messages = '';
+        console.log(err);
+        if (err.name === 'SequelizeUniqueConstraintError') {
+            err.errors.forEach((value: ValidationErrorItem) => {
+                messages = messages.concat(`${value.path} is already taken. \n`);
+            });
+            throw new APIError(`${messages.trim()}`, 'updateUserProfile', httpStatusCode.CONFLICT, true);
+        }
+        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'updateUserProfile', httpStatusCode.INTERNAL_SERVER, true);
     });
+    if (result[0] === 0)        //  Failure to update
+        throw new APIError('The user does not exist.', 'updateUserProfile', httpStatusCode.CONFLICT, true);
+    else if (result[0] === 1)
+        return result[1];       //  Successful update
+    return result;              //  Unexpected result
 };
 
 export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail, updateUser };
