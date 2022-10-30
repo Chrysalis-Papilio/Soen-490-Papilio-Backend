@@ -24,6 +24,7 @@ import { Employee } from './Employee';
 
 class Business extends Model<InferAttributes<Business, { omit: 'employees' }>, InferCreationAttributes<Business, { omit: 'employees' }>> {
     declare id: CreationOptional<number>;
+    declare businessId: string;
     declare name: string;
 
     declare employees?: NonAttribute<Employee[]>;
@@ -52,6 +53,11 @@ Business.init(
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
+        },
+        businessId: {
+            type: DataTypes.STRING,
+            unique: true,
+            allowNull: false
         },
         name: {
             type: DataTypes.STRING,

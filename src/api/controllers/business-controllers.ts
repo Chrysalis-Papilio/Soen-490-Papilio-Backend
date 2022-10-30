@@ -1,11 +1,11 @@
-import { businessServices } from '../services';
-import { Request, Response, NextFunction } from 'express';
+import {businessServices} from '../services';
+import {Request, Response, NextFunction} from 'express';
 
 const getBusinessById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
-        const id = parseInt(req.params.id);
-        const result = await businessServices.getBusinessById(id);
+        const businessId = req.params.businessId.toString();
+        const result = await businessServices.getBusinessById(businessId);
 
         /** Return a response to client */
         return res.status(200).json(result);
@@ -17,7 +17,7 @@ const getBusinessById = async (req: Request, res: Response, next: NextFunction) 
 const createBusiness = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
-        const business = { name: req.body.name };
+        const business = req.body;
         const result = await businessServices.createBusiness(business);
 
         /** Return a response to client */
@@ -30,7 +30,7 @@ const createBusiness = async (req: Request, res: Response, next: NextFunction) =
 const updateBusiness = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
-        const id = { id: parseInt(req.params.id) };
+        const id = {businessId: req.params.businessId};
         const update = req.body;
         const result = await businessServices.updateBusiness(id, update);
 
@@ -41,4 +41,4 @@ const updateBusiness = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
-export { getBusinessById, createBusiness, updateBusiness };
+export {getBusinessById, createBusiness, updateBusiness};

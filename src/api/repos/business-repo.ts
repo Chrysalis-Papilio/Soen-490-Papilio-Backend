@@ -4,17 +4,17 @@ import { httpStatusCode } from '../../types/httpStatusCodes';
 import { Employee } from '../models/Employee';
 import { APIError } from '../../errors/api-error';
 
-const getBusinessById = async (id: number) => {
+const getBusinessById = async (businessId: string) => {
     await Business.sync();
     return await Business.findOne({
-        where: { id: id }
+        where: { businessId: businessId }
     }).catch((err) => {
         console.log(err);
-        throw new APIError('Cannot find Business with id', 'getBusinessById', httpStatusCode.CONFLICT);
+        throw new APIError('Cannot find Business with businessId', 'getBusinessById', httpStatusCode.CONFLICT);
     });
 };
 
-const getEmployeeList = async (id: number) => {
+const getEmployeeList = async (id: string) => {
     await Business.sync();
     const business = await getBusinessById(id);
     if (!business) {
@@ -26,8 +26,9 @@ const getEmployeeList = async (id: number) => {
 };
 
 const createBusiness = async (business: any) => {
-    await Business.sync();
+    await Business.sync({alter: true});
     return await Business.create({
+        businessId: business.businessId,
         name: business.name
     }).catch((err) => {
         console.log(err);
@@ -37,7 +38,7 @@ const createBusiness = async (business: any) => {
     // TODO: Add Employee (optional)
 };
 
-const addEmployee = async (id: number, employee: Employee) => {
+const addEmployee = async (id: string, employee: Employee) => {
     await Business.sync();
     const business = await getBusinessById(id);
     if (!business) {
@@ -48,7 +49,7 @@ const addEmployee = async (id: number, employee: Employee) => {
     // TODO: Better error handling
 };
 
-const addEmployees = async (id: number, employees: Employee[]) => {
+const addEmployees = async (id: string, employees: Employee[]) => {
     await Business.sync();
     const business = await getBusinessById(id);
     if (!business) {
