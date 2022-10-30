@@ -35,7 +35,6 @@ Employee.init(
             }
         },
         role: {
-            // TODO: Not sure on this one yet, could be ENUM or INT
             type: DataTypes.STRING
         }
     },

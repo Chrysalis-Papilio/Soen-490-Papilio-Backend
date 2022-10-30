@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/business/get/:businessId', businessController.getBusinessById);
 
-router.post('/business/createSimpleBusiness', businessController.createBusiness);
+router.post('/business/createSimpleBusiness', businessController.createSimpleBusiness);
 
 router.put('/business/update/:businessId', businessController.updateBusiness);
 

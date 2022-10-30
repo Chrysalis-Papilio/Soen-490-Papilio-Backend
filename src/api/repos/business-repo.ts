@@ -25,8 +25,8 @@ const getEmployeeList = async (id: string) => {
     // TODO: Better error handling
 };
 
-const createBusiness = async (business: any) => {
-    await Business.sync({alter: true});
+const createSimpleBusiness = async (business: any) => {
+    await Business.sync({ alter: true });
     return await Business.create({
         businessId: business.businessId,
         name: business.name
@@ -34,6 +34,10 @@ const createBusiness = async (business: any) => {
         console.log(err);
         throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createBusiness', httpStatusCode.INTERNAL_SERVER, true);
     });
+};
+
+const createBusiness = async (business: any) => {
+    console.log(business);
     // TODO: Add Address
     // TODO: Add Employee (optional)
 };
@@ -76,4 +80,4 @@ const updateBusiness = async (identifier: any, update: any) => {
  * TODO: ...more
  */
 
-export { getBusinessById, getEmployeeList, createBusiness, addEmployee, addEmployees, updateBusiness };
+export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusiness, addEmployee, addEmployees, updateBusiness };
