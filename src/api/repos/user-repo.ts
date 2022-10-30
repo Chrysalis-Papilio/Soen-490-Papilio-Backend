@@ -23,7 +23,7 @@ const createSampleUser = async () => {
 };
 
 //  Create a simple user with verified input
-const createSimpleUser = async (user: any) => {
+const createSimpleUser = async (user: User) => {
     await User.sync();
     return await User.create({
         firebase_id: user.firebase_id,
@@ -71,11 +71,11 @@ const updateUser = async (identifier: any, update: any) => {
         }
         throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'updateUserProfile', httpStatusCode.INTERNAL_SERVER, true);
     });
-    if (result[0] === 0)        //  Failure to update
+    if (result[0] === 0)
+        //  Failure to update
         throw new APIError('The user does not exist.', 'updateUserProfile', httpStatusCode.CONFLICT, true);
-    else if (result[0] === 1)
-        return result[1];       //  Successful update
-    return result;              //  Unexpected result
+    else if (result[0] === 1) return result[1]; //  Successful update
+    return result; //  Unexpected result
 };
 
 export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail, updateUser };

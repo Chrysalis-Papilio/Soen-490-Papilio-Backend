@@ -104,7 +104,7 @@ const updateUserSchema = object({
                 invalid_type_error: 'Firebase ID should be of type string'
             })
                 .min(1, 'Firebase ID is too short!')
-                .regex(new RegExp('^[0-9]*$'), 'Invalid firebase ID (Positive integer)'),
+                .regex(new RegExp('^[0-9]*$'), 'Invalid firebase ID (Positive integer)')
         }).strict('Identifier field contains an invalid key'),
         //  Update attribute
         update: object({
