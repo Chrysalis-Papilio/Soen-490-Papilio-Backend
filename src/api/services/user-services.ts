@@ -1,22 +1,22 @@
-import { userRepos } from '../repos';
+import { userRepo } from '../repos';
 
 const getAllUsers = async () => {
-    return userRepos.getAllUsers();
+    return userRepo.getAllUsers();
 };
 
 const createSampleUser = async () => {
-    return userRepos.createSampleUser();
+    return userRepo.createSampleUser();
 };
 
 const createSimpleUser = async (user: any) => {
-    return userRepos.createSimpleUser(user);
+    return userRepo.createSimpleUser(user);
 };
 const getUserByEmail = async (email: string) => {
-    return userRepos.getUserByEmail(email);
+    return userRepo.getUserByEmail(email);
 };
 
 const updateUserProfile = async (identifier: any, update: any) => {
-    return userRepos.updateUser(identifier, update);
+    return userRepo.updateUser(identifier, update);
 };
 
 export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail, updateUserProfile };
