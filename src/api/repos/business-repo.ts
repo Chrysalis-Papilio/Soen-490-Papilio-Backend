@@ -14,6 +14,17 @@ const getBusinessById = async (id: number) => {
     });
 };
 
+const getEmployeeList = async (id: number) => {
+    await Business.sync();
+    const business = await getBusinessById(id);
+    if (!business) {
+        throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'addEmployee', httpStatusCode.INTERNAL_SERVER, true);
+    } else {
+        return business.getEmployees();
+    }
+    // TODO: Better error handling
+};
+
 const createBusiness = async (business: any) => {
     await Business.sync();
     return await Business.create({
@@ -37,13 +48,31 @@ const addEmployee = async (id: number, employee: Employee) => {
     // TODO: Better error handling
 };
 
+const addEmployees = async (id: number, employees: Employee[]) => {
+    await Business.sync();
+    const business = await getBusinessById(id);
+    if (!business) {
+        throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'addEmployee', httpStatusCode.INTERNAL_SERVER, true);
+    } else {
+        return await business.addEmployees(employees);
+    }
+    // TODO: Better error handling
+};
+
 const updateBusiness = async (identifier: any, update: any) => {
     await Business.sync();
-    const result = await Business.update(update, { where: identifier }).catch((err) => {
+    return await Business.update(update, { where: identifier }).catch((err) => {
         console.log(err);
         // TODO: Better error handling
     });
-    return result;
 };
 
-export { getBusinessById, createBusiness, addEmployee, updateBusiness };
+/**
+ * TODO: removeEmployee
+ * TODO: remove Employees
+ * TODO: updateAddress
+ * TODO: removeAddress
+ * TODO: ...more
+ */
+
+export { getBusinessById, getEmployeeList, createBusiness, addEmployee, addEmployees, updateBusiness };
