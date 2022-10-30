@@ -1,5 +1,5 @@
 import express from 'express';
-import { userRoute, activityRoute } from './api/routes';
+import { userRoute, activityRoute, businessRoute } from './api/routes';
 import config from './config/config';
 import { logger } from './config/logger';
 import { ErrorHandler } from './errors/error-handler';
@@ -38,6 +38,7 @@ app.use((req, res, next) => {
 /** Routes go here */
 app.use('/api', userRoute);
 app.use('/api', activityRoute);
+app.use('/api', businessRoute);
 
 /** Open port */
 app.listen(config.server.port, () => {
