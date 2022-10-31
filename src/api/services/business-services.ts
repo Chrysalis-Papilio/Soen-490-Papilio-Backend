@@ -8,9 +8,9 @@ const createSimpleBusiness = async (business: any) => {
     return businessRepo.createSimpleBusiness(business);
 };
 
-const createBusinessWithEmployee = async (business: any, employee: any) => {
-    const newBusiness = await createSimpleBusiness(business);
-    return businessRepo.addEmployee(newBusiness.businessId, employee);
+const createBusiness = async (business: any, employee: any, address: any) => {
+    await businessRepo.createBusinessWithEmployeeAddress(business, employee, address);
+    return getBusinessById(business.businessId);
 };
 
 const addEmployeeToBusiness = async (businessId: string, employee: any) => {
@@ -29,4 +29,4 @@ const getEmployeeList = async (businessId: string) => {
     return businessRepo.getEmployeeList(businessId);
 };
 
-export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusinessWithEmployee, addEmployeeToBusiness, addEmployeesToBusiness, updateBusiness };
+export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusiness, addEmployeeToBusiness, addEmployeesToBusiness, updateBusiness };

@@ -27,6 +27,21 @@ const createSimpleBusiness = async (req: Request, res: Response, next: NextFunct
     }
 };
 
+const createBusiness = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        /** Call to service layer */
+        const business = req.body.business;
+        const employee = req.body.employee;
+        const address = req.body.address;
+        const result = await businessServices.createBusiness(business, employee, address);
+
+        /** Return a response to client */
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
 const updateBusiness = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
@@ -41,4 +56,4 @@ const updateBusiness = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
-export { getBusinessById, createSimpleBusiness, updateBusiness };
+export { getBusinessById, createSimpleBusiness, createBusiness, updateBusiness };

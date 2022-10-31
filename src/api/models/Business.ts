@@ -38,7 +38,7 @@ class Business extends Model<InferAttributes<Business, { omit: 'employees' }>, I
     declare createEmployee: HasManyCreateAssociationMixin<Employee, 'business_id'>;
     declare hasEmployee: HasManyHasAssociationMixin<Employee, number>;
 
-    declare addAddress: HasOneCreateAssociationMixin<Address>;
+    declare createAddress: HasOneCreateAssociationMixin<Address>;
     declare getAddress: HasOneGetAssociationMixin<Address>;
     declare setAddress: HasOneSetAssociationMixin<Address, number>;
 

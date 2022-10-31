@@ -9,6 +9,8 @@ router.get('/business/get/:businessId', businessController.getBusinessById);
 
 router.post('/business/createSimpleBusiness', businessController.createSimpleBusiness);
 
+router.post('/business/createBusiness', businessController.createBusiness);
+
 router.put('/business/update/:businessId', businessController.updateBusiness);
 
 export = router;
