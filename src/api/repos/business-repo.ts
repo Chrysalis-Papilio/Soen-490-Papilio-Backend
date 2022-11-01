@@ -1,14 +1,13 @@
-import { Business } from '../models/Business';
 import { BaseError } from '../../errors/base-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
-import { Employee } from '../models/Employee';
 import { APIError } from '../../errors/api-error';
-import { Address } from '../models/Address';
+import { Business, Employee, Address } from '../models';
 
 const getBusinessById = async (businessId: string) => {
     await Business.sync();
     const business = await Business.findOne({
-        where: { businessId: businessId }
+        where: { businessId: businessId },
+        attributes: { exclude: ['id'] }
     });
     return {
         found: !!business,
@@ -25,7 +24,9 @@ const getEmployeeList = async (id: string) => {
     return {
         businessId: business.businessId,
         count: (await business.countEmployees()) || 0,
-        employees: await business.getEmployees()
+        employees: await business.getEmployees({
+            attributes: { exclude: ['id'] }
+        })
     };
 };
 
@@ -38,7 +39,7 @@ const createSimpleBusiness = async (business: any) => {
         console.log(err);
         throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleBusiness', httpStatusCode.INTERNAL_SERVER, true);
     });
-    // TODO: Better error handling
+    // TODO: Delete this, not recommended way
 };
 
 const createBusinessWithEmployeeAddress = async (business: Business, employee: Employee, address: Address) => {
@@ -60,7 +61,7 @@ const createBusinessWithEmployeeAddress = async (business: Business, employee: E
         console.log(err);
         throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'createBusinessEmployeeAddress', httpStatusCode.INTERNAL_SERVER, true);
     });
-    return newBusiness;
+    return await getBusinessById(business.businessId);
     // TODO: Better error handling
     // TODO: If createEmployee and/or createAddress fails, revert everything
 };
@@ -73,7 +74,7 @@ const addEmployee = async (id: string, employee: Employee) => {
     } else {
         return await business.addEmployee(employee);
     }
-    // TODO: Better error handling
+    // TODO: Delete
 };
 
 const addEmployees = async (id: string, employees: Employee[]) => {
@@ -84,7 +85,7 @@ const addEmployees = async (id: string, employees: Employee[]) => {
     } else {
         return await business.addEmployees(employees);
     }
-    // TODO: Better error handling
+    // TODO: Delete
 };
 
 const setAddress = async (id: string, address: Address) => {
@@ -96,7 +97,7 @@ const setAddress = async (id: string, address: Address) => {
     } else {
         return await business.setAddress(address);
     }
-    // TODO: Better error handling
+    // TODO: Delete
 };
 
 const updateBusiness = async (identifier: any, update: any) => {
