@@ -9,9 +9,10 @@ const router = express.Router();
 
 router.get('/user/getAllUsers', userController.getAllUsers);
 
-router.get('/user/getUserByEmail', validate(userSchema.getUserByEmailSchema), userController.getUserByEmail);
+// router.get('/user/getUserByEmail/:email', validate(userSchema.getUserByEmailSchema), userController.getUserByEmail);
+router.get('/user/getUserByEmail/:email', userController.getUserByEmail);
 
-router.post('/user/createSampleUser', userController.createSampleUser);
+router.get('/user/get/:id', userController.getUserById);
 
 router.post('/user/createSimpleUser', validate(userSchema.createUserSchema), userController.createSimpleUser);
 

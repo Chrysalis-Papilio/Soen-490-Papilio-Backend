@@ -7,25 +7,41 @@ import { ValidationErrorItem } from 'sequelize';
 /** Get all accounts from table account */
 const getAllUsers = async () => {
     await User.sync();
-    return User.findAll();
+    return User.findAll({
+        attributes: { exclude: ['id'] }
+    });
 };
 
-// Create a sample user with hardcoded info (test-only)
-const createSampleUser = async () => {
+/** Get User from firebase_id */
+const getUserById = async (id: string) => {
     await User.sync();
-    return await User.create({
-        firstName: 'Sample',
-        lastName: 'User',
-        phone: '5145551237',
-        email: 'sample4@gmail.com',
-        firebase_id: 'totallynotanid'
+    const user = await User.findOne({
+        where: { firebase_id: id },
+        attributes: { exclude: ['id'] }
     });
+    return {
+        found: !!user,
+        user: user
+    };
+};
+
+/**  Get User from email */
+const getUserByEmail = async (email: string) => {
+    await User.sync();
+    const user = await User.findOne({
+        where: { email: email },
+        attributes: { exclude: ['id'] }
+    });
+    return {
+        found: !!user,
+        user: user
+    };
 };
 
 /**  Create a simple user with verified input */
 const createSimpleUser = async (user: User) => {
     await User.sync();
-    return await User.create({
+    await User.create({
         firebase_id: user.firebase_id,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -33,8 +49,7 @@ const createSimpleUser = async (user: User) => {
         phone: user.phone ? user.phone : undefined,
         countryCode: user.countryCode ? user.countryCode : undefined
     }).catch((err) => {
-        var messages = '';
-        //  console.log(err);
+        let messages = '';
         if (err.name === 'SequelizeUniqueConstraintError') {
             err.errors.forEach((value: ValidationErrorItem) => {
                 messages = messages.concat(`${value.path} is already taken. \n`);
@@ -43,17 +58,7 @@ const createSimpleUser = async (user: User) => {
         }
         throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
     });
-};
-
-/**  Get User from email */
-const getUserByEmail = async (email: string) => {
-    await User.sync();
-    return await User.findOne({
-        where: { email: email }
-    }).catch((err) => {
-        console.log(err);
-        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
-    });
+    return await getUserById(user.firebase_id);
 };
 
 /** Update User */
@@ -77,4 +82,4 @@ const updateUser = async (identifier: any, update: any) => {
     return result; //  Unexpected result
 };
 
-export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail, updateUser };
+export { getAllUsers, createSimpleUser, getUserById, getUserByEmail, updateUser };
