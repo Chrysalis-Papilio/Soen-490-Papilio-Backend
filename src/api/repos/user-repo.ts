@@ -1,10 +1,10 @@
-import { User } from '../models/User';
-import { httpStatusCode } from '../../types/httpStatusCodes';
+import { User } from '../models';
 import { APIError } from '../../errors/api-error';
 import { BaseError } from '../../errors/base-error';
+import { httpStatusCode } from '../../types/httpStatusCodes';
 import { ValidationErrorItem } from 'sequelize';
 
-// Get all accounts from table account
+/** Get all accounts from table account */
 const getAllUsers = async () => {
     await User.sync();
     return User.findAll();
@@ -22,7 +22,7 @@ const createSampleUser = async () => {
     });
 };
 
-//  Create a simple user with verified input
+/**  Create a simple user with verified input */
 const createSimpleUser = async (user: User) => {
     await User.sync();
     return await User.create({
@@ -45,7 +45,7 @@ const createSimpleUser = async (user: User) => {
     });
 };
 
-//  Get User from email
+/**  Get User from email */
 const getUserByEmail = async (email: string) => {
     await User.sync();
     return await User.findOne({
@@ -56,12 +56,11 @@ const getUserByEmail = async (email: string) => {
     });
 };
 
-// Update User
-// matcher: {email: 'email@here.com'} or {firstName: 'John', lastName: 'Doe'} or ...
+/** Update User */
 const updateUser = async (identifier: any, update: any) => {
     await User.sync();
-    var result = await User.update(update, { returning: true, where: identifier }).catch((err) => {
-        var messages = '';
+    const result = await User.update(update, { returning: true, where: identifier }).catch((err) => {
+        let messages = '';
         console.log(err);
         if (err.name === 'SequelizeUniqueConstraintError') {
             err.errors.forEach((value: ValidationErrorItem) => {

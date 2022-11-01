@@ -1,8 +1,9 @@
+import { APIError } from '../../errors/api-error';
 import { BaseError } from '../../errors/base-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
-import { APIError } from '../../errors/api-error';
 import { Business, Employee, Address } from '../models';
 
+/** Get Business using businessId */
 const getBusinessById = async (businessId: string) => {
     await Business.sync();
     const business = await Business.findOne({
@@ -15,6 +16,7 @@ const getBusinessById = async (businessId: string) => {
     };
 };
 
+/** Get the list of Employee(s) associated with that Business */
 const getEmployeeList = async (id: string) => {
     await Business.sync();
     const business = await (await getBusinessById(id)).business;
@@ -30,6 +32,7 @@ const getEmployeeList = async (id: string) => {
     };
 };
 
+/** SHOULD NOT USE */
 const createSimpleBusiness = async (business: any) => {
     await Business.sync();
     return await Business.create({
@@ -39,9 +42,9 @@ const createSimpleBusiness = async (business: any) => {
         console.log(err);
         throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleBusiness', httpStatusCode.INTERNAL_SERVER, true);
     });
-    // TODO: Delete this, not recommended way
 };
 
+/** Full set of creating a Business with a minimum of one Employee and an Address */
 const createBusinessWithEmployeeAddress = async (business: Business, employee: Employee, address: Address) => {
     await Business.sync();
     await Employee.sync();
@@ -66,6 +69,7 @@ const createBusinessWithEmployeeAddress = async (business: Business, employee: E
     // TODO: If createEmployee and/or createAddress fails, revert everything
 };
 
+/** Add a new Employee to the Business */
 const addNewEmployee = async (id: string, employee: Employee) => {
     await Business.sync();
     const business = await (await getBusinessById(id)).business;
@@ -83,6 +87,7 @@ const addNewEmployee = async (id: string, employee: Employee) => {
     };
 };
 
+/** Update Business */
 const updateBusiness = async (identifier: any, update: any) => {
     await Business.sync();
     return await Business.update(update, { where: identifier }).catch((err) => {
