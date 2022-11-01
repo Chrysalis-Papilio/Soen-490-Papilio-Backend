@@ -2,13 +2,10 @@ import {
     Association,
     CreationOptional,
     DataTypes,
-    HasManyAddAssociationMixin,
-    HasManyAddAssociationsMixin,
     HasManyCountAssociationsMixin,
     HasManyCreateAssociationMixin,
     HasManyGetAssociationsMixin,
     HasManyRemoveAssociationMixin,
-    HasManyRemoveAssociationsMixin,
     HasOneCreateAssociationMixin,
     HasOneGetAssociationMixin,
     HasOneSetAssociationMixin,
@@ -29,10 +26,7 @@ class Business extends Model<InferAttributes<Business, { omit: 'employees' }>, I
     declare employees?: NonAttribute<Employee[]>;
 
     declare getEmployees: HasManyGetAssociationsMixin<Employee>;
-    declare addEmployee: HasManyAddAssociationMixin<Employee, number>;
-    declare addEmployees: HasManyAddAssociationsMixin<Employee, number>;
     declare removeEmployee: HasManyRemoveAssociationMixin<Employee, number>;
-    declare removeEmployees: HasManyRemoveAssociationsMixin<Employee, number>;
     declare countEmployees: HasManyCountAssociationsMixin;
     declare createEmployee: HasManyCreateAssociationMixin<Employee>;
 

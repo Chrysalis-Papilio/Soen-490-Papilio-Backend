@@ -13,14 +13,6 @@ const createBusiness = async (business: any, employee: any, address: any) => {
     return getBusinessById(business.businessId);
 };
 
-const addEmployeeToBusiness = async (businessId: string, employee: any) => {
-    return businessRepo.addEmployee(businessId, employee);
-};
-
-const addEmployeesToBusiness = async (businessId: string, employees: any[]) => {
-    return businessRepo.addEmployees(businessId, employees);
-};
-
 const updateBusiness = async (identifier: any, update: any) => {
     return businessRepo.updateBusiness(identifier, update);
 };
@@ -29,4 +21,4 @@ const getEmployeeList = async (businessId: string) => {
     return businessRepo.getEmployeeList(businessId);
 };
 
-export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusiness, addEmployeeToBusiness, addEmployeesToBusiness, updateBusiness };
+export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusiness, updateBusiness };

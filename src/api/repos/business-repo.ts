@@ -66,40 +66,6 @@ const createBusinessWithEmployeeAddress = async (business: Business, employee: E
     // TODO: If createEmployee and/or createAddress fails, revert everything
 };
 
-const addEmployee = async (id: string, employee: Employee) => {
-    await Business.sync();
-    const business = await (await getBusinessById(id)).business;
-    if (!business) {
-        throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'addEmployee', httpStatusCode.INTERNAL_SERVER, true);
-    } else {
-        return await business.addEmployee(employee);
-    }
-    // TODO: Delete
-};
-
-const addEmployees = async (id: string, employees: Employee[]) => {
-    await Business.sync();
-    const business = await (await getBusinessById(id)).business;
-    if (!business) {
-        throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'addEmployees', httpStatusCode.INTERNAL_SERVER, true);
-    } else {
-        return await business.addEmployees(employees);
-    }
-    // TODO: Delete
-};
-
-const setAddress = async (id: string, address: Address) => {
-    await Business.sync();
-    await Address.sync();
-    const business = await (await getBusinessById(id)).business;
-    if (!business) {
-        throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'setAddress', httpStatusCode.INTERNAL_SERVER, true);
-    } else {
-        return await business.setAddress(address);
-    }
-    // TODO: Delete
-};
-
 const updateBusiness = async (identifier: any, update: any) => {
     await Business.sync();
     return await Business.update(update, { where: identifier }).catch((err) => {
@@ -110,10 +76,9 @@ const updateBusiness = async (identifier: any, update: any) => {
 
 /**
  * TODO: removeEmployee
- * TODO: removeEmployees
  * TODO: updateAddress
  * TODO: removeAddress
  * TODO: ...more
  */
 
-export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusinessWithEmployeeAddress, addEmployee, addEmployees, setAddress, updateBusiness };
+export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusinessWithEmployeeAddress, updateBusiness };
