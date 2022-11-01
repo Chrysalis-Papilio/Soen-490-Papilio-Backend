@@ -7,7 +7,6 @@ import {
     HasManyCountAssociationsMixin,
     HasManyCreateAssociationMixin,
     HasManyGetAssociationsMixin,
-    HasManyHasAssociationMixin,
     HasManyRemoveAssociationMixin,
     HasManyRemoveAssociationsMixin,
     HasOneCreateAssociationMixin,
@@ -35,8 +34,7 @@ class Business extends Model<InferAttributes<Business, { omit: 'employees' }>, I
     declare removeEmployee: HasManyRemoveAssociationMixin<Employee, number>;
     declare removeEmployees: HasManyRemoveAssociationsMixin<Employee, number>;
     declare countEmployees: HasManyCountAssociationsMixin;
-    declare createEmployee: HasManyCreateAssociationMixin<Employee, 'business_id'>;
-    declare hasEmployee: HasManyHasAssociationMixin<Employee, number>;
+    declare createEmployee: HasManyCreateAssociationMixin<Employee>;
 
     declare createAddress: HasOneCreateAssociationMixin<Address>;
     declare getAddress: HasOneGetAssociationMixin<Address>;
@@ -76,7 +74,7 @@ Address.belongsTo(Business);
 Business.hasMany(Employee, {
     as: 'employees',
     foreignKey: 'business_id',
-    sourceKey: 'id'
+    sourceKey: 'businessId'
 });
 
 export { Business };
