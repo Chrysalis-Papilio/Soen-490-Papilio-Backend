@@ -14,6 +14,19 @@ const getBusinessById = async (req: Request, res: Response, next: NextFunction) 
     }
 };
 
+const getEmployeeList = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        /** Call to service layer */
+        const businessId = req.params.businessId.toString();
+        const result = await businessServices.getEmployeeList(businessId);
+
+        /** Return a response to client */
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
 const createSimpleBusiness = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
@@ -56,4 +69,4 @@ const updateBusiness = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
-export { getBusinessById, createSimpleBusiness, createBusiness, updateBusiness };
+export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusiness, updateBusiness };

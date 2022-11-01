@@ -7,23 +7,26 @@ import { Address } from '../models/Address';
 
 const getBusinessById = async (businessId: string) => {
     await Business.sync();
-    return await Business.findOne({
+    const business = await Business.findOne({
         where: { businessId: businessId }
-    }).catch((err) => {
-        console.log(err);
-        throw new APIError('Cannot find Business with businessId', 'getBusinessById', httpStatusCode.CONFLICT);
     });
+    return {
+        found: !!business,
+        business: business
+    };
 };
 
 const getEmployeeList = async (id: string) => {
     await Business.sync();
-    const business = await getBusinessById(id);
+    const business = await (await getBusinessById(id)).business;
     if (!business) {
-        throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'addEmployee', httpStatusCode.INTERNAL_SERVER, true);
-    } else {
-        return business.getEmployees();
+        throw new APIError(`Cannot find Business with businessId '${id}'`, 'getEmployeeList', httpStatusCode.CONFLICT);
     }
-    // TODO: Better error handling
+    return {
+        businessId: business.businessId,
+        count: (await business.countEmployees()) || 0,
+        employees: await business.getEmployees()
+    };
 };
 
 const createSimpleBusiness = async (business: any) => {
@@ -33,7 +36,7 @@ const createSimpleBusiness = async (business: any) => {
         name: business.name
     }).catch((err) => {
         console.log(err);
-        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createBusiness', httpStatusCode.INTERNAL_SERVER, true);
+        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleBusiness', httpStatusCode.INTERNAL_SERVER, true);
     });
     // TODO: Better error handling
 };
@@ -64,7 +67,7 @@ const createBusinessWithEmployeeAddress = async (business: Business, employee: E
 
 const addEmployee = async (id: string, employee: Employee) => {
     await Business.sync();
-    const business = await getBusinessById(id);
+    const business = await (await getBusinessById(id)).business;
     if (!business) {
         throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'addEmployee', httpStatusCode.INTERNAL_SERVER, true);
     } else {
@@ -75,9 +78,9 @@ const addEmployee = async (id: string, employee: Employee) => {
 
 const addEmployees = async (id: string, employees: Employee[]) => {
     await Business.sync();
-    const business = await getBusinessById(id);
+    const business = await (await getBusinessById(id)).business;
     if (!business) {
-        throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'addEmployee', httpStatusCode.INTERNAL_SERVER, true);
+        throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'addEmployees', httpStatusCode.INTERNAL_SERVER, true);
     } else {
         return await business.addEmployees(employees);
     }
@@ -87,9 +90,9 @@ const addEmployees = async (id: string, employees: Employee[]) => {
 const setAddress = async (id: string, address: Address) => {
     await Business.sync();
     await Address.sync();
-    const business = await getBusinessById(id);
+    const business = await (await getBusinessById(id)).business;
     if (!business) {
-        throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'addEmployee', httpStatusCode.INTERNAL_SERVER, true);
+        throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'setAddress', httpStatusCode.INTERNAL_SERVER, true);
     } else {
         return await business.setAddress(address);
     }
