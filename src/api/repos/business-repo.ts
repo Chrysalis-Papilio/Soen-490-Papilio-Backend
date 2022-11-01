@@ -66,11 +66,28 @@ const createBusinessWithEmployeeAddress = async (business: Business, employee: E
     // TODO: If createEmployee and/or createAddress fails, revert everything
 };
 
+const addNewEmployee = async (id: string, employee: Employee) => {
+    await Business.sync();
+    const business = await (await getBusinessById(id)).business;
+    if (!business) {
+        throw new APIError(`Cannot find Business with businessId '${id}'`, 'addNewEmployee', httpStatusCode.CONFLICT);
+    }
+    const newEmployee = await business.createEmployee(employee);
+    return {
+        success: !!newEmployee,
+        businessId: business.businessId,
+        employee: await business.getEmployees({
+            where: { email: newEmployee.email },
+            attributes: { exclude: ['id'] }
+        })
+    };
+};
+
 const updateBusiness = async (identifier: any, update: any) => {
     await Business.sync();
     return await Business.update(update, { where: identifier }).catch((err) => {
         console.log(err);
-        // TODO: Better error handling
+        throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'updateBusiness', httpStatusCode.INTERNAL_SERVER, true);
     });
 };
 
@@ -81,4 +98,4 @@ const updateBusiness = async (identifier: any, update: any) => {
  * TODO: ...more
  */
 
-export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusinessWithEmployeeAddress, updateBusiness };
+export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusinessWithEmployeeAddress, addNewEmployee, updateBusiness };

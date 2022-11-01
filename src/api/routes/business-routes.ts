@@ -13,6 +13,8 @@ router.post('/business/createSimpleBusiness', businessController.createSimpleBus
 
 router.post('/business/createBusiness', businessController.createBusiness);
 
+router.post('/business/addEmployee/:businessId', businessController.addNewEmployee);
+
 router.put('/business/update/:businessId', businessController.updateBusiness);
 
 export = router;

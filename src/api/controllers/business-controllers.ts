@@ -69,4 +69,18 @@ const updateBusiness = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
-export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusiness, updateBusiness };
+const addNewEmployee = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        /** Call to service layer */
+        const id = req.params.businessId.toString();
+        const employee = req.body.employee;
+        const result = await businessServices.addNewEmployee(id, employee);
+
+        /** Return a response to client */
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusiness, addNewEmployee, updateBusiness };
