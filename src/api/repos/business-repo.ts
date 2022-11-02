@@ -90,13 +90,13 @@ const addNewEmployee = async (id: string, employee: Employee) => {
 /** Update Business */
 const updateBusiness = async (identifier: any, update: any) => {
     await Business.sync();
-    const result = await Business.update(update, { where: identifier }).catch((err) => {
+    const result = await Business.update(update, { returning: ['businessId', 'name'], where: identifier }).catch((err) => {
         console.log(err);
         throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'updateBusiness', httpStatusCode.INTERNAL_SERVER, true);
     });
     return {
         success: !!result,
-        business: await (await getBusinessById(identifier.businessId)).business
+        business: result[1][0]
     };
 };
 

@@ -64,7 +64,7 @@ const createUser = async (user: User) => {
 /** Update User */
 const updateUser = async (identifier: any, update: any) => {
     await User.sync();
-    const result = await User.update(update, { returning: true, where: identifier }).catch((err) => {
+    const result = await User.update(update, { returning: ['firebase_id', 'firstName', 'lastName', 'countryCode', 'phone', 'email'], where: identifier }).catch((err) => {
         let messages = '';
         console.log(err);
         if (err.name === 'SequelizeUniqueConstraintError') {
@@ -75,11 +75,14 @@ const updateUser = async (identifier: any, update: any) => {
         }
         throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'updateUserProfile', httpStatusCode.INTERNAL_SERVER, true);
     });
-    if (result[0] === 0)
+    if (!result[0])
         //  Failure to update
         throw new APIError('The user does not exist.', 'updateUserProfile', httpStatusCode.CONFLICT, true);
-    else if (result[0] === 1) return result[1]; //  Successful update
-    return result; //  Unexpected result
+    else
+        return {
+            success: !!result[1][0],
+            update: result[1][0]
+        };
 };
 
 export { getAllUsers, createUser, getUserById, getUserByEmail, updateUser };

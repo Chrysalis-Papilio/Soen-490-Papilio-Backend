@@ -15,6 +15,6 @@ router.get('/user/getUserByEmail/:email', validate(userSchema.getUserByEmailSche
 
 router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
 
-router.post('/user/createSimpleUser', validate(userSchema.createUserSchema), userController.createUser);
+router.post('/user/createUser', validate(userSchema.createUserSchema), userController.createUser);
 
 export = router;
