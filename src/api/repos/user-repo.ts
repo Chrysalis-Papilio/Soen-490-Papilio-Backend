@@ -39,7 +39,7 @@ const getUserByEmail = async (email: string) => {
 };
 
 /**  Create a simple user with verified input */
-const createSimpleUser = async (user: User) => {
+const createUser = async (user: User) => {
     await User.sync();
     await User.create({
         firebase_id: user.firebase_id,
@@ -54,9 +54,9 @@ const createSimpleUser = async (user: User) => {
             err.errors.forEach((value: ValidationErrorItem) => {
                 messages = messages.concat(`${value.path} is already taken. \n`);
             });
-            throw new APIError(`${messages.trim()}`, 'createSimpleUser', httpStatusCode.CONFLICT, true);
+            throw new APIError(`${messages.trim()}`, 'createUser', httpStatusCode.CONFLICT, true);
         }
-        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
+        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createUser', httpStatusCode.INTERNAL_SERVER, true);
     });
     return await getUserById(user.firebase_id);
 };
@@ -82,4 +82,4 @@ const updateUser = async (identifier: any, update: any) => {
     return result; //  Unexpected result
 };
 
-export { getAllUsers, createSimpleUser, getUserById, getUserByEmail, updateUser };
+export { getAllUsers, createUser, getUserById, getUserByEmail, updateUser };

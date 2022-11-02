@@ -13,7 +13,7 @@ const getUserByEmail = async (email: string) => {
 };
 
 const createUser = async (user: any) => {
-    return userRepo.createSimpleUser(user);
+    return userRepo.createUser(user);
 };
 
 const updateUserProfile = async (identifier: any, update: any) => {
