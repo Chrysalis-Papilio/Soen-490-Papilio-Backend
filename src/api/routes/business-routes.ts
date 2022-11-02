@@ -1,20 +1,22 @@
 import express from 'express';
 import { businessController } from '../controllers';
+import * as businessSchema from '../schemas/business-schema';
+import { validate } from '../middlewares/validateResource';
 
 const router = express.Router();
 
-// TODO: Throw proper error
+/** validate(...): Throw proper error when request is invalid */
 
-router.get('/business/get/:businessId', businessController.getBusinessById);
+router.get('/business/get/:businessId', validate(businessSchema.getBusinessById), businessController.getBusinessById);
 
-router.get('/business/get/:businessId/employees', businessController.getEmployeeList);
+router.get('/business/get/:businessId/employees', validate(businessSchema.getEmployeeList), businessController.getEmployeeList);
 
 router.post('/business/createSimpleBusiness', businessController.createSimpleBusiness);
 
-router.post('/business/createBusiness', businessController.createBusiness);
+router.post('/business/createBusiness', validate(businessSchema.createBusiness), businessController.createBusiness);
 
-router.post('/business/addEmployee/:businessId', businessController.addNewEmployee);
+router.post('/business/addEmployee/:businessId', validate(businessSchema.addNewEmployee), businessController.addNewEmployee);
 
-router.put('/business/update/:businessId', businessController.updateBusiness);
+router.put('/business/update/:businessId', validate(businessSchema.updateBusiness), businessController.updateBusiness);
 
 export = router;

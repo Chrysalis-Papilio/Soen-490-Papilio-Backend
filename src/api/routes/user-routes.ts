@@ -5,17 +5,16 @@ import * as userSchema from '../schemas/user-schema';
 
 const router = express.Router();
 
-//  Throw proper error when req.body has syntax errors.
+/** validate(...): Throw proper error when request is invalid */
 
 router.get('/user/getAllUsers', userController.getAllUsers);
 
-// router.get('/user/getUserByEmail/:email', validate(userSchema.getUserByEmailSchema), userController.getUserByEmail);
-router.get('/user/getUserByEmail/:email', userController.getUserByEmail);
+router.get('/user/get/:id', validate(userSchema.getUserById), userController.getUserById);
 
-router.get('/user/get/:id', userController.getUserById);
-
-router.post('/user/createSimpleUser', validate(userSchema.createUserSchema), userController.createSimpleUser);
+router.get('/user/getUserByEmail/:email', validate(userSchema.getUserByEmailSchema), userController.getUserByEmail);
 
 router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
+
+router.post('/user/createSimpleUser', validate(userSchema.createUserSchema), userController.createSimpleUser);
 
 export = router;

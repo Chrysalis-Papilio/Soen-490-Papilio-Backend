@@ -59,7 +59,7 @@ const updateBusiness = async (req: Request, res: Response, next: NextFunction) =
     try {
         /** Call to service layer */
         const id = { businessId: req.params.businessId };
-        const update = req.body;
+        const update = req.body.update;
         const result = await businessServices.updateBusiness(id, update);
 
         /** Return a response to client */
