@@ -27,7 +27,7 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getUserById = async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id.toString();
+    const { id } = req.params;
     try {
         /** Call to service layer */
         const result = await userServices.getUserById(id);
@@ -40,7 +40,7 @@ const getUserById = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getUserByEmail = async (req: Request, res: Response, next: NextFunction) => {
-    const email = req.params.email.toString();
+    const { email } = req.params;
     try {
         /** Call to service layer */
         const result = await userServices.getUserByEmail(email);
@@ -53,8 +53,7 @@ const getUserByEmail = async (req: Request, res: Response, next: NextFunction) =
 };
 
 const updateUserProfile = async (req: Request, res: Response, next: NextFunction) => {
-    const identifier = req.body.identifier;
-    const update = req.body.update;
+    const { identifier, update } = req.body;
     try {
         /** Call service layer */
         const result = await userServices.updateUserProfile(identifier, update);

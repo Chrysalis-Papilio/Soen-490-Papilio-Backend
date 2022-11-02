@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 const getBusinessById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
-        const businessId = req.params.businessId.toString();
+        const { businessId } = req.params;
         const result = await businessServices.getBusinessById(businessId);
 
         /** Return a response to client */
@@ -17,7 +17,7 @@ const getBusinessById = async (req: Request, res: Response, next: NextFunction) 
 const getEmployeeList = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
-        const businessId = req.params.businessId.toString();
+        const { businessId } = req.params;
         const result = await businessServices.getEmployeeList(businessId);
 
         /** Return a response to client */
@@ -43,9 +43,7 @@ const createSimpleBusiness = async (req: Request, res: Response, next: NextFunct
 const createBusiness = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
-        const business = req.body.business;
-        const employee = req.body.employee;
-        const address = req.body.address;
+        const { business, employee, address } = req.body;
         const result = await businessServices.createBusiness(business, employee, address);
 
         /** Return a response to client */
@@ -59,7 +57,7 @@ const updateBusiness = async (req: Request, res: Response, next: NextFunction) =
     try {
         /** Call to service layer */
         const id = { businessId: req.params.businessId };
-        const update = req.body.update;
+        const { update } = req.body;
         const result = await businessServices.updateBusiness(id, update);
 
         /** Return a response to client */
@@ -72,8 +70,8 @@ const updateBusiness = async (req: Request, res: Response, next: NextFunction) =
 const addNewEmployee = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
-        const id = req.params.businessId.toString();
-        const employee = req.body.employee;
+        const { id } = req.params;
+        const { employee } = req.body;
         const result = await businessServices.addNewEmployee(id, employee);
 
         /** Return a response to client */
