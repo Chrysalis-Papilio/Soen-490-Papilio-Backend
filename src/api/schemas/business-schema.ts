@@ -36,7 +36,7 @@ const addressSchema = object({
     state: string({
         required_error: 'State/Province is required',
         invalid_type_error: 'State/Province should be of type string'
-    }).regex(new RegExp('^[A-Z]{2,4}]')),
+    }).regex(new RegExp('^[A-Z]{2,4}')),
     country: string({
         required_error: 'Country is required',
         invalid_type_error: 'Country should be of type string'

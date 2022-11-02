@@ -56,17 +56,18 @@ const createBusinessWithEmployeeAddress = async (business: Business, employee: E
         console.log(err);
         throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createBusinessEmployeeAddress', httpStatusCode.INTERNAL_SERVER, true);
     });
-    await newBusiness.createEmployee(employee).catch((err) => {
+    const newEmployee = await newBusiness.createEmployee(employee).catch(async (err) => {
         console.log(err);
+        await Business.destroy({ where: { businessId: newBusiness.businessId } });
         throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createBusinessEmployeeAddress', httpStatusCode.INTERNAL_SERVER, true);
     });
-    await newBusiness.createAddress(address).catch((err) => {
+    await newBusiness.createAddress(address).catch(async (err) => {
         console.log(err);
+        await Business.destroy({ where: { businessId: newBusiness.businessId } });
+        await Employee.destroy({ where: { firebase_id: newEmployee.firebase_id } });
         throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'createBusinessEmployeeAddress', httpStatusCode.INTERNAL_SERVER, true);
     });
     return await getBusinessById(business.businessId);
-    // TODO: Better error handling
-    // TODO: If createEmployee and/or createAddress fails, revert everything
 };
 
 /** Add a new Employee to the Business */
@@ -99,12 +100,5 @@ const updateBusiness = async (identifier: any, update: any) => {
         business: result[1][0]
     };
 };
-
-/**
- * TODO: removeEmployee
- * TODO: updateAddress
- * TODO: removeAddress
- * TODO: ...more
- */
 
 export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusinessWithEmployeeAddress, addNewEmployee, updateBusiness };
