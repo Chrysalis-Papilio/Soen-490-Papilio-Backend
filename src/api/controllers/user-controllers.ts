@@ -13,11 +13,11 @@ const getAllUsers = async (_: Request, res: Response, next: NextFunction) => {
     }
 };
 
-const createSimpleUser = async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.body;
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.body.user;
     try {
         /** Call to service layer */
-        const result = await userServices.createSimpleUser(user);
+        const result = await userServices.createUser(user);
 
         /** Return a response to client. */
         return res.status(200).json(result);
@@ -65,4 +65,4 @@ const updateUserProfile = async (req: Request, res: Response, next: NextFunction
         next(err);
     }
 };
-export { getAllUsers, createSimpleUser, getUserById, getUserByEmail, updateUserProfile };
+export { getAllUsers, createUser, getUserById, getUserByEmail, updateUserProfile };
