@@ -70,9 +70,9 @@ const updateBusiness = async (req: Request, res: Response, next: NextFunction) =
 const addNewEmployee = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
-        const { id } = req.params;
+        const { businessId } = req.params;
         const { employee } = req.body;
-        const result = await businessServices.addNewEmployee(id, employee);
+        const result = await businessServices.addNewEmployee(businessId, employee);
 
         /** Return a response to client */
         return res.status(200).json(result);

@@ -1,4 +1,4 @@
-import { object, string } from 'zod';
+import { boolean, object, string } from 'zod';
 
 const employeeSchema = object({
     firebase_id: string({
@@ -20,6 +20,10 @@ const employeeSchema = object({
     role: string({
         required_error: 'Role is required',
         invalid_type_error: 'Role should be of type string'
+    }),
+    root: boolean({
+        required_error: 'Root is required',
+        invalid_type_error: 'Root should be of type boolean'
     })
 });
 

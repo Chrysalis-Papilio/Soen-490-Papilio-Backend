@@ -9,6 +9,7 @@ class Employee extends Model<InferAttributes<Employee>, InferCreationAttributes<
     declare lastName: string;
     declare email: string;
     declare role: string | null;
+    declare root: boolean;
     declare BusinessId: ForeignKey<Business['id']>;
     /** for some reason, whatever other variable name I choose for the line above, it won't work
         so please don't change from BusinessId to anything else */
@@ -44,6 +45,16 @@ Employee.init(
         },
         role: {
             type: DataTypes.STRING
+        },
+        root: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false,
+            validate: {
+                rootBeAdmin(value: boolean) {
+                    if (value && this.role !== 'Admin') throw new Error('Must be Admin to be a root account!');
+                }
+            }
         }
     },
     {
