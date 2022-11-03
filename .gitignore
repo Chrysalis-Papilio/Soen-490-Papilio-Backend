@@ -7,3 +7,4 @@ LICENSE
 /.idea
 /node_modules
 /dist
+/cert
