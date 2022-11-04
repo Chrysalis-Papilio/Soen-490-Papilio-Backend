@@ -4,8 +4,10 @@ import { APIError } from '../../errors/api-error';
 import { BaseError } from '../../errors/base-error';
 import { ValidationErrorItem } from 'sequelize';
 
+type UserDTO = Pick<User, 'firebase_id' | 'firstName' | 'lastName' | 'countryCode' | 'email' | 'phone' | 'id'>
+
 // Get all accounts from table account
-const getAllUsers = async () => {
+const getAllUsers = async (): Promise<UserDTO []> => {
     await User.sync();
     return User.findAll();
 };
