@@ -3,11 +3,6 @@ import request from 'supertest';
 import app from '../../../app';
 import { userRepos } from '../../repos';
 
-//jest.mock('../../repos/user-repo');
-
-beforeAll(async() => {
-});
-
 describe("UserController", () => {
     describe("GET /user", () => {
         /** Testing getAllUsers endpoint */
