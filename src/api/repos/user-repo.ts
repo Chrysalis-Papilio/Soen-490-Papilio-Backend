@@ -1,8 +1,7 @@
 import { User } from '../models';
 import { APIError } from '../../errors/api-error';
-import { BaseError } from '../../errors/base-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
-import { ValidationErrorItem } from 'sequelize';
+import { createNewObjectCaughtError } from './error';
 
 /** Get all accounts from table account */
 const getAllUsers = async () => {
@@ -48,33 +47,16 @@ const createUser = async (user: User) => {
         email: user.email,
         phone: user.phone ? user.phone : undefined,
         countryCode: user.countryCode ? user.countryCode : undefined
-    }).catch((err) => {
-        let messages = '';
-        if (err.name === 'SequelizeUniqueConstraintError') {
-            err.errors.forEach((value: ValidationErrorItem) => {
-                messages = messages.concat(`${value.path} is already taken. \n`);
-            });
-            throw new APIError(`${messages.trim()}`, 'createUser', httpStatusCode.CONFLICT, true);
-        }
-        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createUser', httpStatusCode.INTERNAL_SERVER, true);
-    });
+    }).catch((err) => createNewObjectCaughtError(err, 'createUser', 'There has been an error in creating the User.'));
     return await getUserById(user.firebase_id);
 };
 
 /** Update User */
 const updateUser = async (identifier: any, update: any) => {
     await User.sync();
-    const result = await User.update(update, { returning: ['firebase_id', 'firstName', 'lastName', 'countryCode', 'phone', 'email'], where: identifier }).catch((err) => {
-        let messages = '';
-        console.log(err);
-        if (err.name === 'SequelizeUniqueConstraintError') {
-            err.errors.forEach((value: ValidationErrorItem) => {
-                messages = messages.concat(`${value.path} is already taken. \n`);
-            });
-            throw new APIError(`${messages.trim()}`, 'updateUserProfile', httpStatusCode.CONFLICT, true);
-        }
-        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'updateUserProfile', httpStatusCode.INTERNAL_SERVER, true);
-    });
+    const result = await User.update(update, { returning: ['firebase_id', 'firstName', 'lastName', 'countryCode', 'phone', 'email'], where: identifier }).catch((err) =>
+        createNewObjectCaughtError(err, 'updateUser', 'There has been an error in updating User.')
+    );
     if (!result[0])
         //  Failure to update
         throw new APIError('The user does not exist.', 'updateUserProfile', httpStatusCode.CONFLICT, true);

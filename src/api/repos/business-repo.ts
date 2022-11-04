@@ -1,7 +1,8 @@
 import { APIError } from '../../errors/api-error';
 import { BaseError } from '../../errors/base-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
-import { Business, Employee, Address } from '../models';
+import { Address, Business, Employee } from '../models';
+import { createNewObjectCaughtError } from './error';
 
 /** Get Business using businessId */
 const getBusinessById = async (businessId: string) => {
@@ -9,6 +10,9 @@ const getBusinessById = async (businessId: string) => {
     const business = await Business.findOne({
         where: { businessId: businessId },
         attributes: { exclude: ['id'] }
+    }).catch((err) => {
+        console.log(err);
+        throw new BaseError('ORM Sequelize Error.', 'There has been an error in fetching the Business.', 'getBusinessById', httpStatusCode.INTERNAL_SERVER, true);
     });
     return {
         found: !!business,
@@ -21,7 +25,7 @@ const getEmployeeList = async (id: string) => {
     await Business.sync();
     const business = await (await getBusinessById(id)).business;
     if (!business) {
-        throw new APIError(`Cannot find Business with businessId '${id}'`, 'getEmployeeList', httpStatusCode.CONFLICT);
+        throw new APIError(`Cannot find Business with businessId '${id}.'`, 'getEmployeeList', httpStatusCode.CONFLICT);
     }
     return {
         businessId: business.businessId,
@@ -38,10 +42,7 @@ const createSimpleBusiness = async (business: any) => {
     return await Business.create({
         businessId: business.businessId,
         name: business.name
-    }).catch((err) => {
-        console.log(err);
-        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleBusiness', httpStatusCode.INTERNAL_SERVER, true);
-    });
+    }).catch((err) => createNewObjectCaughtError(err, 'createSimpleBusiness'));
 };
 
 /** Full set of creating a Business with a minimum of one Employee and an Address */
@@ -52,20 +53,15 @@ const createBusinessWithEmployeeAddress = async (business: Business, employee: E
     const newBusiness = await Business.create({
         businessId: business.businessId,
         name: business.name
-    }).catch((err) => {
-        console.log(err);
-        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createBusinessEmployeeAddress', httpStatusCode.INTERNAL_SERVER, true);
-    });
-    const newEmployee = await newBusiness.createEmployee(employee).catch(async (err) => {
-        console.log(err);
-        await Business.destroy({ where: { businessId: newBusiness.businessId } });
-        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createBusinessEmployeeAddress', httpStatusCode.INTERNAL_SERVER, true);
+    }).catch((err) => createNewObjectCaughtError(err, 'createBusinessWithEmployeeAddress', 'There has been an error in creating the Business.'));
+    await newBusiness.createEmployee(employee).catch(async (err) => {
+        createNewObjectCaughtError(err, 'createBusinessWithEmployeeAddress', 'There has been an error in creating the Employee.');
+        await Business.destroy({ where: { businessId: business.businessId } });
     });
     await newBusiness.createAddress(address).catch(async (err) => {
-        console.log(err);
-        await Business.destroy({ where: { businessId: newBusiness.businessId } });
-        await Employee.destroy({ where: { firebase_id: newEmployee.firebase_id } });
-        throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'createBusinessEmployeeAddress', httpStatusCode.INTERNAL_SERVER, true);
+        createNewObjectCaughtError(err, 'createBusinessWithEmployeeAddress', 'There has been an error in creating the Address.');
+        await Business.destroy({ where: { businessId: business.businessId } });
+        await Employee.destroy({ where: { firebase_id: employee.firebase_id } });
     });
     return await getBusinessById(business.businessId);
 };
@@ -77,7 +73,7 @@ const addNewEmployee = async (id: string, employee: Employee) => {
     if (!business) {
         throw new APIError(`Cannot find Business with businessId '${id}'`, 'addNewEmployee', httpStatusCode.CONFLICT);
     }
-    const newEmployee = await business.createEmployee(employee);
+    const newEmployee = await business.createEmployee(employee).catch((err) => createNewObjectCaughtError(err, 'addNewEmployee', 'There has been an error in creating a new Employee'));
     return {
         success: !!newEmployee,
         businessId: business.businessId,
