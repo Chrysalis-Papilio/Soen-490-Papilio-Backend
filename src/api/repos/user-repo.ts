@@ -4,7 +4,7 @@ import { APIError } from '../../errors/api-error';
 import { BaseError } from '../../errors/base-error';
 import { ValidationErrorItem } from 'sequelize';
 
-type UserDTO = Pick<User, 'firebase_id' | 'firstName' | 'lastName' | 'countryCode' | 'email' | 'phone' | 'id'>
+type UserDTO = Pick<User,'id'| 'firebase_id' | 'firstName' | 'lastName' | 'email' | 'phone' |'countryCode' >
 
 // Get all accounts from table account
 const getAllUsers = async (): Promise<UserDTO []> => {
@@ -12,8 +12,19 @@ const getAllUsers = async (): Promise<UserDTO []> => {
     return User.findAll();
 };
 
+//  Get User from email
+const getUserByEmail = async (email: string): Promise<UserDTO> => {
+    await User.sync();
+    return await User.findOne({
+        where: { email: email }
+    }).catch((err) => {
+        console.log(err);
+        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
+    }) as UserDTO;
+};
+
 // Create a sample user with hardcoded info (test-only)
-const createSampleUser = async () => {
+const createSampleUser = async (): Promise<UserDTO> => {
     await User.sync();
     return await User.create({
         firstName: 'Sample',
@@ -25,14 +36,14 @@ const createSampleUser = async () => {
 };
 
 //  Create a simple user with verified input
-const createSimpleUser = async (user: any) => {
+const createSimpleUser = async (user: any): Promise<UserDTO> => {
     await User.sync();
     return await User.create({
         firebase_id: user.firebase_id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        phone: user.phone ? user.phone : undefined,
+        phone: user.phone ? user.phone : '',
         countryCode: user.countryCode ? user.countryCode : undefined
     }).catch((err) => {
         var messages = '';
@@ -43,17 +54,6 @@ const createSimpleUser = async (user: any) => {
             });
             throw new APIError(`${messages.trim()}`, 'createSimpleUser', httpStatusCode.CONFLICT, true);
         }
-        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
-    });
-};
-
-//  Get User from email
-const getUserByEmail = async (email: string) => {
-    await User.sync();
-    return await User.findOne({
-        where: { email: email }
-    }).catch((err) => {
-        console.log(err);
         throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
     });
 };
