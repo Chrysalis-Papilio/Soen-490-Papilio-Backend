@@ -2,14 +2,10 @@ import {
     Association,
     CreationOptional,
     DataTypes,
-    HasManyAddAssociationMixin,
-    HasManyAddAssociationsMixin,
     HasManyCountAssociationsMixin,
     HasManyCreateAssociationMixin,
     HasManyGetAssociationsMixin,
-    HasManyHasAssociationMixin,
     HasManyRemoveAssociationMixin,
-    HasManyRemoveAssociationsMixin,
     HasOneCreateAssociationMixin,
     HasOneGetAssociationMixin,
     HasOneSetAssociationMixin,
@@ -24,20 +20,17 @@ import { Employee } from './Employee';
 
 class Business extends Model<InferAttributes<Business, { omit: 'employees' }>, InferCreationAttributes<Business, { omit: 'employees' }>> {
     declare id: CreationOptional<number>;
+    declare businessId: string;
     declare name: string;
 
     declare employees?: NonAttribute<Employee[]>;
 
     declare getEmployees: HasManyGetAssociationsMixin<Employee>;
-    declare addEmployee: HasManyAddAssociationMixin<Employee, number>;
-    declare addEmployees: HasManyAddAssociationsMixin<Employee, number>;
     declare removeEmployee: HasManyRemoveAssociationMixin<Employee, number>;
-    declare removeEmployees: HasManyRemoveAssociationsMixin<Employee, number>;
     declare countEmployees: HasManyCountAssociationsMixin;
-    declare createEmployee: HasManyCreateAssociationMixin<Employee, 'business_id'>;
-    declare hasEmployee: HasManyHasAssociationMixin<Employee, number>;
+    declare createEmployee: HasManyCreateAssociationMixin<Employee>;
 
-    declare addAddress: HasOneCreateAssociationMixin<Address>;
+    declare createAddress: HasOneCreateAssociationMixin<Address>;
     declare getAddress: HasOneGetAssociationMixin<Address>;
     declare setAddress: HasOneSetAssociationMixin<Address, number>;
 
@@ -52,6 +45,11 @@ Business.init(
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
+        },
+        businessId: {
+            type: DataTypes.STRING,
+            unique: true,
+            allowNull: false
         },
         name: {
             type: DataTypes.STRING,
@@ -70,7 +68,7 @@ Address.belongsTo(Business);
 Business.hasMany(Employee, {
     as: 'employees',
     foreignKey: 'business_id',
-    sourceKey: 'id'
+    sourceKey: 'businessId'
 });
 
 export { Business };

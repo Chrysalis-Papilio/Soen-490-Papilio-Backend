@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { userService } from '../services';
+import { userServices } from '../services';
 
 const getAllUsers = async (_: Request, res: Response, next: NextFunction) => {
     try {
         /**  Call to service layer */
-        const result = await userService.getAllUsers();
+        const result = await userServices.getAllUsers();
 
         /**  Return a response to client. */
         return res.status(200).json(result);
@@ -13,10 +13,11 @@ const getAllUsers = async (_: Request, res: Response, next: NextFunction) => {
     }
 };
 
-const createSampleUser = async (_: Request, res: Response, next: NextFunction) => {
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.body.user;
     try {
         /** Call to service layer */
-        const result = await userService.createSampleUser();
+        const result = await userServices.createUser(user);
 
         /** Return a response to client. */
         return res.status(200).json(result);
@@ -25,40 +26,42 @@ const createSampleUser = async (_: Request, res: Response, next: NextFunction) =
     }
 };
 
-const createSimpleUser = async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.body;
+const getUserById = async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
     try {
         /** Call to service layer */
-        const result = await userService.createSimpleUser(user);
+        const result = await userServices.getUserById(id);
 
-        /** Return a response to client. */
+        /** Return a response to client */
         return res.status(200).json(result);
     } catch (err) {
-        next(err);
+        next(err); //  Send any error to error-handler
     }
 };
 
 const getUserByEmail = async (req: Request, res: Response, next: NextFunction) => {
-    const email = req.body.email;
+    const { email } = req.params;
     try {
-        const result = await userService.getUserByEmail(email); //  Call to service Layer.
-        return res.status(200).json(result); //  Return a response to client.
+        /** Call to service layer */
+        const result = await userServices.getUserByEmail(email);
+
+        /** Return a response to client */
+        return res.status(200).json(result);
     } catch (err) {
         next(err); //  Send any error to error-handler
     }
 };
 
 const updateUserProfile = async (req: Request, res: Response, next: NextFunction) => {
-    const identifier = req.body.identifier;
-    const update = req.body.update;
+    const { identifier, update } = req.body;
     try {
-        // Call service layer
-        const result = await userService.updateUserProfile(identifier, update);
+        /** Call service layer */
+        const result = await userServices.updateUserProfile(identifier, update);
 
-        // Return result
+        /** Return result */
         return res.status(200).json(result);
     } catch (err) {
         next(err);
     }
 };
-export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail, updateUserProfile };
+export { getAllUsers, createUser, getUserById, getUserByEmail, updateUserProfile };

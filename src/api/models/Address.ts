@@ -11,7 +11,7 @@ class Address extends Model<InferAttributes<Address>, InferCreationAttributes<Ad
     declare state: string;
     declare country: string;
     declare postalCode: string;
-    declare BusinessId: ForeignKey<Business['id']>;
+    declare business_id: ForeignKey<Business['businessId']>;
 }
 
 Address.init(

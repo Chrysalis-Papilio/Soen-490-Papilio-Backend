@@ -24,7 +24,7 @@ class User extends Model<InferAttributes<User, { omit: 'userReviews' }>, InferCr
     declare firstName: string;
     declare lastName: string;
     declare countryCode: number | null;
-    declare phone: string;
+    declare phone: string | null;
     declare email: string;
 
     declare userReviews?: NonAttribute<ActivityReview[]>;

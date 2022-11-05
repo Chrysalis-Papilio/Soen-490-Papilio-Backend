@@ -1,81 +1,70 @@
-import { User } from '../models/User';
-import { httpStatusCode } from '../../types/httpStatusCodes';
+import { User } from '../models';
 import { APIError } from '../../errors/api-error';
-import { BaseError } from '../../errors/base-error';
-import { ValidationErrorItem } from 'sequelize';
+import { httpStatusCode } from '../../types/httpStatusCodes';
+import { createNewObjectCaughtError } from './error';
 
-// Get all accounts from table account
+/** Get all accounts from table account */
 const getAllUsers = async () => {
     await User.sync();
-    return User.findAll();
-};
-
-// Create a sample user with hardcoded info (test-only)
-const createSampleUser = async () => {
-    await User.sync();
-    return await User.create({
-        firstName: 'Sample',
-        lastName: 'User',
-        phone: '5145551237',
-        email: 'sample4@gmail.com',
-        firebase_id: 'totallynotanid'
+    return User.findAll({
+        attributes: { exclude: ['id'] }
     });
 };
 
-//  Create a simple user with verified input
-const createSimpleUser = async (user: any) => {
+/** Get User from firebase_id */
+const getUserById = async (id: string) => {
     await User.sync();
-    return await User.create({
+    const user = await User.findOne({
+        where: { firebase_id: id },
+        attributes: { exclude: ['id'] }
+    });
+    return {
+        found: !!user,
+        user: user
+    };
+};
+
+/**  Get User from email */
+const getUserByEmail = async (email: string) => {
+    await User.sync();
+    const user = await User.findOne({
+        where: { email: email },
+        attributes: { exclude: ['id'] }
+    });
+    return {
+        found: !!user,
+        user: user
+    };
+};
+
+/**  Create a simple user with verified input */
+const createUser = async (user: User) => {
+    await User.sync();
+    await User.create({
         firebase_id: user.firebase_id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
         phone: user.phone ? user.phone : undefined,
         countryCode: user.countryCode ? user.countryCode : undefined
-    }).catch((err) => {
-        var messages = '';
-        //  console.log(err);
-        if (err.name === 'SequelizeUniqueConstraintError') {
-            err.errors.forEach((value: ValidationErrorItem) => {
-                messages = messages.concat(`${value.path} is already taken. \n`);
-            });
-            throw new APIError(`${messages.trim()}`, 'createSimpleUser', httpStatusCode.CONFLICT, true);
-        }
-        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
-    });
+    }).catch((err) => createNewObjectCaughtError(err, 'createUser', 'There has been an error in creating the User.'));
+    return await getUserById(user.firebase_id);
 };
 
-//  Get User from email
-const getUserByEmail = async (email: string) => {
-    await User.sync();
-    return await User.findOne({
-        where: { email: email }
-    }).catch((err) => {
-        console.log(err);
-        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'createSimpleUser', httpStatusCode.INTERNAL_SERVER, true);
-    });
-};
-
-// Update User
-// matcher: {email: 'email@here.com'} or {firstName: 'John', lastName: 'Doe'} or ...
+/** Update User */
 const updateUser = async (identifier: any, update: any) => {
     await User.sync();
-    var result = await User.update(update, { returning: true, where: identifier }).catch((err) => {
-        var messages = '';
-        console.log(err);
-        if (err.name === 'SequelizeUniqueConstraintError') {
-            err.errors.forEach((value: ValidationErrorItem) => {
-                messages = messages.concat(`${value.path} is already taken. \n`);
-            });
-            throw new APIError(`${messages.trim()}`, 'updateUserProfile', httpStatusCode.CONFLICT, true);
-        }
-        throw new BaseError('ORM Sequelize Error.', 'There has been an error in the DB.', 'updateUserProfile', httpStatusCode.INTERNAL_SERVER, true);
-    });
-    if (result[0] === 0)        //  Failure to update
+    const result = await User.update(update, { returning: ['firebase_id', 'firstName', 'lastName', 'countryCode', 'phone', 'email'], where: identifier }).catch((err) =>
+        createNewObjectCaughtError(err, 'updateUser', 'There has been an error in updating User.')
+    );
+    if (!result[0])
+        //  Failure to update
         throw new APIError('The user does not exist.', 'updateUserProfile', httpStatusCode.CONFLICT, true);
-    else if (result[0] === 1)
-        return result[1];       //  Successful update
-    return result;              //  Unexpected result
+    else
+        return {
+            success: !!result[1][0],
+            update: result[1][0]
+        };
 };
 
-export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail, updateUser };
+export { getAllUsers, createUser, getUserById, getUserByEmail, updateUser };
