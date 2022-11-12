@@ -17,6 +17,8 @@ router.post('/business/createBusiness', validate(businessSchema.createBusiness),
 
 router.post('/business/addEmployee/:businessId', validate(businessSchema.addNewEmployee), businessController.addNewEmployee);
 
+router.post('/business/addActivity/:businessId', validate(businessSchema.addNewActivity), businessController.addNewActivity);
+
 router.put('/business/update/:businessId', validate(businessSchema.updateBusiness), businessController.updateBusiness);
 
 export = router;

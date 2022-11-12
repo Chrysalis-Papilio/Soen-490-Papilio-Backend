@@ -16,7 +16,7 @@ import {
     HasManyGetAssociationsMixin,
     HasManyHasAssociationMixin,
     HasManyRemoveAssociationMixin,
-    HasManyRemoveAssociationsMixin,
+    HasManyRemoveAssociationsMixin, HasOneCreateAssociationMixin, HasOneGetAssociationMixin, HasOneSetAssociationMixin,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -25,12 +25,16 @@ import {
 import sequelize from '../../config/sequelize';
 import { Genre } from './Genre';
 import { Label } from './Label';
+import {Address} from "./Address";
 import { ActivityReview } from './ActivityReview';
 
 class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews' }>, InferCreationAttributes<Activity, { omit: 'activityReviews' }>> {
     declare id: CreationOptional<number>;
     declare title: string;
     declare description: string;
+    declare costPerIndividual: number | null;
+    declare costPerGroup: number | null;
+    declare image: string | null;
     declare startTime: Date | null;
     declare endTime: Date | null;
 
@@ -60,6 +64,10 @@ class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews'
     declare hasLabels: BelongsToManyHasAssociationsMixin<Label, number>;
     declare removeLabel: BelongsToManyRemoveAssociationMixin<Label, number>;
     declare removeLabels: BelongsToManyRemoveAssociationsMixin<Label, number>;
+
+    declare createAddress: HasOneCreateAssociationMixin<Address>;
+    declare getAddress: HasOneGetAssociationMixin<Address>;
+    declare setAddress: HasOneSetAssociationMixin<Address, number>
 
     declare static associations: {
         activityReviews: Association<Activity, ActivityReview>;
@@ -95,9 +103,18 @@ Activity.init(
                 }
             }
         },
+        costPerIndividual: {
+            type: DataTypes.FLOAT,
+            defaultValue: 0.0
+        },
+        costPerGroup: {
+            type: DataTypes.FLOAT,
+            defaultValue: 0.0
+        },
+        image: DataTypes.STRING,
         startTime: {
             type: DataTypes.DATE,
-            defaultValue: new Date(Date.now()).toISOString()
+            defaultValue: new Date(0).toISOString()
         },
         endTime: {
             type: DataTypes.DATE
@@ -142,6 +159,9 @@ Activity.hasMany(ActivityReview, {
     foreignKey: 'activity_id',
     sourceKey: 'id'
 });
+
+Activity.hasOne(Address);
+Address.belongsTo(Activity);
 
 Activity.belongsToMany(Genre, { through: Activity_Genres });
 

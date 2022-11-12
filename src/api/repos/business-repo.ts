@@ -1,8 +1,8 @@
-import { APIError } from '../../errors/api-error';
-import { BaseError } from '../../errors/base-error';
-import { httpStatusCode } from '../../types/httpStatusCodes';
-import { Address, Business, Employee } from '../models';
-import { createNewObjectCaughtError } from './error';
+import {APIError} from '../../errors/api-error';
+import {BaseError} from '../../errors/base-error';
+import {httpStatusCode} from '../../types/httpStatusCodes';
+import {Activity, Address, Business, Employee} from '../models';
+import {createNewObjectCaughtError} from './error';
 
 /** Get Business using businessId */
 const getBusinessById = async (businessId: string) => {
@@ -84,6 +84,23 @@ const addNewEmployee = async (id: string, employee: Employee) => {
     };
 };
 
+/** Add a new Activity to the Business */
+const addNewActivity = async (id: string, activity: Activity) => {
+    await Business.sync();
+    await Activity.sync();
+    const business = await (await getBusinessById(id)).business;
+    if (!business) {
+        throw new APIError(`Cannot find Business with businessId ${id}`, 'addNewActivity', httpStatusCode.CONFLICT);
+    }
+    const newActivity = await business.createActivity(activity, {returning: true})
+        .catch((err) => createNewObjectCaughtError(err, 'addNewActivity', 'There has been an error in creating a new Activity'));
+    return {
+        success: !!newActivity,
+        businessId: business.businessId,
+        activity: newActivity
+    }
+}
+
 /** Update Business */
 const updateBusiness = async (identifier: any, update: any) => {
     await Business.sync();
@@ -97,4 +114,4 @@ const updateBusiness = async (identifier: any, update: any) => {
     };
 };
 
-export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusinessWithEmployeeAddress, addNewEmployee, updateBusiness };
+export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusinessWithEmployeeAddress, addNewEmployee, addNewActivity, updateBusiness };

@@ -1,4 +1,4 @@
-import { boolean, object, string } from 'zod';
+import {any, boolean, number, object, string} from 'zod';
 
 const employeeSchema = object({
     firebase_id: string({
@@ -59,6 +59,31 @@ const addressSchema = object({
     }).optional()
 });
 
+const activitySchema = object({
+    // Required
+    title: string({
+        required_error: 'Title is required',
+        invalid_type_error: 'Title should be of type string'
+    }),
+    description: string({
+        required_error: 'Description is required',
+        invalid_type_error: 'Description should be of type string'
+    }),
+
+    // Optional
+    costPerIndividual: number({
+        invalid_type_error: 'Cost Per Individual should be of type number'
+    }).optional(),
+    costPerGroup: number({
+        invalid_type_error: 'Cost Per Group should be of type number'
+    }).optional(),
+    image: string({
+        invalid_type_error: 'Image URL should be of type string'
+    }).optional(),
+    startTime: any().optional(),
+    endTime: any().optional()
+});
+
 const getBusinessById = object({
     params: object({
         businessId: string({
@@ -105,6 +130,18 @@ const addNewEmployee = object({
     })
 });
 
+const addNewActivity = object({
+    params: object({
+        businessId: string({
+            required_error: 'Business ID is required',
+            invalid_type_error: 'Business ID should be of type string'
+        })
+    }).strict('Request URL contains an invalid key'),
+    body: object({
+        activity: activitySchema.strict('Activity field contains an invalid key')
+    })
+});
+
 const updateBusiness = object({
     params: object({
         businessId: string({
@@ -122,4 +159,4 @@ const updateBusiness = object({
     })
 });
 
-export { getBusinessById, getEmployeeList, createBusiness, addNewEmployee, updateBusiness };
+export { getBusinessById, getEmployeeList, createBusiness, addNewEmployee, addNewActivity, updateBusiness };
