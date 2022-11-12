@@ -1,4 +1,4 @@
-import {any, boolean, number, object, string} from 'zod';
+import { any, boolean, number, object, string } from 'zod';
 
 const employeeSchema = object({
     firebase_id: string({
@@ -96,6 +96,9 @@ const getBusinessById = object({
 const getEmployeeList = getBusinessById;
 // Same for now, hence borrowing
 
+const getActivityList = getBusinessById;
+// Same for now, hence borrowing
+
 const createBusiness = object({
     body: object({
         // Business
@@ -159,4 +162,4 @@ const updateBusiness = object({
     })
 });
 
-export { getBusinessById, getEmployeeList, createBusiness, addNewEmployee, addNewActivity, updateBusiness };
+export { getBusinessById, getEmployeeList, getActivityList, createBusiness, addNewEmployee, addNewActivity, updateBusiness };

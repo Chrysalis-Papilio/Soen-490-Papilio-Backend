@@ -21,12 +21,16 @@ const getEmployeeList = async (businessId: string) => {
     return businessRepo.getEmployeeList(businessId);
 };
 
+const getActivityList = async (businessId: string) => {
+    return businessRepo.getActivityList(businessId);
+};
+
 const addNewEmployee = async (businessId: string, employee: any) => {
     return businessRepo.addNewEmployee(businessId, employee);
 };
 
 const addNewActivity = async (businessId: string, activity: any) => {
     return businessRepo.addNewActivity(businessId, activity);
-}
+};
 
-export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusiness, addNewEmployee, addNewActivity, updateBusiness };
+export { getBusinessById, getEmployeeList, getActivityList, createSimpleBusiness, createBusiness, addNewEmployee, addNewActivity, updateBusiness };

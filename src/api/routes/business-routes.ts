@@ -11,6 +11,8 @@ router.get('/business/get/:businessId', validate(businessSchema.getBusinessById)
 
 router.get('/business/get/:businessId/employees', validate(businessSchema.getEmployeeList), businessController.getEmployeeList);
 
+router.get('/business/get/:businessId/activities', validate(businessSchema.getActivityList), businessController.getActivityList);
+
 router.post('/business/createSimpleBusiness', businessController.createSimpleBusiness);
 
 router.post('/business/createBusiness', validate(businessSchema.createBusiness), businessController.createBusiness);

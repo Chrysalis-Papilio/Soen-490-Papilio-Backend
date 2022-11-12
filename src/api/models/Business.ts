@@ -17,7 +17,7 @@ import {
 import sequelize from '../../config/sequelize';
 import { Address } from './Address';
 import { Employee } from './Employee';
-import {Activity} from "./Activity";
+import { Activity } from './Activity';
 
 class Business extends Model<InferAttributes<Business, { omit: 'employees' | 'activities' }>, InferCreationAttributes<Business, { omit: 'employees' | 'activities' }>> {
     declare id: CreationOptional<number>;
@@ -83,6 +83,6 @@ Business.hasMany(Activity, {
     as: 'activities',
     foreignKey: 'business_id',
     sourceKey: 'businessId'
-})
+});
 
 export { Business };
