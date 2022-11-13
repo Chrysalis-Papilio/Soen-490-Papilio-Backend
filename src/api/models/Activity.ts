@@ -16,7 +16,10 @@ import {
     HasManyGetAssociationsMixin,
     HasManyHasAssociationMixin,
     HasManyRemoveAssociationMixin,
-    HasManyRemoveAssociationsMixin, HasOneCreateAssociationMixin, HasOneGetAssociationMixin, HasOneSetAssociationMixin,
+    HasManyRemoveAssociationsMixin,
+    HasOneCreateAssociationMixin,
+    HasOneGetAssociationMixin,
+    HasOneSetAssociationMixin,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -25,7 +28,7 @@ import {
 import sequelize from '../../config/sequelize';
 import { Genre } from './Genre';
 import { Label } from './Label';
-import {Address} from "./Address";
+import { Address } from './Address';
 import { ActivityReview } from './ActivityReview';
 
 class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews' }>, InferCreationAttributes<Activity, { omit: 'activityReviews' }>> {
@@ -67,7 +70,7 @@ class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews'
 
     declare createAddress: HasOneCreateAssociationMixin<Address>;
     declare getAddress: HasOneGetAssociationMixin<Address>;
-    declare setAddress: HasOneSetAssociationMixin<Address, number>
+    declare setAddress: HasOneSetAssociationMixin<Address, number>;
 
     declare static associations: {
         activityReviews: Association<Activity, ActivityReview>;

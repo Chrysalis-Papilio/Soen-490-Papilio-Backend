@@ -1,4 +1,4 @@
-import {any, boolean, number, object, string} from 'zod';
+import { any, boolean, number, object, string } from 'zod';
 
 const employeeSchema = object({
     firebase_id: string({

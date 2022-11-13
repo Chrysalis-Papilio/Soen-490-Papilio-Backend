@@ -27,6 +27,6 @@ const addNewEmployee = async (businessId: string, employee: any) => {
 
 const addNewActivity = async (businessId: string, activity: any) => {
     return businessRepo.addNewActivity(businessId, activity);
-}
+};
 
 export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusiness, addNewEmployee, addNewActivity, updateBusiness };

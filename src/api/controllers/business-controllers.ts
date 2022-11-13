@@ -84,8 +84,8 @@ const addNewEmployee = async (req: Request, res: Response, next: NextFunction) =
 const addNewActivity = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
-        const {businessId} = req.params;
-        const {activity} = req.body;
+        const { businessId } = req.params;
+        const { activity } = req.body;
         const result = await businessServices.addNewActivity(businessId, activity);
 
         /** Return a response to client */
@@ -93,6 +93,6 @@ const addNewActivity = async (req: Request, res: Response, next: NextFunction) =
     } catch (err) {
         next(err);
     }
-}
+};
 
 export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusiness, addNewEmployee, addNewActivity, updateBusiness };
