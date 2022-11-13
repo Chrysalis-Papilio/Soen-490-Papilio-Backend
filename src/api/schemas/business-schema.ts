@@ -58,7 +58,7 @@ const addNewActivity = object({
     }).strict('Request URL contains an invalid key'),
     body: object({
         activity: activitySchema.strict('Activity field contains an invalid key'),
-        address: addressSchema.optional()
+        address: addressSchema.strict('Address field contains an invalid key')
     })
 });
 

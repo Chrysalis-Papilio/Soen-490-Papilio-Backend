@@ -1,15 +1,17 @@
-import { APIError } from '../../errors/api-error';
-import { BaseError } from '../../errors/base-error';
-import { httpStatusCode } from '../../types/httpStatusCodes';
-import { Activity, Address, Business, Employee } from '../models';
-import { createNewObjectCaughtError } from './error';
+import {APIError} from '../../errors/api-error';
+import {BaseError} from '../../errors/base-error';
+import {httpStatusCode} from '../../types/httpStatusCodes';
+import {Activity, Address, Business, Employee} from '../models';
+import {createNewObjectCaughtError} from './error';
 
 /** Get Business using businessId */
 const getBusinessById = async (businessId: string) => {
-    await Business.sync();
+    await Business.sync({alter: true});
+    await Address.sync({alter: true});
     const business = await Business.findOne({
-        where: { businessId: businessId },
-        attributes: { exclude: ['id'] }
+        where: {businessId: businessId},
+        include: Address,
+        attributes: {exclude: ['id']}
     }).catch((err) => {
         console.log(err);
         throw new BaseError('ORM Sequelize Error.', 'There has been an error in fetching the Business.', 'getBusinessById', httpStatusCode.INTERNAL_SERVER, true);
@@ -31,7 +33,7 @@ const getEmployeeList = async (id: string) => {
         businessId: business.businessId,
         count: (await business.countEmployees()) || 0,
         employees: await business.getEmployees({
-            attributes: { exclude: ['id'] }
+            attributes: {exclude: ['id']}
         })
     };
 };
@@ -56,12 +58,12 @@ const createBusinessWithEmployeeAddress = async (business: Business, employee: E
     }).catch((err) => createNewObjectCaughtError(err, 'createBusinessWithEmployeeAddress', 'There has been an error in creating the Business.'));
     await newBusiness.createEmployee(employee).catch(async (err) => {
         createNewObjectCaughtError(err, 'createBusinessWithEmployeeAddress', 'There has been an error in creating the Employee.');
-        await Business.destroy({ where: { businessId: business.businessId } });
+        await Business.destroy({where: {businessId: business.businessId}});
     });
     await newBusiness.createAddress(address).catch(async (err) => {
         createNewObjectCaughtError(err, 'createBusinessWithEmployeeAddress', 'There has been an error in creating the Address.');
-        await Business.destroy({ where: { businessId: business.businessId } });
-        await Employee.destroy({ where: { firebase_id: employee.firebase_id } });
+        await Business.destroy({where: {businessId: business.businessId}});
+        await Employee.destroy({where: {firebase_id: employee.firebase_id}});
     });
     return await getBusinessById(business.businessId);
 };
@@ -78,14 +80,14 @@ const addNewEmployee = async (id: string, employee: Employee) => {
         success: !!newEmployee,
         businessId: business.businessId,
         employee: await business.getEmployees({
-            where: { email: newEmployee.email },
-            attributes: { exclude: ['id'] }
+            where: {email: newEmployee.email},
+            attributes: {exclude: ['id']}
         })
     };
 };
 
 /** Add a new Activity to the Business */
-const addNewActivity = async (id: string, activity: Activity) => {
+const addNewActivity = async (id: string, activity: Activity, address: Address) => {
     await Business.sync();
     await Activity.sync();
     const business = await (await getBusinessById(id)).business;
@@ -93,8 +95,12 @@ const addNewActivity = async (id: string, activity: Activity) => {
         throw new APIError(`Cannot find Business with businessId ${id}`, 'addNewActivity', httpStatusCode.CONFLICT);
     }
     const newActivity = await business
-        .createActivity(activity, { returning: true })
+        .createActivity(activity, {returning: true})
         .catch((err) => createNewObjectCaughtError(err, 'addNewActivity', 'There has been an error in creating a new Activity'));
+    await newActivity.createAddress(address).catch(async (err) => {
+        createNewObjectCaughtError(err, 'addNewActivity', 'There has been an error in creating a new Address');
+        await Activity.destroy({where: {id: newActivity.id}});
+    });
     return {
         success: !!newActivity,
         businessId: business.businessId,
@@ -105,7 +111,10 @@ const addNewActivity = async (id: string, activity: Activity) => {
 /** Update Business */
 const updateBusiness = async (identifier: any, update: any) => {
     await Business.sync();
-    const result = await Business.update(update, { returning: ['businessId', 'name'], where: identifier }).catch((err) => {
+    const result = await Business.update(update, {
+        returning: ['businessId', 'name'],
+        where: identifier
+    }).catch((err) => {
         console.log(err);
         throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'updateBusiness', httpStatusCode.INTERNAL_SERVER, true);
     });
@@ -115,4 +124,12 @@ const updateBusiness = async (identifier: any, update: any) => {
     };
 };
 
-export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusinessWithEmployeeAddress, addNewEmployee, addNewActivity, updateBusiness };
+export {
+    getBusinessById,
+    getEmployeeList,
+    createSimpleBusiness,
+    createBusinessWithEmployeeAddress,
+    addNewEmployee,
+    addNewActivity,
+    updateBusiness
+};

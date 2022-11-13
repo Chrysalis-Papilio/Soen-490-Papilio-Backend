@@ -41,7 +41,6 @@ class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews'
     declare image: string | null;
     declare startTime: Date | null;
     declare endTime: Date | null;
-    declare businessId: string;
 
     declare activityReviews?: NonAttribute<ActivityReview[]>;
 
@@ -127,10 +126,6 @@ Activity.init(
         },
         endTime: {
             type: DataTypes.DATE
-        },
-        businessId: {
-            type: DataTypes.STRING,
-            allowNull: false
         }
     },
     {

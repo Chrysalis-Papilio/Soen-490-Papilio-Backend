@@ -5,6 +5,7 @@ import { BaseError } from '../../errors/base-error';
 
 /** Catching error */
 const createNewObjectCaughtError = (error: any, methodName: string, message?: string) => {
+    console.log(error);
     if (error.name === 'SequelizeUniqueConstraintError') {
         let messages = '';
         error.errors.forEach((value: ValidationErrorItem) => {

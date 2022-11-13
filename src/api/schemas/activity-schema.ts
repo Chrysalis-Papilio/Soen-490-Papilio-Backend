@@ -10,10 +10,6 @@ const activitySchema = object({
         required_error: 'Description is required',
         invalid_type_error: 'Description should be of type string'
     }),
-    businessId: string({
-        required_error: 'Business ID is required',
-        invalid_type_error: 'Business ID should be of type string'
-    }),
 
     // Optional
     costPerIndividual: number({
