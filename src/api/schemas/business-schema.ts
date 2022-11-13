@@ -69,6 +69,14 @@ const activitySchema = object({
         required_error: 'Description is required',
         invalid_type_error: 'Description should be of type string'
     }),
+    location: string({
+        required_error: 'Location is required',
+        invalid_type_error: 'Location should be of type string'
+    }),
+    businessId: string({
+        required_error: 'Business ID is required',
+        invalid_type_error: 'Business ID should be of type string'
+    }),
 
     // Optional
     costPerIndividual: number({
@@ -77,6 +85,9 @@ const activitySchema = object({
     costPerGroup: number({
         invalid_type_error: 'Cost Per Group should be of type number'
     }).optional(),
+    groupSize: number({
+        invalid_type_error: 'Group size should be of type number'
+    }),
     image: string({
         invalid_type_error: 'Image URL should be of type string'
     }).optional(),

@@ -35,11 +35,14 @@ class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews'
     declare id: CreationOptional<number>;
     declare title: string;
     declare description: string;
+    declare location: string;
     declare costPerIndividual: number | null;
     declare costPerGroup: number | null;
+    declare groupSize: number | null;
     declare image: string | null;
     declare startTime: Date | null;
     declare endTime: Date | null;
+    declare businessId: string;
 
     declare activityReviews?: NonAttribute<ActivityReview[]>;
 
@@ -106,6 +109,10 @@ Activity.init(
                 }
             }
         },
+        location: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         costPerIndividual: {
             type: DataTypes.FLOAT,
             defaultValue: 0.0
@@ -114,6 +121,10 @@ Activity.init(
             type: DataTypes.FLOAT,
             defaultValue: 0.0
         },
+        groupSize: {
+            type: DataTypes.INTEGER,
+            defaultValue: 1
+        },
         image: DataTypes.STRING,
         startTime: {
             type: DataTypes.DATE,
@@ -121,6 +132,10 @@ Activity.init(
         },
         endTime: {
             type: DataTypes.DATE
+        },
+        businessId: {
+            type: DataTypes.STRING,
+            allowNull: false
         }
     },
     {
