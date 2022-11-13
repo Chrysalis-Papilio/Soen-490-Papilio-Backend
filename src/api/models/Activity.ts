@@ -35,7 +35,6 @@ class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews'
     declare id: CreationOptional<number>;
     declare title: string;
     declare description: string;
-    declare location: string;
     declare costPerIndividual: number | null;
     declare costPerGroup: number | null;
     declare groupSize: number | null;
@@ -108,10 +107,6 @@ Activity.init(
                     }
                 }
             }
-        },
-        location: {
-            type: DataTypes.STRING,
-            allowNull: false
         },
         costPerIndividual: {
             type: DataTypes.FLOAT,
