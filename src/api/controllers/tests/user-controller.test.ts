@@ -1,5 +1,4 @@
 import request from 'supertest';
-// import {userController} from '../../controllers';
 import app from '../../../app';
 import { userRepos } from '../../repos';
 
@@ -57,22 +56,6 @@ describe("UserController", () => {
                 expect(userRepoSpy).toHaveBeenCalledTimes(1);
                 userRepoSpy.mockRestore();
             });
-
-            it('should return a NOTFOUND[404] status code.', async() => {
-                //  Arrange
-                const endpoint = '/api/user/getAllUser';
-                const expectedStatusCode = 404;
-                const userRepoSpy = jest
-                .spyOn(userRepos, 'getAllUsers')
-
-                //  Act
-                const res = await request(app).get(endpoint);
-
-                //  Assert
-                expect(res.statusCode).toEqual(expectedStatusCode);
-                expect(userRepoSpy).toHaveBeenCalledTimes(0);
-                userRepoSpy.mockRestore();
-            });
         });
         describe('getUserByEmail endpoint', () => {
             it("should return the correct user.", async () => {
@@ -117,7 +100,7 @@ describe("UserController", () => {
             it("should return an empty JSON object.", async () => {
                 //  Arrange
                 const endpoint = '/api/user/getUserByEmail';
-                const testEmail = 'sample2@gmail.com';
+                const testEmail = 'invalidEmail';
                 const expectedStatusCode = 200;
                 const userRepoSpy = jest
                 .spyOn(userRepos, 'getUserByEmail')
@@ -129,7 +112,7 @@ describe("UserController", () => {
                 .send({
                     email: testEmail
                 });
-
+                console.log(res.body, 'resing');
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);
                 expect(userRepoSpy).toHaveBeenCalledTimes(1);
@@ -153,26 +136,6 @@ describe("UserController", () => {
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);
                 expect(res.body).toEqual({})
-                expect(userRepoSpy).toHaveBeenCalledTimes(0);
-                userRepoSpy.mockRestore();
-            });
-            it("should return a NOTFOUND[404] status code.", async () => {
-                //  Arrange
-                const endpoint = '/api/user/getUserByEmai';
-                const testEmail = 'sample2@gmail.com';
-                const expectedStatusCode = 404;
-                const userRepoSpy = jest
-                .spyOn(userRepos, 'getUserByEmail')
-
-                //  Act
-                const res = await request(app)
-                .get(endpoint)
-                .send({
-                    email: testEmail
-                });
-
-                //  Assert
-                expect(res.statusCode).toBe(expectedStatusCode);
                 expect(userRepoSpy).toHaveBeenCalledTimes(0);
                 userRepoSpy.mockRestore();
             });

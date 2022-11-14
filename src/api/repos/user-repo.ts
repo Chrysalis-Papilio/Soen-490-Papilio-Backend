@@ -47,7 +47,6 @@ const createSimpleUser = async (user: any): Promise<UserDTO> => {
         countryCode: user.countryCode ? user.countryCode : undefined
     }).catch((err) => {
         var messages = '';
-        //  console.log(err);
         if (err.name === 'SequelizeUniqueConstraintError') {
             err.errors.forEach((value: ValidationErrorItem) => {
                 messages = messages.concat(`${value.path} is already taken. \n`);
