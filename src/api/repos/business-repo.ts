@@ -1,8 +1,8 @@
-import {APIError} from '../../errors/api-error';
-import {BaseError} from '../../errors/base-error';
-import {httpStatusCode} from '../../types/httpStatusCodes';
-import {Activity, Address, Business, Employee} from '../models';
-import {createNewObjectCaughtError} from './error';
+import { APIError } from '../../errors/api-error';
+import { BaseError } from '../../errors/base-error';
+import { httpStatusCode } from '../../types/httpStatusCodes';
+import { Activity, Address, Business, Employee } from '../models';
+import { createNewObjectCaughtError } from './error';
 
 /** Get Business using businessId */
 const getBusinessById = async (businessId: string) => {
@@ -27,7 +27,7 @@ const getEmployeeList = async (id: string) => {
     await Business.sync();
     const business = await (await getBusinessById(id)).business;
     if (!business) {
-        throw new APIError(`Cannot find Business with businessId '${id}.'`, 'getEmployeeList', httpStatusCode.CONFLICT);
+        throw new APIError(`Cannot find Business with businessId '${id}.`, 'getEmployeeList', httpStatusCode.CONFLICT);
     }
     return {
         businessId: business.businessId,
@@ -35,6 +35,20 @@ const getEmployeeList = async (id: string) => {
         employees: await business.getEmployees({
             attributes: {exclude: ['id']}
         })
+    };
+};
+
+/** Get the list of Activity(ies) associated with that Business */
+const getActivityList = async (id: string) => {
+    await Business.sync();
+    const business = await (await getBusinessById(id)).business;
+    if (!business) {
+        throw new APIError(`Cannot find Business with businessId ${id}.`, 'getActivityList', httpStatusCode.CONFLICT);
+    }
+    return {
+        businessId: business.businessId,
+        count: (await business.countActivities()) || 0,
+        activities: await business.getActivities()
     };
 };
 
@@ -95,7 +109,7 @@ const addNewActivity = async (id: string, activity: Activity, address: Address) 
         throw new APIError(`Cannot find Business with businessId ${id}`, 'addNewActivity', httpStatusCode.CONFLICT);
     }
     const newActivity = await business
-        .createActivity(activity, {returning: true})
+        .createActivity(activity, { returning: true })
         .catch((err) => createNewObjectCaughtError(err, 'addNewActivity', 'There has been an error in creating a new Activity'));
     await newActivity.createAddress(address).catch(async (err) => {
         createNewObjectCaughtError(err, 'addNewActivity', 'There has been an error in creating a new Address');
@@ -124,12 +138,4 @@ const updateBusiness = async (identifier: any, update: any) => {
     };
 };
 
-export {
-    getBusinessById,
-    getEmployeeList,
-    createSimpleBusiness,
-    createBusinessWithEmployeeAddress,
-    addNewEmployee,
-    addNewActivity,
-    updateBusiness
-};
+export { getBusinessById, getEmployeeList, getActivityList, createSimpleBusiness, createBusinessWithEmployeeAddress, addNewEmployee, addNewActivity, updateBusiness };
