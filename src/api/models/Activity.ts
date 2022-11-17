@@ -37,6 +37,7 @@ class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews'
     declare description: string;
     declare costPerIndividual: number | null;
     declare costPerGroup: number | null;
+    declare groupSize: number | null;
     declare image: string | null;
     declare startTime: Date | null;
     declare endTime: Date | null;
@@ -113,6 +114,10 @@ Activity.init(
         costPerGroup: {
             type: DataTypes.FLOAT,
             defaultValue: 0.0
+        },
+        groupSize: {
+            type: DataTypes.INTEGER,
+            defaultValue: 1
         },
         image: DataTypes.STRING,
         startTime: {
