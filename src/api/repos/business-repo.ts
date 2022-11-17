@@ -1,14 +1,19 @@
 import { APIError } from '../../errors/api-error';
 import { BaseError } from '../../errors/base-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
-import { Address, Business, Employee } from '../models';
+import { Activity, Address, Business, Employee } from '../models';
 import { createNewObjectCaughtError } from './error';
 
 /** Get Business using businessId */
 const getBusinessById = async (businessId: string) => {
-    await Business.sync();
+    await Business.sync({ alter: true });
+    await Address.sync({ alter: true });
     const business = await Business.findOne({
         where: { businessId: businessId },
+        include: {
+            model: Address,
+            attributes: { exclude: ['id', 'ActivityId', 'BusinessId'] }
+        },
         attributes: { exclude: ['id'] }
     }).catch((err) => {
         console.log(err);
@@ -22,10 +27,11 @@ const getBusinessById = async (businessId: string) => {
 
 /** Get the list of Employee(s) associated with that Business */
 const getEmployeeList = async (id: string) => {
-    await Business.sync();
+    await Business.sync({ alter: true });
+    await Employee.sync({ alter: true });
     const business = await (await getBusinessById(id)).business;
     if (!business) {
-        throw new APIError(`Cannot find Business with businessId '${id}.'`, 'getEmployeeList', httpStatusCode.CONFLICT);
+        throw new APIError(`Cannot find Business with businessId '${id}.`, 'getEmployeeList', httpStatusCode.CONFLICT);
     }
     return {
         businessId: business.businessId,
@@ -36,9 +42,24 @@ const getEmployeeList = async (id: string) => {
     };
 };
 
+/** Get the list of Activity(ies) associated with that Business */
+const getActivityList = async (id: string) => {
+    await Business.sync({ alter: true });
+    await Activity.sync({ alter: true });
+    const business = await (await getBusinessById(id)).business;
+    if (!business) {
+        throw new APIError(`Cannot find Business with businessId ${id}.`, 'getActivityList', httpStatusCode.CONFLICT);
+    }
+    return {
+        businessId: business.businessId,
+        count: (await business.countActivities()) || 0,
+        activities: await business.getActivities()
+    };
+};
+
 /** SHOULD NOT USE */
 const createSimpleBusiness = async (business: any) => {
-    await Business.sync();
+    await Business.sync({ alter: true });
     return await Business.create({
         businessId: business.businessId,
         name: business.name
@@ -47,9 +68,9 @@ const createSimpleBusiness = async (business: any) => {
 
 /** Full set of creating a Business with a minimum of one Employee and an Address */
 const createBusinessWithEmployeeAddress = async (business: Business, employee: Employee, address: Address) => {
-    await Business.sync();
-    await Employee.sync();
-    await Address.sync();
+    await Business.sync({ alter: true });
+    await Employee.sync({ alter: true });
+    await Address.sync({ alter: true });
     const newBusiness = await Business.create({
         businessId: business.businessId,
         name: business.name
@@ -68,7 +89,8 @@ const createBusinessWithEmployeeAddress = async (business: Business, employee: E
 
 /** Add a new Employee to the Business */
 const addNewEmployee = async (id: string, employee: Employee) => {
-    await Business.sync();
+    await Business.sync({ alter: true });
+    await Employee.sync({ alter: true });
     const business = await (await getBusinessById(id)).business;
     if (!business) {
         throw new APIError(`Cannot find Business with businessId '${id}'`, 'addNewEmployee', httpStatusCode.CONFLICT);
@@ -84,10 +106,35 @@ const addNewEmployee = async (id: string, employee: Employee) => {
     };
 };
 
+/** Add a new Activity to the Business */
+const addNewActivity = async (id: string, activity: Activity, address: Address) => {
+    await Business.sync({ alter: true });
+    await Activity.sync({ alter: true });
+    const business = await (await getBusinessById(id)).business;
+    if (!business) {
+        throw new APIError(`Cannot find Business with businessId ${id}`, 'addNewActivity', httpStatusCode.CONFLICT);
+    }
+    const newActivity = await business
+        .createActivity(activity, { returning: true })
+        .catch((err) => createNewObjectCaughtError(err, 'addNewActivity', 'There has been an error in creating a new Activity'));
+    await newActivity.createAddress(address).catch(async (err) => {
+        createNewObjectCaughtError(err, 'addNewActivity', 'There has been an error in creating a new Address');
+        await Activity.destroy({ where: { id: newActivity.id } });
+    });
+    return {
+        success: !!newActivity,
+        businessId: business.businessId,
+        activity: newActivity
+    };
+};
+
 /** Update Business */
 const updateBusiness = async (identifier: any, update: any) => {
-    await Business.sync();
-    const result = await Business.update(update, { returning: ['businessId', 'name'], where: identifier }).catch((err) => {
+    await Business.sync({ alter: true });
+    const result = await Business.update(update, {
+        returning: ['businessId', 'name'],
+        where: identifier
+    }).catch((err) => {
         console.log(err);
         throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'updateBusiness', httpStatusCode.INTERNAL_SERVER, true);
     });
@@ -97,4 +144,4 @@ const updateBusiness = async (identifier: any, update: any) => {
     };
 };
 
-export { getBusinessById, getEmployeeList, createSimpleBusiness, createBusinessWithEmployeeAddress, addNewEmployee, updateBusiness };
+export { getBusinessById, getEmployeeList, getActivityList, createSimpleBusiness, createBusinessWithEmployeeAddress, addNewEmployee, addNewActivity, updateBusiness };

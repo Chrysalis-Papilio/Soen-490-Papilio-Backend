@@ -5,7 +5,7 @@ import { createNewObjectCaughtError } from './error';
 
 /** Get all accounts from table account */
 const getAllUsers = async () => {
-    await User.sync();
+    await User.sync({ alter: true });
     return User.findAll({
         attributes: { exclude: ['id'] }
     });
@@ -13,7 +13,7 @@ const getAllUsers = async () => {
 
 /** Get User from firebase_id */
 const getUserById = async (id: string) => {
-    await User.sync();
+    await User.sync({ alter: true });
     const user = await User.findOne({
         where: { firebase_id: id },
         attributes: { exclude: ['id'] }
@@ -26,7 +26,7 @@ const getUserById = async (id: string) => {
 
 /**  Get User from email */
 const getUserByEmail = async (email: string) => {
-    await User.sync();
+    await User.sync({ alter: true });
     const user = await User.findOne({
         where: { email: email },
         attributes: { exclude: ['id'] }
@@ -39,7 +39,7 @@ const getUserByEmail = async (email: string) => {
 
 /**  Create a simple user with verified input */
 const createUser = async (user: User) => {
-    await User.sync();
+    await User.sync({ alter: true });
 
     // Check if the user is already in the database, if so, do nothing
     const checkForAlreadyExistingUser = await getUserById(user.firebase_id);
@@ -62,7 +62,7 @@ const createUser = async (user: User) => {
 
 /** Update User */
 const updateUser = async (identifier: any, update: any) => {
-    await User.sync();
+    await User.sync({ alter: true });
     const result = await User.update(update, { returning: ['firebase_id', 'firstName', 'lastName', 'countryCode', 'phone', 'email'], where: identifier }).catch((err) =>
         createNewObjectCaughtError(err, 'updateUser', 'There has been an error in updating User.')
     );

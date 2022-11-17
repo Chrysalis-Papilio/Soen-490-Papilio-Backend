@@ -11,11 +11,15 @@ router.get('/business/get/:businessId', validate(businessSchema.getBusinessById)
 
 router.get('/business/get/:businessId/employees', validate(businessSchema.getEmployeeList), businessController.getEmployeeList);
 
+router.get('/business/get/:businessId/activities', validate(businessSchema.getActivityList), businessController.getActivityList);
+
 router.post('/business/createSimpleBusiness', businessController.createSimpleBusiness);
 
 router.post('/business/createBusiness', validate(businessSchema.createBusiness), businessController.createBusiness);
 
 router.post('/business/addEmployee/:businessId', validate(businessSchema.addNewEmployee), businessController.addNewEmployee);
+
+router.post('/business/addActivity/:businessId', validate(businessSchema.addNewActivity), businessController.addNewActivity);
 
 router.put('/business/update/:businessId', validate(businessSchema.updateBusiness), businessController.updateBusiness);
 

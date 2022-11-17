@@ -2,14 +2,10 @@ import {
     Association,
     CreationOptional,
     DataTypes,
-    HasManyAddAssociationMixin,
-    HasManyAddAssociationsMixin,
     HasManyCountAssociationsMixin,
     HasManyCreateAssociationMixin,
     HasManyGetAssociationsMixin,
-    HasManyHasAssociationMixin,
     HasManyRemoveAssociationMixin,
-    HasManyRemoveAssociationsMixin,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -30,13 +26,9 @@ class User extends Model<InferAttributes<User, { omit: 'userReviews' }>, InferCr
     declare userReviews?: NonAttribute<ActivityReview[]>;
 
     declare getUserReviews: HasManyGetAssociationsMixin<ActivityReview>;
-    declare addUserReview: HasManyAddAssociationMixin<ActivityReview, number>;
-    declare addUserReviews: HasManyAddAssociationsMixin<ActivityReview, number>;
     declare removeUserReview: HasManyRemoveAssociationMixin<ActivityReview, number>;
-    declare removeUserReviews: HasManyRemoveAssociationsMixin<ActivityReview, number>;
     declare countUserReviews: HasManyCountAssociationsMixin;
-    declare createUserReview: HasManyCreateAssociationMixin<ActivityReview, 'user_id'>;
-    declare hasUserReview: HasManyHasAssociationMixin<ActivityReview, number>;
+    declare createUserReview: HasManyCreateAssociationMixin<ActivityReview>;
 
     declare static associations: {
         userReviews: Association<User, ActivityReview>;
@@ -106,7 +98,7 @@ User.init(
 
 User.hasMany(ActivityReview, {
     as: 'userReviews',
-    foreignKey: 'user_id',
+    foreignKey: 'userId',
     sourceKey: 'id'
 });
 

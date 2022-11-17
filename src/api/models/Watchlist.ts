@@ -22,7 +22,7 @@ Watchlist.init(
 
 Watchlist.belongsTo(User, {
     as: 'User',
-    foreignKey: 'user_id',
+    foreignKey: 'userId',
     onDelete: 'CASCADE'
 });
 
