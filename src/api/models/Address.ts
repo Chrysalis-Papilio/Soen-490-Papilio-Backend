@@ -1,7 +1,6 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import sequelize from '../../config/sequelize';
 
-
 class Address extends Model<InferAttributes<Address>, InferCreationAttributes<Address>> {
     declare id: CreationOptional<number>;
     declare mention: string | null;
