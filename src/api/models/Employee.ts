@@ -1,6 +1,5 @@
-import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import sequelize from '../../config/sequelize';
-import { Business } from './Business';
 
 class Employee extends Model<InferAttributes<Employee>, InferCreationAttributes<Employee>> {
     declare id: CreationOptional<number>;
@@ -10,9 +9,6 @@ class Employee extends Model<InferAttributes<Employee>, InferCreationAttributes<
     declare email: string;
     declare role: string | null;
     declare root: boolean;
-    declare BusinessId: ForeignKey<Business['id']>;
-    /** for some reason, whatever other variable name I choose for the line above, it won't work
-        so please don't change from BusinessId to anything else */
 }
 
 Employee.init(

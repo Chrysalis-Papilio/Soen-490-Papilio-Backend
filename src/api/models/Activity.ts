@@ -9,14 +9,10 @@ import {
     BelongsToManyRemoveAssociationsMixin,
     CreationOptional,
     DataTypes,
-    HasManyAddAssociationMixin,
-    HasManyAddAssociationsMixin,
     HasManyCountAssociationsMixin,
     HasManyCreateAssociationMixin,
     HasManyGetAssociationsMixin,
-    HasManyHasAssociationMixin,
     HasManyRemoveAssociationMixin,
-    HasManyRemoveAssociationsMixin,
     HasOneCreateAssociationMixin,
     HasOneGetAssociationMixin,
     HasOneSetAssociationMixin,
@@ -45,13 +41,9 @@ class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews'
     declare activityReviews?: NonAttribute<ActivityReview[]>;
 
     declare getActivityReviews: HasManyGetAssociationsMixin<ActivityReview>;
-    declare addActivityReview: HasManyAddAssociationMixin<ActivityReview, number>;
-    declare addActivityReviews: HasManyAddAssociationsMixin<ActivityReview, number>;
     declare removeActivityReview: HasManyRemoveAssociationMixin<ActivityReview, number>;
-    declare removeActivityReviews: HasManyRemoveAssociationsMixin<ActivityReview, number>;
     declare countActivityReviews: HasManyCountAssociationsMixin;
-    declare createActivityReview: HasManyCreateAssociationMixin<ActivityReview, 'activity_id'>;
-    declare hasActivityReview: HasManyHasAssociationMixin<ActivityReview, number>;
+    declare createActivityReview: HasManyCreateAssociationMixin<ActivityReview>;
 
     declare addGenre: BelongsToManyAddAssociationMixin<Genre, number>;
     declare addGenres: BelongsToManyAddAssociationsMixin<Genre, number>;
@@ -164,7 +156,7 @@ const Activity_Labels = sequelize.define(
 
 Activity.hasMany(ActivityReview, {
     as: 'activityReviews',
-    foreignKey: 'activity_id',
+    foreignKey: 'activityId',
     sourceKey: 'id'
 });
 

@@ -75,13 +75,13 @@ Address.belongsTo(Business);
 
 Business.hasMany(Employee, {
     as: 'employees',
-    foreignKey: 'business_id',
+    foreignKey: 'businessId',
     sourceKey: 'businessId'
 });
 
 Business.hasMany(Activity, {
     as: 'activities',
-    foreignKey: 'business_id',
+    foreignKey: 'businessId',
     sourceKey: 'businessId'
 });
 
