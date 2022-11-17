@@ -40,15 +40,24 @@ const getUserByEmail = async (email: string) => {
 /**  Create a simple user with verified input */
 const createUser = async (user: User) => {
     await User.sync({ alter: true });
-    await User.create({
-        firebase_id: user.firebase_id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone ? user.phone : undefined,
-        countryCode: user.countryCode ? user.countryCode : undefined
-    }).catch((err) => createNewObjectCaughtError(err, 'createUser', 'There has been an error in creating the User.'));
-    return await getUserById(user.firebase_id);
+
+    // Check if the user is already in the database, if so, do nothing
+    const checkForAlreadyExistingUser = await getUserById(user.firebase_id);
+
+    if ( !checkForAlreadyExistingUser.found )
+    {
+        await User.create({
+            firebase_id: user.firebase_id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone ? user.phone : undefined,
+            countryCode: user.countryCode ? user.countryCode : undefined
+        }).catch((err) => createNewObjectCaughtError(err, 'createUser', 'There has been an error in creating the User.'));
+        return httpStatusCode.CREATED;
+    }
+
+    return httpStatusCode.OK;
 };
 
 /** Update User */

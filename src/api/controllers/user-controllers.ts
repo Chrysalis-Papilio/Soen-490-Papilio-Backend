@@ -17,10 +17,10 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.body.user;
     try {
         /** Call to service layer */
-        const result = await userServices.createUser(user);
+        const statusCode = await userServices.createUser(user);
 
         /** Return a response to client. */
-        return res.status(200).json(result);
+        return res.sendStatus(statusCode);
     } catch (err) {
         next(err);
     }
