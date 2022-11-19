@@ -1,4 +1,4 @@
-import { object, string } from 'zod';
+import {object, string} from 'zod';
 
 const createUserSchema = object({
     body: object({
@@ -35,6 +35,8 @@ const createUserSchema = object({
         }).strict('Request contains an invalid key')
     })
 });
+
+const getAllUsers = object({});
 
 const getUserByEmailSchema = object({
     params: object({
@@ -107,4 +109,4 @@ const updateUserSchema = object({
     })
 });
 
-export { createUserSchema, getUserByEmailSchema, getUserById, updateUserSchema };
+export { createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, updateUserSchema };
