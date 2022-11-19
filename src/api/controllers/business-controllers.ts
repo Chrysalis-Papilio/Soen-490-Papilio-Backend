@@ -14,6 +14,17 @@ const getBusinessById = async (req: Request, res: Response, next: NextFunction) 
     }
 };
 
+const getEmployee = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { businessId, employeeId } = req.params;
+        const result = await businessServices.getEmployee(businessId, employeeId);
+
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
 const getEmployeeList = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
@@ -108,4 +119,68 @@ const addNewActivity = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
-export { getBusinessById, getEmployeeList, getActivityList, createSimpleBusiness, createBusiness, addNewEmployee, addNewActivity, updateBusiness };
+const removeEmployee = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        /** Call to service layer */
+        const { businessId, employeeId } = req.params;
+        const result = await businessServices.removeEmployee(businessId, employeeId);
+
+        /** Return a response to client */
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
+const removeActivity = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        /** Call to service layer */
+        const { businessId, activityId } = req.params;
+        const result = await businessServices.removeActivity(businessId, parseInt(activityId));
+
+        /** Return a response to client */
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
+const updateEmployee = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { businessId, employeeId } = req.params;
+        const { update } = req.body;
+        const result = await businessServices.updateEmployee(businessId, employeeId, update);
+
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
+const updateActivity = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { businessId, activityId } = req.params;
+        const { update } = req.body;
+        const result = await businessServices.updateActivity(businessId, parseInt(activityId), update);
+
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export {
+    getBusinessById,
+    getEmployee,
+    getEmployeeList,
+    getActivityList,
+    createSimpleBusiness,
+    createBusiness,
+    addNewEmployee,
+    addNewActivity,
+    removeEmployee,
+    removeActivity,
+    updateBusiness,
+    updateEmployee,
+    updateActivity
+};

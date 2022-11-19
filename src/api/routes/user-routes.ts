@@ -7,13 +7,19 @@ const router = express.Router();
 
 /** validate(...): Throw proper error when request is invalid */
 
-router.get('/user/getAllUsers', userController.getAllUsers);
+/** GET */
+
+router.get('/user/getAllUsers', validate(userSchema.getAllUsers), userController.getAllUsers);
 
 router.get('/user/get/:id', validate(userSchema.getUserById), userController.getUserById);
 
 router.get('/user/getUserByEmail/:email', validate(userSchema.getUserByEmailSchema), userController.getUserByEmail);
 
+/** PUT */
+
 router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
+
+/** POST */
 
 router.post('/user/createUser', validate(userSchema.createUserSchema), userController.createUser);
 

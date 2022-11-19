@@ -21,6 +21,10 @@ const getEmployeeList = async (businessId: string) => {
     return businessRepo.getEmployeeList(businessId);
 };
 
+const getEmployee = async (businessId: string, employeeId: string) => {
+    return businessRepo.getEmployee(businessId, employeeId);
+};
+
 const getActivityList = async (businessId: string) => {
     return businessRepo.getActivityList(businessId);
 };
@@ -33,4 +37,34 @@ const addNewActivity = async (businessId: string, activity: any, address: any) =
     return businessRepo.addNewActivity(businessId, activity, address);
 };
 
-export { getBusinessById, getEmployeeList, getActivityList, createSimpleBusiness, createBusiness, addNewEmployee, addNewActivity, updateBusiness };
+const removeEmployee = async (businessId: string, employeeId: string) => {
+    return businessRepo.removeEmployee(businessId, employeeId);
+};
+
+const removeActivity = async (businessId: string, activityId: number) => {
+    return businessRepo.removeActivity(businessId, activityId);
+};
+
+const updateEmployee = async (businessId: string, employeeId: string, update: any) => {
+    return businessRepo.updateEmployee(businessId, employeeId, update);
+};
+
+const updateActivity = async (businessId: string, activityId: number, update: any) => {
+    return businessRepo.updateActivity(businessId, activityId, update);
+};
+
+export {
+    getBusinessById,
+    getEmployee,
+    getEmployeeList,
+    getActivityList,
+    createSimpleBusiness,
+    createBusiness,
+    addNewEmployee,
+    addNewActivity,
+    removeEmployee,
+    removeActivity,
+    updateBusiness,
+    updateEmployee,
+    updateActivity
+};

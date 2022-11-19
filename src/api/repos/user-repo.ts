@@ -44,8 +44,7 @@ const createUser = async (user: User) => {
     // Check if the user is already in the database, if so, do nothing
     const checkForAlreadyExistingUser = await getUserById(user.firebase_id);
 
-    if ( !checkForAlreadyExistingUser.found )
-    {
+    if (!checkForAlreadyExistingUser.found) {
         await User.create({
             firebase_id: user.firebase_id,
             firstName: user.firstName,

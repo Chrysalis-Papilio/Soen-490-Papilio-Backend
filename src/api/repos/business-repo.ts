@@ -25,11 +25,32 @@ const getBusinessById = async (businessId: string) => {
     };
 };
 
+/** Get the single Employee that is associated with that Business */
+const getEmployee = async (businessId: string, employeeId: string) => {
+    await Business.sync({ alter: true });
+    await Employee.sync({ alter: true });
+    const business = (await getBusinessById(businessId)).business;
+
+    if (!business) {
+        throw new APIError(`Cannot find Business with businessId '${businessId}.`, 'getEmployee', httpStatusCode.CONFLICT);
+    }
+
+    return {
+        employee: (
+            await business.getEmployees({
+                attributes: { exclude: ['createdAt', 'updatedAt', 'root'] },
+                where: { firebase_id: employeeId },
+                limit: 1
+            })
+        )[0]
+    };
+};
+
 /** Get the list of Employee(s) associated with that Business */
 const getEmployeeList = async (id: string) => {
     await Business.sync({ alter: true });
     await Employee.sync({ alter: true });
-    const business = await (await getBusinessById(id)).business;
+    const business = (await getBusinessById(id)).business;
     if (!business) {
         throw new APIError(`Cannot find Business with businessId '${id}.`, 'getEmployeeList', httpStatusCode.CONFLICT);
     }
@@ -46,7 +67,7 @@ const getEmployeeList = async (id: string) => {
 const getActivityList = async (id: string) => {
     await Business.sync({ alter: true });
     await Activity.sync({ alter: true });
-    const business = await (await getBusinessById(id)).business;
+    const business = (await getBusinessById(id)).business;
     if (!business) {
         throw new APIError(`Cannot find Business with businessId ${id}.`, 'getActivityList', httpStatusCode.CONFLICT);
     }
@@ -91,7 +112,7 @@ const createBusinessWithEmployeeAddress = async (business: Business, employee: E
 const addNewEmployee = async (id: string, employee: Employee) => {
     await Business.sync({ alter: true });
     await Employee.sync({ alter: true });
-    const business = await (await getBusinessById(id)).business;
+    const business = (await getBusinessById(id)).business;
     if (!business) {
         throw new APIError(`Cannot find Business with businessId '${id}'`, 'addNewEmployee', httpStatusCode.CONFLICT);
     }
@@ -110,7 +131,7 @@ const addNewEmployee = async (id: string, employee: Employee) => {
 const addNewActivity = async (id: string, activity: Activity, address: Address) => {
     await Business.sync({ alter: true });
     await Activity.sync({ alter: true });
-    const business = await (await getBusinessById(id)).business;
+    const business = (await getBusinessById(id)).business;
     if (!business) {
         throw new APIError(`Cannot find Business with businessId ${id}`, 'addNewActivity', httpStatusCode.CONFLICT);
     }
@@ -125,6 +146,46 @@ const addNewActivity = async (id: string, activity: Activity, address: Address) 
         success: !!newActivity,
         businessId: business.businessId,
         activity: newActivity
+    };
+};
+
+/** Remove Activity with id 'activityId' */
+/** Sequelize will nullify businessId attribute in Activity, will not remove the row */
+const removeActivity = async (id: string, activityId: number) => {
+    await Business.sync({ alter: true });
+    await Employee.sync({ alter: true });
+    const business = (await getBusinessById(id)).business;
+    if (!business) {
+        throw new APIError(`Cannot find Business with businessId ${id}`, 'removeActivity', httpStatusCode.CONFLICT);
+    }
+    const preCount = await business.countActivities();
+    const activity = await Activity.findOne({ where: { id: activityId } });
+    if (!activity) {
+        throw new APIError(`Cannot find Activity with id ${activityId}`, 'removeActivity', httpStatusCode.CONFLICT);
+    }
+    await business.removeActivity(activity);
+    return {
+        success: !(preCount === (await business.countActivities()))
+    };
+};
+
+/** Remove Employee with firebase_id 'employeeId' */
+/** Sequelize will nullify businessId attribute in Employee, will not remove the row */
+const removeEmployee = async (id: string, employeeId: string) => {
+    await Business.sync({ alter: true });
+    await Employee.sync({ alter: true });
+    const business = (await getBusinessById(id)).business;
+    if (!business) {
+        throw new APIError(`Cannot find Business with businessId ${id}`, 'removeEmployee', httpStatusCode.CONFLICT);
+    }
+    const preCount = await business.countEmployees();
+    const employee = await Employee.findOne({ where: { firebase_id: employeeId } });
+    if (!employee) {
+        throw new APIError(`Cannot find Employee with firebase_id ${employeeId}`, 'removeEmployee', httpStatusCode.CONFLICT);
+    }
+    await business.removeEmployee(employee);
+    return {
+        success: !(preCount === (await business.countEmployees()))
     };
 };
 
@@ -144,4 +205,38 @@ const updateBusiness = async (identifier: any, update: any) => {
     };
 };
 
-export { getBusinessById, getEmployeeList, getActivityList, createSimpleBusiness, createBusinessWithEmployeeAddress, addNewEmployee, addNewActivity, updateBusiness };
+/** Update Employee of Business */
+const updateEmployee = async (id: string, employeeId: string, update: any) => {
+    await Business.sync({ alter: true });
+    await Employee.sync({ alter: true });
+    const employee = (await getEmployee(id, employeeId)).employee;
+    const up = await employee.update(update).catch((err) => {
+        console.log(err);
+        throw new BaseError('ORM Sequelize Error', 'There has been an error in updating the Employee', 'updateEmployee', httpStatusCode.INTERNAL_SERVER, true);
+    });
+    return {
+        success: !!up
+    };
+};
+
+// @ts-ignore
+const updateActivity = async (id: string, activityId: number, update: any) => {
+    await Business.sync({ alter: true });
+    await Activity.sync({ alter: true });
+};
+
+export {
+    getBusinessById,
+    getEmployeeList,
+    getEmployee,
+    getActivityList,
+    createSimpleBusiness,
+    createBusinessWithEmployeeAddress,
+    addNewEmployee,
+    addNewActivity,
+    removeEmployee,
+    removeActivity,
+    updateBusiness,
+    updateEmployee,
+    updateActivity
+};
