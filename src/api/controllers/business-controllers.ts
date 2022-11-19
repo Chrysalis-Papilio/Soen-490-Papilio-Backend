@@ -119,7 +119,7 @@ const removeEmployee = async (req: Request, res: Response, next: NextFunction) =
     } catch (err) {
         next(err);
     }
-}
+};
 
 const removeActivity = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -132,6 +132,6 @@ const removeActivity = async (req: Request, res: Response, next: NextFunction) =
     } catch (err) {
         next(err);
     }
-}
+};
 
 export { getBusinessById, getEmployeeList, getActivityList, createSimpleBusiness, createBusiness, addNewEmployee, addNewActivity, removeEmployee, removeActivity, updateBusiness };

@@ -35,10 +35,10 @@ const addNewActivity = async (businessId: string, activity: any, address: any) =
 
 const removeEmployee = async (businessId: string, employeeId: string) => {
     return businessRepo.removeEmployee(businessId, employeeId);
-}
+};
 
 const removeActivity = async (businessId: string, activityId: number) => {
     return businessRepo.removeActivity(businessId, activityId);
-}
+};
 
 export { getBusinessById, getEmployeeList, getActivityList, createSimpleBusiness, createBusiness, addNewEmployee, addNewActivity, removeEmployee, removeActivity, updateBusiness };
