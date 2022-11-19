@@ -42,6 +42,24 @@ const getEmployeeList = async (id: string) => {
     };
 };
 
+const getEmployee = async (businessId: string, employeeId: string) => {
+    await Business.sync({ alter: true });
+    await Employee.sync({ alter: true });
+    const business = (await getBusinessById(businessId)).business;
+
+    if (!business) {
+        throw new APIError(`Cannot find Business with businessId '${businessId}.`, 'getEmployee', httpStatusCode.CONFLICT);
+    }
+
+    return {
+        employee: (await business.getEmployees({
+                attributes: { exclude: ['id', 'createdAt', 'updatedAt', 'root'] },
+                where: { firebase_id: employeeId },
+                limit: 1
+            }))[0]
+    };
+};
+
 /** Get the list of Activity(ies) associated with that Business */
 const getActivityList = async (id: string) => {
     await Business.sync({ alter: true });
@@ -197,6 +215,7 @@ const updateActivity = async (id: string, activityId: number, update: any) => {
 export {
     getBusinessById,
     getEmployeeList,
+    getEmployee,
     getActivityList,
     createSimpleBusiness,
     createBusinessWithEmployeeAddress,

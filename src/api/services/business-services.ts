@@ -21,6 +21,10 @@ const getEmployeeList = async (businessId: string) => {
     return businessRepo.getEmployeeList(businessId);
 };
 
+const getEmployee = async (businessId: string, employeeId: string) => {
+    return businessRepo.getEmployee(businessId, employeeId);
+};
+
 const getActivityList = async (businessId: string) => {
     return businessRepo.getActivityList(businessId);
 };
@@ -51,6 +55,7 @@ const updateActivity = async (businessId: string, activityId: number, update: an
 
 export {
     getBusinessById,
+    getEmployee,
     getEmployeeList,
     getActivityList,
     createSimpleBusiness,

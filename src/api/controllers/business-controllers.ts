@@ -14,6 +14,17 @@ const getBusinessById = async (req: Request, res: Response, next: NextFunction) 
     }
 };
 
+const getEmployee = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { businessId, employeeId } = req.params;
+        const result = await businessServices.getEmployee(businessId, employeeId);
+
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
 const getEmployeeList = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
@@ -136,15 +147,15 @@ const removeActivity = async (req: Request, res: Response, next: NextFunction) =
 
 const updateEmployee = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { businessId, employeeId } = req.params;
-        const { update } = req.body;
+        const {businessId, employeeId} = req.params;
+        const {update} = req.body;
         const result = await businessServices.updateEmployee(businessId, employeeId, update);
 
         return res.status(200).json(result);
     } catch (err) {
         next(err);
     }
-};
+}
 
 const updateActivity = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -160,6 +171,7 @@ const updateActivity = async (req: Request, res: Response, next: NextFunction) =
 
 export {
     getBusinessById,
+    getEmployee,
     getEmployeeList,
     getActivityList,
     createSimpleBusiness,
