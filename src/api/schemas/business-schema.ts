@@ -2,17 +2,18 @@ import { object, string } from 'zod';
 import { addressSchema } from './address-schema';
 import { activitySchema, activityId, description, title, startTime, endTime, costPerIndividual, costPerGroup, groupSize } from './activity-schema';
 import { employeeSchema, employeeId, firstName, lastName, role } from './employee-schema';
+import { invalidMessage, requiredMessage } from './util';
 
 /** Attributes */
 
 const businessId = string({
-    required_error: 'Business ID is required',
-    invalid_type_error: 'Business ID should be of type string'
+    required_error: requiredMessage('Business ID'),
+    invalid_type_error: invalidMessage('Business ID', 'string')
 });
 
 const name = string({
-    required_error: 'Business Name is required',
-    invalid_type_error: 'Business Name should be of type string'
+    required_error: requiredMessage('Business Name'),
+    invalid_type_error: invalidMessage('Business Name', 'string')
 });
 
 /** Schemas */

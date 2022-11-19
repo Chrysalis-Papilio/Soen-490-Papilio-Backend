@@ -1,38 +1,36 @@
 import { object, string } from 'zod';
+import { requiredMessage, invalidMessage } from './util';
 
 /** Attributes */
 
-const id = string({
-    required_error: 'Firebase ID is required',
-    invalid_type_error: 'Firebase ID should be of type string'
-});
-
 const firebase_id = string({
-    required_error: 'Firebase ID is required',
-    invalid_type_error: 'Firebase ID should be of type string'
+    required_error: requiredMessage('Firebase ID'),
+    invalid_type_error: invalidMessage('Firebase ID', 'string')
 });
 
 const firstName = string({
-    required_error: 'Firstname is required',
-    invalid_type_error: 'Firstname should be of type string'
-}).min(2, 'First name too short!');
+    required_error: requiredMessage('First Name'),
+    invalid_type_error: invalidMessage('First Name', 'string')
+}).min(2, 'First Name too short!');
 
 const lastName = string({
-    required_error: 'Lastname is required',
-    invalid_type_error: 'Lastname should be of type string'
+    required_error: requiredMessage('Last Name'),
+    invalid_type_error: invalidMessage('Last Name', 'string')
 }).min(2, 'Last name too short!');
 
 const email = string({
-    required_error: 'Email is required',
-    invalid_type_error: 'Email should be of type string'
+    required_error: requiredMessage('Email'),
+    invalid_type_error: invalidMessage('Email', 'string')
 }).email('Invalid email');
 
 const phone = string({
-    invalid_type_error: 'Phone should be of type string'
+    required_error: requiredMessage('Phone'),
+    invalid_type_error: invalidMessage('Phone', 'string')
 }).regex(new RegExp('^\\d{10}$'), 'Invalid phone number (10 digits)');
 
 const countryCode = string({
-    invalid_type_error: 'Country Code should be of type string'
+    required_error: requiredMessage('Country Code'),
+    invalid_type_error: invalidMessage('Country Code', 'string')
 }).regex(new RegExp('^([0-9]|[1-9][0-9]|[1-9][0-9][0-9])$'), 'Invalid country code (0-999)');
 
 /** Schemas */
@@ -67,7 +65,7 @@ const getUserByEmailSchema = object({
 const getUserById = object({
     params: object({
         // Required
-        id: id
+        id: firebase_id
     }).strict('Request contains an invalid key')
 });
 
@@ -94,5 +92,5 @@ const updateUserSchema = object({
     })
 });
 
-export { id, firebase_id, firstName, lastName, email, phone, countryCode };
+export { firebase_id, firstName, lastName, email, phone, countryCode };
 export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, updateUserSchema };
