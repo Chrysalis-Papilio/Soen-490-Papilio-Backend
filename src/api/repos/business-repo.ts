@@ -174,7 +174,7 @@ const removeActivity = async (id: string, activityId: number) => {
 const removeEmployee = async (id: string, employeeId: string) => {
     await Business.sync({ alter: true });
     await Employee.sync({ alter: true });
-    const business = await (await getBusinessById(id)).business;
+    const business = (await getBusinessById(id)).business;
     if (!business) {
         throw new APIError(`Cannot find Business with businessId ${id}`, 'removeEmployee', httpStatusCode.CONFLICT);
     }

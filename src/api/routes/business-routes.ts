@@ -19,7 +19,7 @@ router.get('/business/:businessId/employee/:employeeId', businessController.getE
 
 /** POST */
 
-// router.post('/business/createSimpleBusiness', businessController.createSimpleBusiness);
+router.post('/business/createSimpleBusiness', businessController.createSimpleBusiness); // testing only
 
 router.post('/business/createBusiness', validate(businessSchema.createBusiness), businessController.createBusiness);
 
