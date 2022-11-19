@@ -129,6 +129,7 @@ const addNewActivity = async (id: string, activity: Activity, address: Address) 
 };
 
 /** Remove Activity with id 'activityId' */
+/** Sequelize will nullify businessId attribute in Activity, will not remove the row */
 const removeActivity = async (id: string, activityId: number) => {
     await Business.sync({ alter: true });
     await Employee.sync({ alter: true });
@@ -148,6 +149,7 @@ const removeActivity = async (id: string, activityId: number) => {
 };
 
 /** Remove Employee with firebase_id 'employeeId' */
+/** Sequelize will nullify businessId attribute in Employee, will not remove the row */
 const removeEmployee = async (id: string, employeeId: string) => {
     await Business.sync({ alter: true });
     await Employee.sync({ alter: true });
@@ -182,4 +184,27 @@ const updateBusiness = async (identifier: any, update: any) => {
     };
 };
 
-export { getBusinessById, getEmployeeList, getActivityList, createSimpleBusiness, createBusinessWithEmployeeAddress, addNewEmployee, addNewActivity, removeEmployee, removeActivity, updateBusiness };
+const updateEmployee = async (id: string, employeeId: string, update: any) => {
+    await Business.sync({ alter: true });
+    await Employee.sync({ alter: true });
+};
+
+const updateActivity = async (id: string, activityId: number, update: any) => {
+    await Business.sync({ alter: true });
+    await Activity.sync({ alter: true });
+};
+
+export {
+    getBusinessById,
+    getEmployeeList,
+    getActivityList,
+    createSimpleBusiness,
+    createBusinessWithEmployeeAddress,
+    addNewEmployee,
+    addNewActivity,
+    removeEmployee,
+    removeActivity,
+    updateBusiness,
+    updateEmployee,
+    updateActivity
+};

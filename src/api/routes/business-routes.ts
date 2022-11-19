@@ -27,4 +27,8 @@ router.delete('/business/:businessId/removeActivity/:activityId', validate(busin
 
 router.put('/business/update/:businessId', validate(businessSchema.updateBusiness), businessController.updateBusiness);
 
+router.put('/business/:businessId/updateEmployee/:employeeId', businessController.updateEmployee);
+
+router.put('/business/:businessId/updateActivity/:activityId', businessController.updateActivity);
+
 export = router;

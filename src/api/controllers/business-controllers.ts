@@ -134,4 +134,41 @@ const removeActivity = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
-export { getBusinessById, getEmployeeList, getActivityList, createSimpleBusiness, createBusiness, addNewEmployee, addNewActivity, removeEmployee, removeActivity, updateBusiness };
+const updateEmployee = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { businessId, employeeId } = req.params;
+        const { update } = req.body;
+        const result = await businessServices.updateEmployee(businessId, employeeId, update);
+
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
+const updateActivity = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { businessId, activityId } = req.params;
+        const { update } = req.body;
+        const result = await businessServices.updateActivity(businessId, parseInt(activityId), update);
+
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export {
+    getBusinessById,
+    getEmployeeList,
+    getActivityList,
+    createSimpleBusiness,
+    createBusiness,
+    addNewEmployee,
+    addNewActivity,
+    removeEmployee,
+    removeActivity,
+    updateBusiness,
+    updateEmployee,
+    updateActivity
+};

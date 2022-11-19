@@ -41,4 +41,25 @@ const removeActivity = async (businessId: string, activityId: number) => {
     return businessRepo.removeActivity(businessId, activityId);
 };
 
-export { getBusinessById, getEmployeeList, getActivityList, createSimpleBusiness, createBusiness, addNewEmployee, addNewActivity, removeEmployee, removeActivity, updateBusiness };
+const updateEmployee = async (businessId: string, employeeId: string, update: any) => {
+    return businessRepo.updateEmployee(businessId, employeeId, update);
+};
+
+const updateActivity = async (businessId: string, activityId: number, update: any) => {
+    return businessRepo.updateActivity(businessId, activityId, update);
+};
+
+export {
+    getBusinessById,
+    getEmployeeList,
+    getActivityList,
+    createSimpleBusiness,
+    createBusiness,
+    addNewEmployee,
+    addNewActivity,
+    removeEmployee,
+    removeActivity,
+    updateBusiness,
+    updateEmployee,
+    updateActivity
+};
