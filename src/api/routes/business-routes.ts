@@ -21,6 +21,10 @@ router.post('/business/addEmployee/:businessId', validate(businessSchema.addNewE
 
 router.post('/business/addActivity/:businessId', validate(businessSchema.addNewActivity), businessController.addNewActivity);
 
+router.delete('/business/:businessId/removeEmployee/:employeeId', businessController.removeEmployee);
+
+router.delete('/business/:businessId/removeActivity/:activityId', businessController.removeActivity);
+
 router.put('/business/update/:businessId', validate(businessSchema.updateBusiness), businessController.updateBusiness);
 
 export = router;

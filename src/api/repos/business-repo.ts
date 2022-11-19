@@ -1,8 +1,8 @@
-import { APIError } from '../../errors/api-error';
-import { BaseError } from '../../errors/base-error';
-import { httpStatusCode } from '../../types/httpStatusCodes';
-import { Activity, Address, Business, Employee } from '../models';
-import { createNewObjectCaughtError } from './error';
+import {APIError} from '../../errors/api-error';
+import {BaseError} from '../../errors/base-error';
+import {httpStatusCode} from '../../types/httpStatusCodes';
+import {Activity, Address, Business, Employee} from '../models';
+import {createNewObjectCaughtError} from './error';
 
 /** Get Business using businessId */
 const getBusinessById = async (businessId: string) => {
@@ -128,6 +128,44 @@ const addNewActivity = async (id: string, activity: Activity, address: Address) 
     };
 };
 
+/** Remove Activity with id 'activityId' */
+const removeActivity = async (id: string, activityId: number) => {
+    await Business.sync({alter: true});
+    await Employee.sync({alter: true});
+    const business = await (await getBusinessById(id)).business;
+    if (!business) {
+        throw new APIError(`Cannot find Business with businessId ${id}`, 'removeActivity', httpStatusCode.CONFLICT);
+    }
+    const preCount = await business.countActivities();
+    const activity = await Activity.findOne({where: {id: activityId}});
+    if (!activity) {
+        throw new APIError(`Cannot find Activity with id ${activityId}`, 'removeActivity', httpStatusCode.CONFLICT);
+    }
+    await business.removeActivity(activity);
+    return {
+        success: !(preCount === await business.countActivities())
+    }
+}
+
+/** Remove Employee with firebase_id 'employeeId' */
+const removeEmployee = async (id: string, employeeId: string) => {
+    await Business.sync({alter: true});
+    await Employee.sync({alter: true});
+    const business = await (await getBusinessById(id)).business;
+    if (!business) {
+        throw new APIError(`Cannot find Business with businessId ${id}`, 'removeEmployee', httpStatusCode.CONFLICT);
+    }
+    const preCount = await business.countEmployees();
+    const employee = await Employee.findOne({where: {firebase_id: employeeId}});
+    if (!employee) {
+        throw new APIError(`Cannot find Employee with firebase_id ${employeeId}`, 'removeEmployee', httpStatusCode.CONFLICT);
+    }
+    await business.removeEmployee(employee);
+    return {
+        success: !(preCount === await business.countEmployees())
+    }
+}
+
 /** Update Business */
 const updateBusiness = async (identifier: any, update: any) => {
     await Business.sync({ alter: true });
@@ -144,4 +182,4 @@ const updateBusiness = async (identifier: any, update: any) => {
     };
 };
 
-export { getBusinessById, getEmployeeList, getActivityList, createSimpleBusiness, createBusinessWithEmployeeAddress, addNewEmployee, addNewActivity, updateBusiness };
+export { getBusinessById, getEmployeeList, getActivityList, createSimpleBusiness, createBusinessWithEmployeeAddress, addNewEmployee, addNewActivity, removeEmployee, removeActivity, updateBusiness };
