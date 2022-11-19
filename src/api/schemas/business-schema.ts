@@ -68,6 +68,32 @@ const addNewActivity = object({
     })
 });
 
+const removeEmployee = object({
+    params: object({
+        businessId: string({
+            required_error: 'Business ID is required',
+            invalid_type_error: 'Business ID should be of type string'
+        }),
+        employeeId: string({
+            required_error: 'Employee Firebase ID is required',
+            invalid_type_error: 'Employee Firebase ID should be of type string'
+        })
+    }).strict('Request URL contains an invalid key')
+});
+
+const removeActivity = object({
+    params: object({
+        businessId: string({
+            required_error: 'Business ID is required',
+            invalid_type_error: 'Business ID should be of type string'
+        }),
+        activityId: string({
+            required_error: 'Activity ID is required',
+            invalid_type_error: 'Activity ID should be of type string'
+        })
+    }).strict('Request URL contains an invalid key')
+});
+
 const updateBusiness = object({
     params: object({
         businessId: string({
@@ -85,4 +111,4 @@ const updateBusiness = object({
     })
 });
 
-export { getBusinessById, getEmployeeList, getActivityList, createBusiness, addNewEmployee, addNewActivity, updateBusiness };
+export { getBusinessById, getEmployeeList, getActivityList, createBusiness, addNewEmployee, addNewActivity, removeEmployee, removeActivity, updateBusiness };

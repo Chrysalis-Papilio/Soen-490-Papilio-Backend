@@ -13,7 +13,7 @@ router.get('/business/get/:businessId/employees', validate(businessSchema.getEmp
 
 router.get('/business/get/:businessId/activities', validate(businessSchema.getActivityList), businessController.getActivityList);
 
-router.post('/business/createSimpleBusiness', businessController.createSimpleBusiness);
+// router.post('/business/createSimpleBusiness', businessController.createSimpleBusiness);
 
 router.post('/business/createBusiness', validate(businessSchema.createBusiness), businessController.createBusiness);
 
@@ -21,9 +21,9 @@ router.post('/business/addEmployee/:businessId', validate(businessSchema.addNewE
 
 router.post('/business/addActivity/:businessId', validate(businessSchema.addNewActivity), businessController.addNewActivity);
 
-router.delete('/business/:businessId/removeEmployee/:employeeId', businessController.removeEmployee);
+router.delete('/business/:businessId/removeEmployee/:employeeId', validate(businessSchema.removeEmployee), businessController.removeEmployee);
 
-router.delete('/business/:businessId/removeActivity/:activityId', businessController.removeActivity);
+router.delete('/business/:businessId/removeActivity/:activityId', validate(businessSchema.removeActivity), businessController.removeActivity);
 
 router.put('/business/update/:businessId', validate(businessSchema.updateBusiness), businessController.updateBusiness);
 
