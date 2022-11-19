@@ -38,7 +38,7 @@ const getEmployee = async (businessId: string, employeeId: string) => {
     return {
         employee: (
             await business.getEmployees({
-                attributes: { exclude: ['id', 'createdAt', 'updatedAt', 'root'] },
+                attributes: { exclude: ['createdAt', 'updatedAt', 'root'] },
                 where: { firebase_id: employeeId },
                 limit: 1
             })
