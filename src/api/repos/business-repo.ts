@@ -25,11 +25,32 @@ const getBusinessById = async (businessId: string) => {
     };
 };
 
+/** Get the single Employee that is associated with that Business */
+const getEmployee = async (businessId: string, employeeId: string) => {
+    await Business.sync({ alter: true });
+    await Employee.sync({ alter: true });
+    const business = (await getBusinessById(businessId)).business;
+
+    if (!business) {
+        throw new APIError(`Cannot find Business with businessId '${businessId}.`, 'getEmployee', httpStatusCode.CONFLICT);
+    }
+
+    return {
+        employee: (
+            await business.getEmployees({
+                attributes: { exclude: ['id', 'createdAt', 'updatedAt', 'root'] },
+                where: { firebase_id: employeeId },
+                limit: 1
+            })
+        )[0]
+    };
+};
+
 /** Get the list of Employee(s) associated with that Business */
 const getEmployeeList = async (id: string) => {
     await Business.sync({ alter: true });
     await Employee.sync({ alter: true });
-    const business = await (await getBusinessById(id)).business;
+    const business = (await getBusinessById(id)).business;
     if (!business) {
         throw new APIError(`Cannot find Business with businessId '${id}.`, 'getEmployeeList', httpStatusCode.CONFLICT);
     }
@@ -42,29 +63,11 @@ const getEmployeeList = async (id: string) => {
     };
 };
 
-const getEmployee = async (businessId: string, employeeId: string) => {
-    await Business.sync({ alter: true });
-    await Employee.sync({ alter: true });
-    const business = (await getBusinessById(businessId)).business;
-
-    if (!business) {
-        throw new APIError(`Cannot find Business with businessId '${businessId}.`, 'getEmployee', httpStatusCode.CONFLICT);
-    }
-
-    return {
-        employee: (await business.getEmployees({
-                attributes: { exclude: ['id', 'createdAt', 'updatedAt', 'root'] },
-                where: { firebase_id: employeeId },
-                limit: 1
-            }))[0]
-    };
-};
-
 /** Get the list of Activity(ies) associated with that Business */
 const getActivityList = async (id: string) => {
     await Business.sync({ alter: true });
     await Activity.sync({ alter: true });
-    const business = await (await getBusinessById(id)).business;
+    const business = (await getBusinessById(id)).business;
     if (!business) {
         throw new APIError(`Cannot find Business with businessId ${id}.`, 'getActivityList', httpStatusCode.CONFLICT);
     }
@@ -109,7 +112,7 @@ const createBusinessWithEmployeeAddress = async (business: Business, employee: E
 const addNewEmployee = async (id: string, employee: Employee) => {
     await Business.sync({ alter: true });
     await Employee.sync({ alter: true });
-    const business = await (await getBusinessById(id)).business;
+    const business = (await getBusinessById(id)).business;
     if (!business) {
         throw new APIError(`Cannot find Business with businessId '${id}'`, 'addNewEmployee', httpStatusCode.CONFLICT);
     }
@@ -128,7 +131,7 @@ const addNewEmployee = async (id: string, employee: Employee) => {
 const addNewActivity = async (id: string, activity: Activity, address: Address) => {
     await Business.sync({ alter: true });
     await Activity.sync({ alter: true });
-    const business = await (await getBusinessById(id)).business;
+    const business = (await getBusinessById(id)).business;
     if (!business) {
         throw new APIError(`Cannot find Business with businessId ${id}`, 'addNewActivity', httpStatusCode.CONFLICT);
     }
@@ -151,7 +154,7 @@ const addNewActivity = async (id: string, activity: Activity, address: Address) 
 const removeActivity = async (id: string, activityId: number) => {
     await Business.sync({ alter: true });
     await Employee.sync({ alter: true });
-    const business = await (await getBusinessById(id)).business;
+    const business = (await getBusinessById(id)).business;
     if (!business) {
         throw new APIError(`Cannot find Business with businessId ${id}`, 'removeActivity', httpStatusCode.CONFLICT);
     }
@@ -202,11 +205,21 @@ const updateBusiness = async (identifier: any, update: any) => {
     };
 };
 
+/** Update Employee of Business */
 const updateEmployee = async (id: string, employeeId: string, update: any) => {
     await Business.sync({ alter: true });
     await Employee.sync({ alter: true });
+    const employee = (await getEmployee(id, employeeId)).employee;
+    const up = await employee.update(update).catch((err) => {
+        console.log(err);
+        throw new BaseError('ORM Sequelize Error', 'There has been an error in updating the Employee', 'updateEmployee', httpStatusCode.INTERNAL_SERVER, true);
+    });
+    return {
+        success: !!up
+    };
 };
 
+// @ts-ignore
 const updateActivity = async (id: string, activityId: number, update: any) => {
     await Business.sync({ alter: true });
     await Activity.sync({ alter: true });
