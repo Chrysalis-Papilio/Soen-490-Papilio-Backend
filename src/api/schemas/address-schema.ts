@@ -1,35 +1,57 @@
 import { object, string } from 'zod';
+import { invalidMessage, requiredMessage } from './util';
+
+/** Attributes */
+
+const mention = string({
+    required_error: requiredMessage('Mention'),
+    invalid_type_error: invalidMessage('Mention', 'string')
+});
+
+const lineOne = string({
+    required_error: requiredMessage('Line One'),
+    invalid_type_error: invalidMessage('Line One', 'string')
+}).min(5, 'Line One too short!');
+
+const lineTwo = string({
+    required_error: requiredMessage('Line Two'),
+    invalid_type_error: invalidMessage('Line Two', 'string')
+});
+
+const city = string({
+    required_error: requiredMessage('City'),
+    invalid_type_error: invalidMessage('City', 'string')
+});
+
+const state = string({
+    required_error: requiredMessage('State/Province'),
+    invalid_type_error: invalidMessage('State/Province', 'string')
+}).regex(new RegExp('^[A-Z]{2,4}'));
+
+const country = string({
+    required_error: requiredMessage('Country'),
+    invalid_type_error: invalidMessage('Country', 'string')
+});
+
+const postalCode = string({
+    required_error: requiredMessage('Postal Code'),
+    invalid_type_error: invalidMessage('Postal Code', 'string')
+});
+
+/** Schemas */
 
 const addressSchema = object({
     // Required
-    lineOne: string({
-        required_error: 'Line One is required',
-        invalid_type_error: 'Line One should be of type string'
-    }).min(5, 'Line One too short!'),
-    city: string({
-        required_error: 'City is required',
-        invalid_type_error: 'City should be of type string'
-    }),
-    state: string({
-        required_error: 'State/Province is required',
-        invalid_type_error: 'State/Province should be of type string'
-    }).regex(new RegExp('^[A-Z]{2,4}')),
-    country: string({
-        required_error: 'Country is required',
-        invalid_type_error: 'Country should be of type string'
-    }),
-    postalCode: string({
-        required_error: 'Postal code is required',
-        invalid_type_error: 'Postal Code should be of type string'
-    }),
+    lineOne: lineOne,
+    city: city,
+    state: state,
+    country: country,
+    postalCode: postalCode,
 
     // Optional
-    mention: string({
-        invalid_type_error: 'Mention should be of type string'
-    }).optional(),
-    lineTwo: string({
-        invalid_type_error: 'Line Two should be of type string'
-    }).optional()
+    mention: mention.optional(),
+    lineTwo: lineTwo.optional()
 });
 
+export { mention, lineOne, lineTwo, city, state, country, postalCode };
 export { addressSchema };
