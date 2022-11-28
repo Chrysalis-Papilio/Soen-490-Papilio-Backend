@@ -33,6 +33,8 @@ const countryCode = string({
     invalid_type_error: invalidMessage('Country Code', 'string')
 }).regex(new RegExp('^([0-9]|[1-9][0-9]|[1-9][0-9][0-9])$'), 'Invalid country code (0-999)');
 
+const bio = string({});
+
 /** Schemas */
 
 const userSchema = object({
@@ -44,7 +46,8 @@ const userSchema = object({
 
     //  Optional
     phone: phone.optional(),
-    countryCode: countryCode.optional()
+    countryCode: countryCode.optional(),
+    bio: bio.optional()
 });
 
 const createUserSchema = object({
