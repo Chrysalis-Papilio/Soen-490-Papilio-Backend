@@ -97,11 +97,11 @@ describe("UserController", () => {
                 userRepoSpy.mockRestore();
             });
 
-            it("should return an empty JSON object.", async () => {
+            it("should return a BADREQUEST[400] status code.", async () => {
                 //  Arrange
                 const endpoint = '/api/user/getUserByEmail';
                 const testEmail = 'invalidEmail';
-                const expectedStatusCode = 200;
+                const expectedStatusCode = 400;
                 const userRepoSpy = jest
                 .spyOn(userRepos, 'getUserByEmail')
                 .mockResolvedValueOnce({} as any);
@@ -112,31 +112,10 @@ describe("UserController", () => {
                 .send({
                     email: testEmail
                 });
-                console.log(res.body, 'resing');
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);
-                expect(userRepoSpy).toHaveBeenCalledTimes(1);
-                expect(userRepoSpy).toHaveBeenCalledWith(testEmail);
+                expect(userRepoSpy).not.toHaveBeenCalled();
                 expect(res.body).toEqual({});
-                userRepoSpy.mockRestore();
-            });
-            it("should return a BADREQUEST[400] status code.", async () => {
-                //  Arrange
-                const endpoint = '/api/user/getUserByEmail';
-                const expectedStatusCode = 400;
-                const userRepoSpy = jest
-                .spyOn(userRepos, 'getUserByEmail')
-                .mockResolvedValueOnce({} as any);
-                
-                //  Act
-                const res = await request(app)
-                .get(endpoint)
-                .send({});
-
-                //  Assert
-                expect(res.statusCode).toEqual(expectedStatusCode);
-                expect(res.body).toEqual({})
-                expect(userRepoSpy).toHaveBeenCalledTimes(0);
                 userRepoSpy.mockRestore();
             });
         });
@@ -172,59 +151,54 @@ describe("UserController", () => {
                 expect(userRepoSpy).toHaveBeenCalledTimes(0);
                 userRepoSpy.mockRestore();
             });
-            it("should return a NOTFOUND[404] status code.", async () => {
-                //  Arrange
-                const endpoint = '/api/user/createSimpleUse'
-                const expectedStatusCode = 404;
-                const userRepoSpy = jest
-                .spyOn(userRepos, 'createSimpleUser')
-                .mockResolvedValue({} as any)
-                const user = {
-                    id: 1,
-                    firebase_id: '1fnj3u4hsd',
-                    firstName: 'Lenny',
-                    lastName: 'Jenkins-Joules',
-                    email: 'sample2@gmail.com',
-                    phone: '6146156164',
-                    countryCode: 1,
-                }
-
-                //  Act
-                const res = await request(app)
-                .post(endpoint)
-                .send(user);
-
-                //  Assert
-                expect(res.statusCode).toEqual(expectedStatusCode);
-                expect(userRepoSpy).not.toHaveBeenCalled();
-                userRepoSpy.mockRestore();
-            });
         });
-        test("Updates a user profile given a firstname, lastname, email or firebase_id.", async () => {
+        test("Updates a user profile and returns the user object.", async () => {
             //  Act
             const endpoint = '/api/user/updateUserProfile'
-            const fields = 'email'
-            const firstname = 'Maxi';
-            const phone = '61461561634';
-            const countryCode = "2";
-            const email = 'sample2@gmail.com';
-            const expectedStatusCode = 400;
+            const id = 377;
+            const firebase_id = 'VFRhA6u13ieVvRpdm8hUCsJPA0o1'
+            const firstname = 'Anastassy';
+            const lastName = 'Cap';
+            const phone = '';
+            const countryCode = 1;
+            const email = 'anacap102@gmail.com';
+            const expectedStatusCode = 200;
+            const userRepoSpy = jest
+                .spyOn(userRepos, 'getUserByEmail')
+                .mockResolvedValueOnce({
+                    // id: id,
+                    // firebase_id: firebase_id,
+                    // firstName: firstname,
+                    // lastName: lastName,
+                    // email: email,
+                    // phone: phone,
+                    // countryCode: countryCode,
+            });
 
             //  Arrange
             const res = await request(app)
             .post(endpoint)
             .send({
-                fields: [fields],
-                user: {
-                    firstName: firstname,
-                    phone: phone,
-                    countryCode: countryCode,
+                identifier: {
+                    firebase_id: firebase_id
+                },
+                update: {
                     email: email
                 }
             });
 
             //  Assert
-            expect(res.statusCode).toBe(expectedStatusCode);
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                expect(userRepoSpy).toHaveBeenCalledTimes(1);
+                expect(res.headers['content-type']).toEqual('application/json; charset=utf-8');
+                expect(res.body.id).toEqual(id);
+                expect(res.body.firebase_id).toEqual(firebase_id);
+                expect(res.body.firstName).toEqual(firstname);
+                expect(res.body.lastName).toEqual(lastName);
+                expect(res.body.email).toEqual(email);
+                expect(res.body.phone).toEqual(phone);
+                expect(res.body.countryCode).toEqual(countryCode);
+                userRepoSpy.mockRestore();
         });
     });
 });

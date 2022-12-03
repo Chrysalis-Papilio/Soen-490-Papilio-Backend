@@ -1,4 +1,4 @@
-import { object, string } from 'zod';
+import { number, object, string } from 'zod';
 
 const createUserSchema = object({
     body: object({
@@ -103,17 +103,15 @@ const updateUserSchema = object({
                 required_error: 'Firebase ID is required',
                 invalid_type_error: 'Firebase ID should be of type string'
             })
-                .min(1, 'Firebase ID is too short!')
-                .regex(new RegExp('^[0-9]*$'), 'Invalid firebase ID (Positive integer)'),
+                .min(1, 'Firebase ID is too short!'),
         }).strict('Identifier field contains an invalid key'),
         //  Update attribute
         update: object({
-            id: string({
+            id: number({
                 required_error: 'User ID is required',
                 invalid_type_error: 'User ID should be of type string'
             })
                 .min(1, 'ID is too short!')
-                .regex(new RegExp('^[0-9]*$'), 'Invalid ID (Positive integer)')
                 .optional(),
             firstName: string({
                 required_error: 'Firstname is required',
@@ -137,14 +135,13 @@ const updateUserSchema = object({
                 required_error: 'Phone number is required',
                 invalid_type_error: 'Phone should be of type string'
             })
-                .regex(new RegExp('^\\d{10}$'), 'Invalid phone number (10 digits)')
+                .regex(new RegExp('^\\d{10}$|^$'), 'Invalid phone number (10 digits)')
                 .optional(),
-            countryCode: string({
+            countryCode: number({
                 required_error: 'Country Code is required',
                 invalid_type_error: 'Country Code should be of type string'
             })
-                .regex(new RegExp('^([0-9]|[1-9][0-9]|[1-9][0-9][0-9])$'), 'Invalid country code (0-999)')
-                .optional()
+                .optional(),
         })
             .strict('Update field contains an invalid key')
             .refine(
