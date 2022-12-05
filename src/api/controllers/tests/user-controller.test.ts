@@ -133,7 +133,7 @@ describe("UserController", () => {
                 .mockResolvedValue({} as any);
                 const user = {
                     id: 1,
-                    firebase_id: '1fnj3u4hsd',
+                    //  missing firebase_id: '1fnj3u4hsd',
                     firstName: 'Lenny',
                     lastName: 'Jenkins-Joules',
                     email: 'sample2@gmail.com',
@@ -163,17 +163,18 @@ describe("UserController", () => {
             const countryCode = 1;
             const email = 'anacap102@gmail.com';
             const expectedStatusCode = 200;
+            const user = {
+                id: id,
+                firebase_id: firebase_id,
+                firstName: firstname,
+                lastName: lastName,
+                email: email,
+                phone: phone,
+                countryCode: countryCode,
+            }
             const userRepoSpy = jest
-                .spyOn(userRepos, 'getUserByEmail')
-                .mockResolvedValueOnce({
-                    // id: id,
-                    // firebase_id: firebase_id,
-                    // firstName: firstname,
-                    // lastName: lastName,
-                    // email: email,
-                    // phone: phone,
-                    // countryCode: countryCode,
-            });
+                .spyOn(userRepos, 'updateUser')
+                .mockResolvedValueOnce(user as any);
 
             //  Arrange
             const res = await request(app)

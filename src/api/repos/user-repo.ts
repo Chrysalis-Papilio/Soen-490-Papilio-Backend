@@ -58,7 +58,6 @@ const createSimpleUser = async (user: any): Promise<UserDTO> => {
 };
 
 // Update User
-// matcher: {email: 'email@here.com'} or {firstName: 'John', lastName: 'Doe'} or ...
 const updateUser = async (identifier: any, update: any) => {
     await User.sync();
     var result = await User.update(update, { returning: true, where: identifier }).catch((err) => {

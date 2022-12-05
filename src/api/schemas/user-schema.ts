@@ -7,8 +7,7 @@ const createUserSchema = object({
             required_error: 'Firebase ID is required',
             invalid_type_error: 'Firebase ID should be of type string'
         })
-            .min(1, 'Firebase ID is too short!')
-            .regex(new RegExp('^[0-9]*$'), 'Invalid firebase ID (Positive integer)'),
+            .min(1, 'Firebase ID is too short!'),
         firstName: string({
             required_error: 'Firstname is required',
             invalid_type_error: 'Firstname should be of type string'
@@ -23,12 +22,11 @@ const createUserSchema = object({
         }).email('Invalid email'),
 
         //  Optional
-        id: string({
+        id: number({
             required_error: 'User ID is required',
             invalid_type_error: 'User ID should be of type string'
         })
             .min(1, 'ID is too short!')
-            .regex(new RegExp('^[0-9]*$'), 'Invalid ID (Positive integer)')
             .optional(),
         phone: string({
             required_error: 'Phone number is required',
@@ -36,11 +34,10 @@ const createUserSchema = object({
         })
             .regex(new RegExp('^\\d{10}$'), 'Invalid phone number (10 digits)')
             .optional(),
-        countryCode: string({
+        countryCode: number({
             required_error: 'Country Code is required',
             invalid_type_error: 'Country Code should be of type string'
         })
-            .regex(new RegExp('^([0-9]|[1-9][0-9]|[1-9][0-9][0-9])$'), 'Invalid country code (0-999)')
             .optional()
     }).strict('Request contains an invalid key')
 });
@@ -54,19 +51,17 @@ const getUserByEmailSchema = object({
         }).email('Invalid email'),
 
         //  Optional
-        id: string({
+        id: number({
             required_error: 'User ID is required',
             invalid_type_error: 'User ID should be of type string'
         })
             .min(1, 'ID is too short!')
-            .regex(new RegExp('^[0-9]*$'), 'Invalid ID (Positive integer)')
             .optional(),
         firebase_id: string({
             required_error: 'Firebase ID is required',
             invalid_type_error: 'Firebase ID should be of type string'
         })
             .min(1, 'Firebase ID is too short!')
-            .regex(new RegExp('^[0-9]*$'), 'Invalid firebase ID (Positive integer)')
             .optional(),
         firstName: string({
             required_error: 'Firstname is required',
@@ -86,11 +81,10 @@ const getUserByEmailSchema = object({
         })
             .regex(new RegExp('^\\d{10}$'), 'Invalid phone number (10 digits)')
             .optional(),
-        countryCode: string({
+        countryCode: number({
             required_error: 'Country Code is required',
             invalid_type_error: 'Country Code should be of type string'
         })
-            .regex(new RegExp('^([0-9]|[1-9][0-9]|[1-9][0-9][0-9])$'), 'Invalid country code (0-999)')
             .optional()
     }).strict('Request contains an invalid key')
 });
