@@ -19,6 +19,7 @@ export const validate = (schema: AnyZodObject) => (req: Request, _: Response, ne
         //  Validation errors
         if (err instanceof ZodError) {
             logger.error('issues: ', err.issues);
+            console.log(err.issues)
             err.issues.forEach((issue, index) => {
                 path = err.issues[index].path[1];
                 messages = err.issues[index].message === 'Required' ? messages.concat(`${issue.message} ${path} field.\n`) : messages.concat(`${issue.message}.\n`);

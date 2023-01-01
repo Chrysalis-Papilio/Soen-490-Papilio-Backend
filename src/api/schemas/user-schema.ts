@@ -85,11 +85,12 @@ const updateUserSchema = object({
             lastName: lastName.optional(),
             email: email.optional(),
             phone: phone.optional(),
-            countryCode: countryCode.optional()
+            countryCode: countryCode.optional(),
+            bio: bio.optional()
         })
             .strict('Update field contains an invalid key')
             .refine(
-                ({ firstName, lastName, email, phone, countryCode }) => firstName !== undefined || lastName !== undefined || email !== undefined || phone !== undefined || countryCode !== undefined,
+                ({ firstName, lastName, email, phone, countryCode, bio }) => firstName !== undefined || lastName !== undefined || email !== undefined || phone !== undefined || countryCode !== undefined || bio !== undefined,
                 { message: 'One of the fields must be defined' }
             )
     })
