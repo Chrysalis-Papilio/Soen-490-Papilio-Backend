@@ -131,6 +131,7 @@ const addNewEmployee = async (id: string, employee: Employee) => {
 const addNewActivity = async (id: string, activity: Activity, address: Address) => {
     await Business.sync({ alter: true });
     await Activity.sync({ alter: true });
+    await Address.sync({ alter: true });
     const business = (await getBusinessById(id)).business;
     if (!business) {
         throw new APIError(`Cannot find Business with businessId ${id}`, 'addNewActivity', httpStatusCode.CONFLICT);

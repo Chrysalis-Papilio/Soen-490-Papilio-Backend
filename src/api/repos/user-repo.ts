@@ -1,4 +1,4 @@
-import { User } from '../models';
+import { Activity, Address, User } from '../models';
 import { APIError } from '../../errors/api-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
 import { createNewObjectCaughtError } from './error';
@@ -75,4 +75,21 @@ const updateUser = async (identifier: any, update: any) => {
         };
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, updateUser };
+const addNewUserActivity = async (id: string, activity: Activity, address: Address) => {
+    await User.sync({ alter: true });
+    await Activity.sync({ alter: true });
+    await Address.sync({ alter: true });
+    const user = (await getUserById(id)).user;
+    if (!user) {
+        throw new APIError(`Cannot find User with firebase_id ${id}`, 'addNewUserActivity', httpStatusCode.CONFLICT);
+    }
+    const newActivity = await user
+        .createActivity(activity, { returning: true })
+        .catch((err) => createNewObjectCaughtError(err, 'addNewUserActivity', 'There has been an error in creating a new user Activity'));
+    await newActivity.createAddress(address).catch(async (err) => {
+        createNewObjectCaughtError(err, 'addNewUserActivity', 'There has been an error in creating a new Address');
+        await Activity.destroy({ where: { id: newActivity.id } });
+    });
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, updateUser, addNewUserActivity };
