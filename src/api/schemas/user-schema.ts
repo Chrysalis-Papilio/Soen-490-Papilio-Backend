@@ -1,5 +1,7 @@
 import { object, string } from 'zod';
 import { requiredMessage, invalidMessage } from './util';
+import { activitySchema } from './activity-schema';
+import { addressSchema } from './address-schema';
 
 /** Attributes */
 
@@ -92,5 +94,17 @@ const updateUserSchema = object({
     })
 });
 
+const addNewUserActivity = object({
+    params: object({
+        id: firebase_id
+    }).strict('Request URL contains an invalid key'),
+    body: object({
+        // Activity
+        activity: activitySchema.strict('Activity field contains an invalid key'),
+        // Address
+        address: addressSchema.strict('Address field contains an invalid key')
+    })
+});
+
 export { firebase_id, firstName, lastName, email, phone, countryCode };
-export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, updateUserSchema };
+export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, updateUserSchema, addNewUserActivity };

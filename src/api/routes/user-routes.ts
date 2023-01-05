@@ -23,6 +23,6 @@ router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), use
 
 router.post('/user/createUser', validate(userSchema.createUserSchema), userController.createUser);
 
-router.post('/user/addActivity/:id', userController.addNewUserActivity);
+router.post('/user/addActivity/:id', validate(userSchema.addNewUserActivity), userController.addNewUserActivity);
 
 export = router;
