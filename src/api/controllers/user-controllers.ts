@@ -67,10 +67,10 @@ const updateUserProfile = async (req: Request, res: Response, next: NextFunction
 
 const addNewUserActivity = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const { activity, address = null } = req.body;
+    const { activity } = req.body;
     try {
         /** Call to service layer */
-        const result = await userServices.addNewUserActivity(id, activity, address);
+        const result = await userServices.addNewUserActivity(id, activity);
 
         /** Return a response to client */
         return res.status(201).json(result);

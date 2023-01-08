@@ -20,8 +20,8 @@ const updateUserProfile = async (identifier: any, update: any) => {
     return userRepo.updateUser(identifier, update);
 };
 
-const addNewUserActivity = async (id: string, activity: any, address: any) => {
-    return userRepo.addNewUserActivity(id, activity, address);
+const addNewUserActivity = async (id: string, activity: any) => {
+    return userRepo.addNewUserActivity(id, activity);
 };
 
 export { getAllUsers, createUser, getUserById, getUserByEmail, updateUserProfile, addNewUserActivity };
