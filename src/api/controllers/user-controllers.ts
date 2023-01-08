@@ -73,7 +73,7 @@ const addNewUserActivity = async (req: Request, res: Response, next: NextFunctio
         const result = await userServices.addNewUserActivity(id, activity, address);
 
         /** Return a response to client */
-        return res.status(200).json(result);
+        return res.status(201).json(result);
     } catch (err) {
         next(err);
     }

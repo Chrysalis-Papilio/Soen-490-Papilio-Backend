@@ -1,7 +1,7 @@
 import { object, string } from 'zod';
 import { requiredMessage, invalidMessage } from './util';
 import { activitySchema } from './activity-schema';
-import { addressSchema } from './address-schema';
+// import { addressSchema } from './address-schema';
 
 /** Attributes */
 
@@ -100,9 +100,9 @@ const addNewUserActivity = object({
     }).strict('Request URL contains an invalid key'),
     body: object({
         // Activity
-        activity: activitySchema.strict('Activity field contains an invalid key'),
+        activity: activitySchema.strict('Activity field contains an invalid key')
         // Address
-        address: addressSchema.strict('Address field contains an invalid key')
+        // address: addressSchema.strict('Address field contains an invalid key')
     })
 });
 
