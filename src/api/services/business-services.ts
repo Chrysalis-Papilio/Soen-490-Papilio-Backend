@@ -8,8 +8,8 @@ const createSimpleBusiness = async (business: any) => {
     return businessRepo.createSimpleBusiness(business);
 };
 
-const createBusiness = async (business: any, employee: any, address: any) => {
-    await businessRepo.createBusinessWithEmployeeAddress(business, employee, address);
+const createBusiness = async (business: any, employee: any) => {
+    await businessRepo.createBusinessWithEmployeeAddress(business, employee);
     return getBusinessById(business.businessId);
 };
 
@@ -33,8 +33,8 @@ const addNewEmployee = async (businessId: string, employee: any) => {
     return businessRepo.addNewEmployee(businessId, employee);
 };
 
-const addNewActivity = async (businessId: string, activity: any, address: any) => {
-    return businessRepo.addNewActivity(businessId, activity, address);
+const addNewActivity = async (businessId: string, activity: any) => {
+    return businessRepo.addNewActivity(businessId, activity);
 };
 
 const removeEmployee = async (businessId: string, employeeId: string) => {

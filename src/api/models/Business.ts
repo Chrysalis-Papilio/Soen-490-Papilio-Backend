@@ -6,16 +6,12 @@ import {
     HasManyCreateAssociationMixin,
     HasManyGetAssociationsMixin,
     HasManyRemoveAssociationMixin,
-    HasOneCreateAssociationMixin,
-    HasOneGetAssociationMixin,
-    HasOneSetAssociationMixin,
     InferAttributes,
     InferCreationAttributes,
     Model,
     NonAttribute
 } from 'sequelize';
 import sequelize from '../../config/sequelize';
-import { Address } from './Address';
 import { Employee } from './Employee';
 import { Activity } from './Activity';
 
@@ -23,6 +19,7 @@ class Business extends Model<InferAttributes<Business, { omit: 'employees' | 'ac
     declare id: CreationOptional<number>;
     declare businessId: string;
     declare name: string;
+    declare address: string;
 
     declare employees?: NonAttribute<Employee[]>;
     declare activities?: NonAttribute<Activity[]>;
@@ -36,10 +33,6 @@ class Business extends Model<InferAttributes<Business, { omit: 'employees' | 'ac
     declare countActivities: HasManyCountAssociationsMixin;
     declare removeActivity: HasManyRemoveAssociationMixin<Activity, number>;
     declare getActivities: HasManyGetAssociationsMixin<Activity>;
-
-    declare createAddress: HasOneCreateAssociationMixin<Address>;
-    declare getAddress: HasOneGetAssociationMixin<Address>;
-    declare setAddress: HasOneSetAssociationMixin<Address, number>;
 
     declare static associations: {
         employees: Association<Business, Employee>;
@@ -62,6 +55,11 @@ Business.init(
         name: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        address: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: 'Nowhere'
         }
         // TODO: More attributes for Business
     },
@@ -69,9 +67,6 @@ Business.init(
         sequelize
     }
 );
-
-Business.hasOne(Address);
-Address.belongsTo(Business);
 
 Business.hasMany(Employee, {
     as: 'employees',

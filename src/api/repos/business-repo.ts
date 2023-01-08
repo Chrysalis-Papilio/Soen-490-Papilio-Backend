@@ -1,19 +1,14 @@
 import { APIError } from '../../errors/api-error';
 import { BaseError } from '../../errors/base-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
-import { Activity, Address, Business, Employee } from '../models';
+import { Activity, Business, Employee } from '../models';
 import { createNewObjectCaughtError } from './error';
 
 /** Get Business using businessId */
 const getBusinessById = async (businessId: string) => {
     await Business.sync({ alter: true });
-    await Address.sync({ alter: true });
     const business = await Business.findOne({
         where: { businessId: businessId },
-        include: {
-            model: Address,
-            attributes: { exclude: ['id', 'ActivityId', 'BusinessId'] }
-        },
         attributes: { exclude: ['id'] }
     }).catch((err) => {
         console.log(err);
@@ -83,27 +78,23 @@ const createSimpleBusiness = async (business: any) => {
     await Business.sync({ alter: true });
     return await Business.create({
         businessId: business.businessId,
-        name: business.name
+        name: business.name,
+        address: business.address
     }).catch((err) => createNewObjectCaughtError(err, 'createSimpleBusiness'));
 };
 
 /** Full set of creating a Business with a minimum of one Employee and an Address */
-const createBusinessWithEmployeeAddress = async (business: Business, employee: Employee, address: Address) => {
+const createBusinessWithEmployeeAddress = async (business: Business, employee: Employee) => {
     await Business.sync({ alter: true });
     await Employee.sync({ alter: true });
-    await Address.sync({ alter: true });
     const newBusiness = await Business.create({
         businessId: business.businessId,
-        name: business.name
+        name: business.name,
+        address: business.address
     }).catch((err) => createNewObjectCaughtError(err, 'createBusinessWithEmployeeAddress', 'There has been an error in creating the Business.'));
     await newBusiness.createEmployee(employee).catch(async (err) => {
         createNewObjectCaughtError(err, 'createBusinessWithEmployeeAddress', 'There has been an error in creating the Employee.');
         await Business.destroy({ where: { businessId: business.businessId } });
-    });
-    await newBusiness.createAddress(address).catch(async (err) => {
-        createNewObjectCaughtError(err, 'createBusinessWithEmployeeAddress', 'There has been an error in creating the Address.');
-        await Business.destroy({ where: { businessId: business.businessId } });
-        await Employee.destroy({ where: { firebase_id: employee.firebase_id } });
     });
     return await getBusinessById(business.businessId);
 };
@@ -128,7 +119,7 @@ const addNewEmployee = async (id: string, employee: Employee) => {
 };
 
 /** Add a new Activity to the Business */
-const addNewActivity = async (id: string, activity: Activity, address: Address) => {
+const addNewActivity = async (id: string, activity: Activity) => {
     await Business.sync({ alter: true });
     await Activity.sync({ alter: true });
     const business = (await getBusinessById(id)).business;
@@ -138,10 +129,6 @@ const addNewActivity = async (id: string, activity: Activity, address: Address) 
     const newActivity = await business
         .createActivity(activity, { returning: true })
         .catch((err) => createNewObjectCaughtError(err, 'addNewActivity', 'There has been an error in creating a new Activity'));
-    await newActivity.createAddress(address).catch(async (err) => {
-        createNewObjectCaughtError(err, 'addNewActivity', 'There has been an error in creating a new Address');
-        await Activity.destroy({ where: { id: newActivity.id } });
-    });
     return {
         success: !!newActivity,
         businessId: business.businessId,
