@@ -13,9 +13,6 @@ import {
     HasManyCreateAssociationMixin,
     HasManyGetAssociationsMixin,
     HasManyRemoveAssociationMixin,
-    HasOneCreateAssociationMixin,
-    HasOneGetAssociationMixin,
-    HasOneSetAssociationMixin,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -24,7 +21,6 @@ import {
 import sequelize from '../../config/sequelize';
 import { Genre } from './Genre';
 import { Label } from './Label';
-import { Address } from './Address';
 import { ActivityReview } from './ActivityReview';
 
 class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews' }>, InferCreationAttributes<Activity, { omit: 'activityReviews' }>> {
@@ -37,6 +33,7 @@ class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews'
     declare image: string | null;
     declare startTime: Date | null;
     declare endTime: Date | null;
+    declare address: string;
 
     declare activityReviews?: NonAttribute<ActivityReview[]>;
 
@@ -61,10 +58,6 @@ class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews'
     declare removeLabel: BelongsToManyRemoveAssociationMixin<Label, number>;
     declare removeLabels: BelongsToManyRemoveAssociationsMixin<Label, number>;
 
-    declare createAddress: HasOneCreateAssociationMixin<Address>;
-    declare getAddress: HasOneGetAssociationMixin<Address>;
-    declare setAddress: HasOneSetAssociationMixin<Address, number>;
-
     declare static associations: {
         activityReviews: Association<Activity, ActivityReview>;
     };
@@ -79,25 +72,11 @@ Activity.init(
         },
         title: {
             type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                meaningfulTitle(value: String) {
-                    if (value.length < 6) {
-                        throw new Error('Title too short! 6+ characters');
-                    }
-                }
-            }
+            allowNull: false
         },
         description: {
             type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                meaningfulDescription(value: String) {
-                    if (value.length < 15) {
-                        throw new Error('Description too short! 15+ characters');
-                    }
-                }
-            }
+            allowNull: false
         },
         costPerIndividual: {
             type: DataTypes.FLOAT,
@@ -118,6 +97,10 @@ Activity.init(
         },
         endTime: {
             type: DataTypes.DATE
+        },
+        address: {
+            type: DataTypes.STRING,
+            allowNull: false
         }
     },
     {
@@ -159,9 +142,6 @@ Activity.hasMany(ActivityReview, {
     foreignKey: 'activityId',
     sourceKey: 'id'
 });
-
-Activity.hasOne(Address);
-Address.belongsTo(Activity);
 
 Activity.belongsToMany(Genre, { through: Activity_Genres });
 

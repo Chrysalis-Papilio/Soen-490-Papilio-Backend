@@ -46,12 +46,18 @@ const endTime = any({
     required_error: requiredMessage('End Time')
 });
 
+const address = string({
+    required_error: requiredMessage('Address'),
+    invalid_type_error: invalidMessage('Address', 'string')
+});
+
 /** Schemas */
 
 const activitySchema = object({
     // Required
     title: title,
     description: description,
+    address: address,
 
     // Optional
     costPerIndividual: costPerIndividual.optional(),
@@ -62,5 +68,5 @@ const activitySchema = object({
     endTime: endTime.optional()
 });
 
-export { activityId, title, description, costPerIndividual, costPerGroup, groupSize, image, startTime, endTime };
+export { activityId, title, description, costPerIndividual, costPerGroup, groupSize, image, startTime, endTime, address };
 export { activitySchema };
