@@ -58,8 +58,7 @@ Business.init(
         },
         address: {
             type: DataTypes.STRING,
-            allowNull: false,
-            defaultValue: 'Nowhere'
+            allowNull: false
         }
         // TODO: More attributes for Business
     },

@@ -100,8 +100,7 @@ Activity.init(
         },
         address: {
             type: DataTypes.STRING,
-            allowNull: false,
-            defaultValue: 'Nowhere'
+            allowNull: false
         }
     },
     {

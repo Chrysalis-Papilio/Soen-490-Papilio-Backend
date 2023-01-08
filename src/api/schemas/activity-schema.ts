@@ -46,7 +46,7 @@ const endTime = any({
     required_error: requiredMessage('End Time')
 });
 
-const address = any({
+const address = string({
     required_error: requiredMessage('Address'),
     invalid_type_error: invalidMessage('Address', 'string')
 });
