@@ -67,8 +67,8 @@ const createSimpleBusiness = async (req: Request, res: Response, next: NextFunct
 const createBusiness = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
-        const { business, employee, address } = req.body;
-        const result = await businessServices.createBusiness(business, employee, address);
+        const { business, employee } = req.body;
+        const result = await businessServices.createBusiness(business, employee);
 
         /** Return a response to client */
         return res.status(200).json(result);
@@ -109,8 +109,8 @@ const addNewActivity = async (req: Request, res: Response, next: NextFunction) =
     try {
         /** Call to service layer */
         const { businessId } = req.params;
-        const { activity, address = null } = req.body;
-        const result = await businessServices.addNewActivity(businessId, activity, address);
+        const { activity } = req.body;
+        const result = await businessServices.addNewActivity(businessId, activity);
 
         /** Return a response to client */
         return res.status(200).json(result);

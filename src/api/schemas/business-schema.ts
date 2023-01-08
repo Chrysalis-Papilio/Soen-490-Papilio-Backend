@@ -1,5 +1,4 @@
 import { object, string } from 'zod';
-import { addressSchema } from './address-schema';
 import { activitySchema, activityId, description, title, startTime, endTime, costPerIndividual, costPerGroup, groupSize } from './activity-schema';
 import { employeeSchema, employeeId, firstName, lastName, role } from './employee-schema';
 import { invalidMessage, requiredMessage } from './util';
@@ -14,6 +13,11 @@ const businessId = string({
 const name = string({
     required_error: requiredMessage('Business Name'),
     invalid_type_error: invalidMessage('Business Name', 'string')
+});
+
+const address = string({
+    required_error: requiredMessage('Address'),
+    invalid_type_error: invalidMessage('Address', 'string')
 });
 
 /** Schemas */
@@ -47,10 +51,9 @@ const createBusiness = object({
         // Business
         business: object({
             businessId: businessId,
-            name: name
+            name: name,
+            address: address
         }).strict('Business field contains an invalid key'),
-        // Address
-        address: addressSchema.strict('Address field contains an invalid key'),
         // Employee
         employee: employeeSchema.strict('Employee field contains an invalid key')
     })
@@ -71,9 +74,7 @@ const addNewActivity = object({
     }).strict('Request URL contains an invalid key'),
     body: object({
         // Activity
-        activity: activitySchema.strict('Activity field contains an invalid key'),
-        // Address
-        address: addressSchema.strict('Address field contains an invalid key')
+        activity: activitySchema.strict('Activity field contains an invalid key')
     })
 });
 
@@ -87,7 +88,8 @@ const updateBusiness = object({
     }).strict('Request URL contains an invalid key'),
     body: object({
         update: object({
-            name: name.optional()
+            name: name.optional(),
+            address: address.optional()
         }).strict('Update field contains an invalid key')
     })
 });
@@ -118,11 +120,12 @@ const updateActivity = object({
         endTime: endTime.optional(),
         costPerIndividual: costPerIndividual.optional(),
         costPerGroup: costPerGroup.optional(),
-        groupSize: groupSize.optional()
+        groupSize: groupSize.optional(),
+        address: address.optional()
     })
 });
 
-export { businessId, name };
+export { businessId, name, address };
 export {
     getBusinessById,
     getEmployee,
