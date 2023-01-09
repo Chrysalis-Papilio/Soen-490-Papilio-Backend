@@ -30,7 +30,7 @@ class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews'
     declare costPerIndividual: number | null;
     declare costPerGroup: number | null;
     declare groupSize: number | null;
-    declare image: string | null;
+    declare images: string[] | null;
     declare startTime: Date | null;
     declare endTime: Date | null;
     declare address: string;
@@ -90,7 +90,7 @@ Activity.init(
             type: DataTypes.INTEGER,
             defaultValue: 1
         },
-        image: DataTypes.STRING,
+        images: DataTypes.ARRAY(DataTypes.STRING),
         startTime: {
             type: DataTypes.DATE,
             defaultValue: new Date(0).toISOString()

@@ -1,5 +1,6 @@
 # File
 .env
+credentials.json
 yarn.lock
 LICENSE
 

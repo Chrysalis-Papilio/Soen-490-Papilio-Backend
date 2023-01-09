@@ -69,6 +69,17 @@ const addNewUserActivity = async (req: Request, res: Response, next: NextFunctio
     const { id } = req.params;
     const { activity } = req.body;
     try {
+        /** Check if middleware uploaded and retrieved the images' URLs */
+        const imageUrls: string[] = [];
+        if (req.files) {
+            const fileKeys = Object.keys(req.files);
+            fileKeys.forEach((key) => {
+                // @ts-ignore - THIS IS NECESSARY
+                imageUrls.push(req.files[key].publicUrl);
+            });
+            activity['images'] = imageUrls;
+        }
+
         /** Call to service layer */
         const result = await userServices.addNewUserActivity(id, activity);
 
