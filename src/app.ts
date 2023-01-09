@@ -1,8 +1,8 @@
 import express from 'express';
-import { userRoute, activityRoute, businessRoute } from './api/routes';
 import config from './config/config';
 import { logger } from './config/logger';
 import { ErrorHandler } from './errors/error-handler';
+import { userRoute, activityRoute, businessRoute } from './api/routes';
 
 const app = express();
 const errorHandler = new ErrorHandler();

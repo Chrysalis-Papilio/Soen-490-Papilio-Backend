@@ -12,6 +12,10 @@ const getUserByEmail = async (email: string) => {
     return userRepo.getUserByEmail(email);
 };
 
+const getUserActivityList = async (id: string) => {
+    return userRepo.getUserActivityList(id);
+};
+
 const createUser = async (user: any) => {
     return userRepo.createUser(user);
 };
@@ -20,4 +24,8 @@ const updateUserProfile = async (identifier: any, update: any) => {
     return userRepo.updateUser(identifier, update);
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, updateUserProfile };
+const addNewUserActivity = async (id: string, activity: any) => {
+    return userRepo.addNewUserActivity(id, activity);
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUserProfile, addNewUserActivity };

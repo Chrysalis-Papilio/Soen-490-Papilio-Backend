@@ -2,6 +2,7 @@ import express from 'express';
 import { userController } from '../controllers';
 import { validate } from '../middlewares/validateResource';
 import * as userSchema from '../schemas/user-schema';
+import { uploadFirebase } from '../middlewares/multerUpload';
 
 const router = express.Router();
 
@@ -15,6 +16,8 @@ router.get('/user/get/:id', validate(userSchema.getUserById), userController.get
 
 router.get('/user/getUserByEmail/:email', validate(userSchema.getUserByEmailSchema), userController.getUserByEmail);
 
+router.get('/user/get/:id/activities', validate(userSchema.getUserActivityList), userController.getUserActivityList);
+
 /** PUT */
 
 router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
@@ -22,5 +25,7 @@ router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), use
 /** POST */
 
 router.post('/user/createUser', validate(userSchema.createUserSchema), userController.createUser);
+
+router.post('/user/addActivity/:id', [uploadFirebase.array('images', 5), validate(userSchema.addNewUserActivity)], userController.addNewUserActivity);
 
 export = router;

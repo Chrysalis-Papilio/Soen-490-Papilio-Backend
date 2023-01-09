@@ -13,8 +13,9 @@ import {
 } from 'sequelize';
 import sequelize from '../../config/sequelize';
 import { ActivityReview } from './ActivityReview';
+import { Activity } from './Activity';
 
-class User extends Model<InferAttributes<User, { omit: 'userReviews' }>, InferCreationAttributes<User, { omit: 'userReviews' }>> {
+class User extends Model<InferAttributes<User, { omit: 'userReviews' | 'activities' }>, InferCreationAttributes<User, { omit: 'userReviews' | 'activities' }>> {
     declare id: CreationOptional<number>;
     declare firebase_id: string;
     declare firstName: string;
@@ -25,6 +26,12 @@ class User extends Model<InferAttributes<User, { omit: 'userReviews' }>, InferCr
     declare bio: string;
 
     declare userReviews?: NonAttribute<ActivityReview[]>;
+    declare activities?: NonAttribute<Activity[]>;
+
+    declare createActivity: HasManyCreateAssociationMixin<Activity>;
+    declare countActivities: HasManyCountAssociationsMixin;
+    declare removeActivity: HasManyRemoveAssociationMixin<Activity, number>;
+    declare getActivities: HasManyGetAssociationsMixin<Activity>;
 
     declare getUserReviews: HasManyGetAssociationsMixin<ActivityReview>;
     declare removeUserReview: HasManyRemoveAssociationMixin<ActivityReview, number>;
@@ -33,6 +40,7 @@ class User extends Model<InferAttributes<User, { omit: 'userReviews' }>, InferCr
 
     declare static associations: {
         userReviews: Association<User, ActivityReview>;
+        activities: Association<User, Activity>;
     };
 }
 
@@ -105,6 +113,12 @@ User.hasMany(ActivityReview, {
     as: 'userReviews',
     foreignKey: 'userId',
     sourceKey: 'id'
+});
+
+User.hasMany(Activity, {
+    as: 'activities',
+    foreignKey: 'userId',
+    sourceKey: 'firebase_id'
 });
 
 export { User };

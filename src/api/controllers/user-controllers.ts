@@ -52,6 +52,19 @@ const getUserByEmail = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
+const getUserActivityList = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        /** Call to service layer */
+        const { id } = req.params;
+        const result = await userServices.getUserActivityList(id);
+
+        /** Return a response to client */
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
 const updateUserProfile = async (req: Request, res: Response, next: NextFunction) => {
     const { identifier, update } = req.body;
     try {
@@ -64,4 +77,30 @@ const updateUserProfile = async (req: Request, res: Response, next: NextFunction
         next(err);
     }
 };
-export { getAllUsers, createUser, getUserById, getUserByEmail, updateUserProfile };
+
+const addNewUserActivity = async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const { activity } = req.body;
+    try {
+        /** Check if middleware uploaded and retrieved the images' URLs */
+        const imageUrls: string[] = [];
+        if (req.files) {
+            const fileKeys = Object.keys(req.files);
+            fileKeys.forEach((key) => {
+                // @ts-ignore - THIS IS NECESSARY
+                imageUrls.push(req.files[key].publicUrl);
+            });
+            activity['images'] = imageUrls;
+        }
+
+        /** Call to service layer */
+        const result = await userServices.addNewUserActivity(id, activity);
+
+        /** Return a response to client */
+        return res.status(201).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUserProfile, addNewUserActivity };
