@@ -33,7 +33,10 @@ const countryCode = string({
     invalid_type_error: invalidMessage('Country Code', 'string')
 }).regex(new RegExp('^([0-9]|[1-9][0-9]|[1-9][0-9][0-9])$'), 'Invalid country code (0-999)');
 
-const bio = string({});
+const bio = string({
+    required_error: requiredMessage('Bio'),
+    invalid_type_error: invalidMessage('Bio', 'string')
+});
 
 /** Schemas */
 

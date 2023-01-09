@@ -94,7 +94,8 @@ User.init(
             unique: true
         },
         bio: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull: false
         }
     },
     { sequelize }
