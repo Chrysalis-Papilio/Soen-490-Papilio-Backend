@@ -71,6 +71,8 @@ const getUserById = object({
     }).strict('Request contains an invalid key')
 });
 
+const getUserActivityList = getUserById;
+
 const updateUserSchema = object({
     body: object({
         //  Identifier attribute
@@ -107,4 +109,4 @@ const addNewUserActivity = object({
 });
 
 export { firebase_id, firstName, lastName, email, phone, countryCode };
-export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, updateUserSchema, addNewUserActivity };
+export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, addNewUserActivity };

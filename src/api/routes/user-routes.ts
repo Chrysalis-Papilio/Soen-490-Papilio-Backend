@@ -16,6 +16,8 @@ router.get('/user/get/:id', validate(userSchema.getUserById), userController.get
 
 router.get('/user/getUserByEmail/:email', validate(userSchema.getUserByEmailSchema), userController.getUserByEmail);
 
+router.get('/user/get/:id/activities', validate(userSchema.getUserActivityList), userController.getUserActivityList);
+
 /** PUT */
 
 router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);

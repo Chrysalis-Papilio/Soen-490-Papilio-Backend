@@ -52,6 +52,19 @@ const getUserByEmail = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
+const getUserActivityList = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        /** Call to service layer */
+        const { id } = req.params;
+        const result = await userServices.getUserActivityList(id);
+
+        /** Return a response to client */
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
 const updateUserProfile = async (req: Request, res: Response, next: NextFunction) => {
     const { identifier, update } = req.body;
     try {
@@ -90,4 +103,4 @@ const addNewUserActivity = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, updateUserProfile, addNewUserActivity };
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUserProfile, addNewUserActivity };

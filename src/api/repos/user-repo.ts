@@ -37,6 +37,20 @@ const getUserByEmail = async (email: string) => {
     };
 };
 
+/** Get The List of Activity Created by User */
+const getUserActivityList = async (id: string) => {
+    await User.sync({ alter: true });
+    await Activity.sync({ alter: true });
+    const user = (await getUserById(id)).user;
+    if (!user) {
+        throw new APIError(`Cannot find User with firebase_id ${id}`, 'getUserActivityList', httpStatusCode.CONFLICT);
+    }
+    return {
+        count: (await user.countActivities()) || 0,
+        activities: await user.getActivities()
+    };
+};
+
 /**  Create a simple user with verified input */
 const createUser = async (user: User) => {
     await User.sync({ alter: true });
@@ -75,6 +89,7 @@ const updateUser = async (identifier: any, update: any) => {
         };
 };
 
+/** Create a new Activity associated with this User */
 const addNewUserActivity = async (id: string, activity: Activity) => {
     await User.sync({ alter: true });
     await Activity.sync({ alter: true });
@@ -91,4 +106,4 @@ const addNewUserActivity = async (id: string, activity: Activity) => {
     };
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, updateUser, addNewUserActivity };
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUser, addNewUserActivity };
