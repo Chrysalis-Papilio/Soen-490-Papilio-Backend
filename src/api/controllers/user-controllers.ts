@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { userServices } from '../services';
+import { uploadImageFirebase } from '../../config/storage';
 
 const getAllUsers = async (_: Request, res: Response, next: NextFunction) => {
     try {
@@ -86,12 +87,13 @@ const addNewUserActivity = async (req: Request, res: Response, next: NextFunctio
         const imageUrls: string[] = [];
         if (req.files) {
             const fileKeys = Object.keys(req.files);
-            fileKeys.forEach((key) => {
+            for (const key of fileKeys) {
                 // @ts-ignore - THIS IS NECESSARY
-                imageUrls.push(req.files[key].publicUrl);
-            });
-            activity['images'] = imageUrls;
+                const url = await uploadImageFirebase(req.files[key]);
+                imageUrls.push(url);
+            }
         }
+        activity['images'] = imageUrls;
 
         /** Call to service layer */
         const result = await userServices.addNewUserActivity(id, activity);
