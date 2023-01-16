@@ -1,4 +1,4 @@
-import { any, number, object, string } from 'zod';
+import { number, object, string } from 'zod';
 import { invalidMessage, requiredMessage } from './util';
 
 /** Attributes */
@@ -33,18 +33,13 @@ const groupSize = number({
     invalid_type_error: invalidMessage('Group Size', 'number')
 });
 
-const image = string({
-    required_error: requiredMessage('Image URL'),
-    invalid_type_error: invalidMessage('Image URL', 'string')
-});
-
-const startTime = any({
+const startTime = string({
     required_error: requiredMessage('Start Time')
-});
+}).datetime();
 
-const endTime = any({
+const endTime = string({
     required_error: requiredMessage('End Time')
-});
+}).datetime();
 
 const address = string({
     required_error: requiredMessage('Address'),
@@ -58,15 +53,14 @@ const activitySchema = object({
     title: title,
     description: description,
     address: address,
+    startTime: startTime,
 
     // Optional
     costPerIndividual: costPerIndividual.optional(),
     costPerGroup: costPerGroup.optional(),
     groupSize: groupSize.optional(),
-    image: image.optional(),
-    startTime: startTime.optional(),
     endTime: endTime.optional()
 });
 
-export { activityId, title, description, costPerIndividual, costPerGroup, groupSize, image, startTime, endTime, address };
+export { activityId, title, description, costPerIndividual, costPerGroup, groupSize, startTime, endTime, address };
 export { activitySchema };
