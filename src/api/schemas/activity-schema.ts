@@ -1,4 +1,4 @@
-import { any, number, object, string } from 'zod';
+import { coerce, object, string } from 'zod';
 import { invalidMessage, requiredMessage } from './util';
 
 /** Attributes */
@@ -18,31 +18,26 @@ const description = string({
     invalid_type_error: invalidMessage('Description', 'string')
 });
 
-const costPerIndividual = number({
+const costPerIndividual = coerce.number({
     required_error: requiredMessage('Cost Per Individual'),
     invalid_type_error: invalidMessage('Cost Per Individual', 'number')
 });
 
-const costPerGroup = number({
+const costPerGroup = coerce.number({
     required_error: requiredMessage('Cost Per Group'),
     invalid_type_error: invalidMessage('Cost Per Group', 'number')
 });
 
-const groupSize = number({
+const groupSize = coerce.number({
     required_error: requiredMessage('Group Size'),
     invalid_type_error: invalidMessage('Group Size', 'number')
 });
 
-const image = string({
-    required_error: requiredMessage('Image URL'),
-    invalid_type_error: invalidMessage('Image URL', 'string')
-});
-
-const startTime = any({
+const startTime = coerce.date({
     required_error: requiredMessage('Start Time')
 });
 
-const endTime = any({
+const endTime = coerce.date({
     required_error: requiredMessage('End Time')
 });
 
@@ -58,15 +53,14 @@ const activitySchema = object({
     title: title,
     description: description,
     address: address,
+    startTime: startTime,
 
     // Optional
     costPerIndividual: costPerIndividual.optional(),
     costPerGroup: costPerGroup.optional(),
     groupSize: groupSize.optional(),
-    image: image.optional(),
-    startTime: startTime.optional(),
     endTime: endTime.optional()
 });
 
-export { activityId, title, description, costPerIndividual, costPerGroup, groupSize, image, startTime, endTime, address };
+export { activityId, title, description, costPerIndividual, costPerGroup, groupSize, startTime, endTime, address };
 export { activitySchema };
