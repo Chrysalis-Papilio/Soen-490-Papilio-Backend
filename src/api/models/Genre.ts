@@ -3,6 +3,8 @@ import sequelize from '../../config/sequelize';
 
 class Genre extends Model {
     declare id: CreationOptional<number>;
+    declare name: string;
+    declare url: string | null;
 }
 
 Genre.init(
@@ -16,6 +18,9 @@ Genre.init(
             type: DataTypes.STRING,
             allowNull: false,
             unique: true
+        },
+        url: {
+            type: DataTypes.STRING
         }
     },
     {
