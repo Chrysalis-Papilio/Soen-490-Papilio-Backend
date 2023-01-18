@@ -1,14 +1,14 @@
-import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import sequelize from '../../config/sequelize';
-import { Business } from './Business';
 
 class Employee extends Model<InferAttributes<Employee>, InferCreationAttributes<Employee>> {
     declare id: CreationOptional<number>;
+    declare firebase_id: string;
     declare firstName: string;
     declare lastName: string;
     declare email: string;
     declare role: string | null;
-    declare business_id: ForeignKey<Business['id']>;
+    declare root: boolean;
 }
 
 Employee.init(
@@ -17,6 +17,11 @@ Employee.init(
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
+        },
+        firebase_id: {
+            type: DataTypes.STRING,
+            unique: true,
+            allowNull: false
         },
         firstName: {
             type: DataTypes.STRING,
@@ -35,8 +40,17 @@ Employee.init(
             }
         },
         role: {
-            // TODO: Not sure on this one yet, could be ENUM or INT
             type: DataTypes.STRING
+        },
+        root: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false,
+            validate: {
+                rootBeAdmin(value: boolean) {
+                    if (value && this.role !== 'Admin') throw new Error('Must be Admin to be a root account!');
+                }
+            }
         }
     },
     {

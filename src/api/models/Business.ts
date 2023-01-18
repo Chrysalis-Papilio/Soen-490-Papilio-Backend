@@ -2,47 +2,41 @@ import {
     Association,
     CreationOptional,
     DataTypes,
-    HasManyAddAssociationMixin,
-    HasManyAddAssociationsMixin,
     HasManyCountAssociationsMixin,
     HasManyCreateAssociationMixin,
     HasManyGetAssociationsMixin,
-    HasManyHasAssociationMixin,
     HasManyRemoveAssociationMixin,
-    HasManyRemoveAssociationsMixin,
-    HasOneCreateAssociationMixin,
-    HasOneGetAssociationMixin,
-    HasOneSetAssociationMixin,
     InferAttributes,
     InferCreationAttributes,
     Model,
     NonAttribute
 } from 'sequelize';
 import sequelize from '../../config/sequelize';
-import { Address } from './Address';
 import { Employee } from './Employee';
+import { Activity } from './Activity';
 
-class Business extends Model<InferAttributes<Business, { omit: 'employees' }>, InferCreationAttributes<Business, { omit: 'employees' }>> {
+class Business extends Model<InferAttributes<Business, { omit: 'employees' | 'activities' }>, InferCreationAttributes<Business, { omit: 'employees' | 'activities' }>> {
     declare id: CreationOptional<number>;
+    declare businessId: string;
     declare name: string;
+    declare address: string;
 
     declare employees?: NonAttribute<Employee[]>;
+    declare activities?: NonAttribute<Activity[]>;
 
     declare getEmployees: HasManyGetAssociationsMixin<Employee>;
-    declare addEmployee: HasManyAddAssociationMixin<Employee, number>;
-    declare addEmployees: HasManyAddAssociationsMixin<Employee, number>;
     declare removeEmployee: HasManyRemoveAssociationMixin<Employee, number>;
-    declare removeEmployees: HasManyRemoveAssociationsMixin<Employee, number>;
     declare countEmployees: HasManyCountAssociationsMixin;
-    declare createEmployee: HasManyCreateAssociationMixin<Employee, 'business_id'>;
-    declare hasEmployee: HasManyHasAssociationMixin<Employee, number>;
+    declare createEmployee: HasManyCreateAssociationMixin<Employee>;
 
-    declare addAddress: HasOneCreateAssociationMixin<Address>;
-    declare getAddress: HasOneGetAssociationMixin<Address>;
-    declare setAddress: HasOneSetAssociationMixin<Address, number>;
+    declare createActivity: HasManyCreateAssociationMixin<Activity>;
+    declare countActivities: HasManyCountAssociationsMixin;
+    declare removeActivity: HasManyRemoveAssociationMixin<Activity, number>;
+    declare getActivities: HasManyGetAssociationsMixin<Activity>;
 
     declare static associations: {
         employees: Association<Business, Employee>;
+        activities: Association<Business, Activity>;
     };
 }
 
@@ -53,7 +47,16 @@ Business.init(
             autoIncrement: true,
             primaryKey: true
         },
+        businessId: {
+            type: DataTypes.STRING,
+            unique: true,
+            allowNull: false
+        },
         name: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        address: {
             type: DataTypes.STRING,
             allowNull: false
         }
@@ -64,13 +67,16 @@ Business.init(
     }
 );
 
-Business.hasOne(Address);
-Address.belongsTo(Business);
-
 Business.hasMany(Employee, {
     as: 'employees',
-    foreignKey: 'business_id',
-    sourceKey: 'id'
+    foreignKey: 'businessId',
+    sourceKey: 'businessId'
+});
+
+Business.hasMany(Activity, {
+    as: 'activities',
+    foreignKey: 'businessId',
+    sourceKey: 'businessId'
 });
 
 export { Business };

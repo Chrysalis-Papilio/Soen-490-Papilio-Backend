@@ -9,14 +9,10 @@ import {
     BelongsToManyRemoveAssociationsMixin,
     CreationOptional,
     DataTypes,
-    HasManyAddAssociationMixin,
-    HasManyAddAssociationsMixin,
     HasManyCountAssociationsMixin,
     HasManyCreateAssociationMixin,
     HasManyGetAssociationsMixin,
-    HasManyHasAssociationMixin,
     HasManyRemoveAssociationMixin,
-    HasManyRemoveAssociationsMixin,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -31,19 +27,20 @@ class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews'
     declare id: CreationOptional<number>;
     declare title: string;
     declare description: string;
+    declare costPerIndividual: number | null;
+    declare costPerGroup: number | null;
+    declare groupSize: number | null;
+    declare images: string[] | null;
     declare startTime: Date | null;
     declare endTime: Date | null;
+    declare address: string;
 
     declare activityReviews?: NonAttribute<ActivityReview[]>;
 
     declare getActivityReviews: HasManyGetAssociationsMixin<ActivityReview>;
-    declare addActivityReview: HasManyAddAssociationMixin<ActivityReview, number>;
-    declare addActivityReviews: HasManyAddAssociationsMixin<ActivityReview, number>;
     declare removeActivityReview: HasManyRemoveAssociationMixin<ActivityReview, number>;
-    declare removeActivityReviews: HasManyRemoveAssociationsMixin<ActivityReview, number>;
     declare countActivityReviews: HasManyCountAssociationsMixin;
-    declare createActivityReview: HasManyCreateAssociationMixin<ActivityReview, 'activity_id'>;
-    declare hasActivityReview: HasManyHasAssociationMixin<ActivityReview, number>;
+    declare createActivityReview: HasManyCreateAssociationMixin<ActivityReview>;
 
     declare addGenre: BelongsToManyAddAssociationMixin<Genre, number>;
     declare addGenres: BelongsToManyAddAssociationsMixin<Genre, number>;
@@ -75,32 +72,35 @@ Activity.init(
         },
         title: {
             type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                meaningfulTitle(value: String) {
-                    if (value.length < 6) {
-                        throw new Error('Title too short! 6+ characters');
-                    }
-                }
-            }
+            allowNull: false
         },
         description: {
             type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                meaningfulDescription(value: String) {
-                    if (value.length < 15) {
-                        throw new Error('Description too short! 15+ characters');
-                    }
-                }
-            }
+            allowNull: false
         },
+        costPerIndividual: {
+            type: DataTypes.FLOAT,
+            defaultValue: 0.0
+        },
+        costPerGroup: {
+            type: DataTypes.FLOAT,
+            defaultValue: 0.0
+        },
+        groupSize: {
+            type: DataTypes.INTEGER,
+            defaultValue: 1
+        },
+        images: DataTypes.ARRAY(DataTypes.STRING),
         startTime: {
             type: DataTypes.DATE,
-            defaultValue: new Date(Date.now()).toISOString()
+            defaultValue: new Date(0).toISOString()
         },
         endTime: {
             type: DataTypes.DATE
+        },
+        address: {
+            type: DataTypes.STRING,
+            allowNull: false
         }
     },
     {
@@ -139,7 +139,7 @@ const Activity_Labels = sequelize.define(
 
 Activity.hasMany(ActivityReview, {
     as: 'activityReviews',
-    foreignKey: 'activity_id',
+    foreignKey: 'activityId',
     sourceKey: 'id'
 });
 

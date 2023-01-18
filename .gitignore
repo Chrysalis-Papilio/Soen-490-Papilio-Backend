@@ -1,5 +1,6 @@
 # File
 .env
+credentials.json
 yarn.lock
 jest.config.ts
 LICENSE
@@ -10,3 +11,4 @@ LICENSE
 /node_modules
 /dist
 /coverage
+/cert

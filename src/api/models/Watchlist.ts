@@ -1,7 +1,6 @@
 import { CreationOptional, DataTypes, Model } from 'sequelize';
+import { User } from './User';
 import sequelize from '../../config/sequelize';
-
-const User = require('./User');
 
 class Watchlist extends Model {
     declare id: CreationOptional<number>;
@@ -23,7 +22,7 @@ Watchlist.init(
 
 Watchlist.belongsTo(User, {
     as: 'User',
-    foreignKey: 'user_id',
+    foreignKey: 'userId',
     onDelete: 'CASCADE'
 });
 

@@ -1,22 +1,31 @@
-import { userRepos } from '../repos';
+import { userRepo } from '../repos';
 
 const getAllUsers = async () => {
-    return userRepos.getAllUsers();
+    return userRepo.getAllUsers();
 };
 
-const createSampleUser = async () => {
-    return userRepos.createSampleUser();
+const getUserById = async (id: string) => {
+    return userRepo.getUserById(id);
 };
 
-const createSimpleUser = async (user: any) => {
-    return userRepos.createSimpleUser(user);
-};
 const getUserByEmail = async (email: string) => {
-    return userRepos.getUserByEmail(email);
+    return userRepo.getUserByEmail(email);
+};
+
+const getUserActivityList = async (id: string) => {
+    return userRepo.getUserActivityList(id);
+};
+
+const createUser = async (user: any) => {
+    return userRepo.createUser(user);
 };
 
 const updateUserProfile = async (identifier: any, update: any) => {
-    return userRepos.updateUser(identifier, update);
+    return userRepo.updateUser(identifier, update);
 };
 
-export { getAllUsers, createSampleUser, createSimpleUser, getUserByEmail, updateUserProfile };
+const addNewUserActivity = async (id: string, activity: any) => {
+    return userRepo.addNewUserActivity(id, activity);
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUserProfile, addNewUserActivity };

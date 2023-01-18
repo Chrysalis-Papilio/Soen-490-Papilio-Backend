@@ -2,14 +2,10 @@ import {
     Association,
     CreationOptional,
     DataTypes,
-    HasManyAddAssociationMixin,
-    HasManyAddAssociationsMixin,
     HasManyCountAssociationsMixin,
     HasManyCreateAssociationMixin,
     HasManyGetAssociationsMixin,
-    HasManyHasAssociationMixin,
     HasManyRemoveAssociationMixin,
-    HasManyRemoveAssociationsMixin,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -17,29 +13,34 @@ import {
 } from 'sequelize';
 import sequelize from '../../config/sequelize';
 import { ActivityReview } from './ActivityReview';
+import { Activity } from './Activity';
 
-class User extends Model<InferAttributes<User, { omit: 'userReviews' }>, InferCreationAttributes<User, { omit: 'userReviews' }>> {
+class User extends Model<InferAttributes<User, { omit: 'userReviews' | 'activities' }>, InferCreationAttributes<User, { omit: 'userReviews' | 'activities' }>> {
     declare id: CreationOptional<number>;
     declare firebase_id: string;
     declare firstName: string;
     declare lastName: string;
     declare countryCode: number | null;
-    declare phone: string;
+    declare phone: string | null;
     declare email: string;
+    declare bio: string;
 
     declare userReviews?: NonAttribute<ActivityReview[]>;
+    declare activities?: NonAttribute<Activity[]>;
+
+    declare createActivity: HasManyCreateAssociationMixin<Activity>;
+    declare countActivities: HasManyCountAssociationsMixin;
+    declare removeActivity: HasManyRemoveAssociationMixin<Activity, number>;
+    declare getActivities: HasManyGetAssociationsMixin<Activity>;
 
     declare getUserReviews: HasManyGetAssociationsMixin<ActivityReview>;
-    declare addUserReview: HasManyAddAssociationMixin<ActivityReview, number>;
-    declare addUserReviews: HasManyAddAssociationsMixin<ActivityReview, number>;
     declare removeUserReview: HasManyRemoveAssociationMixin<ActivityReview, number>;
-    declare removeUserReviews: HasManyRemoveAssociationsMixin<ActivityReview, number>;
     declare countUserReviews: HasManyCountAssociationsMixin;
-    declare createUserReview: HasManyCreateAssociationMixin<ActivityReview, 'user_id'>;
-    declare hasUserReview: HasManyHasAssociationMixin<ActivityReview, number>;
+    declare createUserReview: HasManyCreateAssociationMixin<ActivityReview>;
 
     declare static associations: {
         userReviews: Association<User, ActivityReview>;
+        activities: Association<User, Activity>;
     };
 }
 
@@ -99,6 +100,10 @@ User.init(
                 isEmail: true
             },
             unique: true
+        },
+        bio: {
+            type: DataTypes.STRING,
+            allowNull: false
         }
     },
     { sequelize }
@@ -106,8 +111,14 @@ User.init(
 
 User.hasMany(ActivityReview, {
     as: 'userReviews',
-    foreignKey: 'user_id',
+    foreignKey: 'userId',
     sourceKey: 'id'
+});
+
+User.hasMany(Activity, {
+    as: 'activities',
+    foreignKey: 'userId',
+    sourceKey: 'firebase_id'
 });
 
 export { User };
