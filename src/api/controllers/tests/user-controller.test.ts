@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../../../app';
-import { userRepos } from '../../repos';
+import { userRepo } from '../../repos';
 
 describe("UserController", () => {
     describe("GET /user", () => {
@@ -10,7 +10,8 @@ describe("UserController", () => {
                 const endpoint = '/api/user/getAllUsers';
                 const expectedStatusCode = 200;
                 const userRepoSpy = jest
-                .spyOn(userRepos, 'getAllUsers')
+                .spyOn(userRepo, 'getAllUsers')
+                //  @ts-expect-error
                 .mockResolvedValueOnce([{
                     firstName: 'Test',
                     lastName: 'User',
@@ -43,7 +44,7 @@ describe("UserController", () => {
                 const endpoint = '/api/user/getAllUsers';
                 const expectedStatusCode = 200;
                 const userRepoSpy = jest
-                .spyOn(userRepos, 'getAllUsers')
+                .spyOn(userRepo, 'getAllUsers')
                 .mockResolvedValueOnce([]); 
 
                 //  Act
@@ -64,8 +65,10 @@ describe("UserController", () => {
                 const testEmail = 'sample2@gmail.com';
                 const expectedStatusCode = 200;
                 const userRepoSpy = jest
-                .spyOn(userRepos, 'getUserByEmail')
+                .spyOn(userRepo, 'getUserByEmail')
                 .mockResolvedValueOnce({
+                    //  @ts-expect-error
+                    user: {
                     id: 1,
                     firebase_id: '1fnj3u4hsd',
                     firstName: 'Lenny',
@@ -73,7 +76,7 @@ describe("UserController", () => {
                     email: 'sample2@gmail.com',
                     phone: '6146156164',
                     countryCode: 1,
-            });
+            }});
 
                 //  Act
                 const res = await request(app)
@@ -103,7 +106,7 @@ describe("UserController", () => {
                 const testEmail = 'invalidEmail';
                 const expectedStatusCode = 400;
                 const userRepoSpy = jest
-                .spyOn(userRepos, 'getUserByEmail')
+                .spyOn(userRepo, 'getUserByEmail')
                 .mockResolvedValueOnce({} as any);
 
                 //  Act
@@ -123,13 +126,13 @@ describe("UserController", () => {
 
     /** Testing POST endpoints. */
     describe("POST /user", () => {
-        describe('createSimpleUser endpoint', () => {
+        describe('createUser endpoint', () => {
             it("should return a BADREQUEST[400] status code.", async () => {
                 //  Arrange
                 const endpoint = '/api/user/createSimpleUser'
                 const expectedStatusCode = 400;
                 const userRepoSpy = jest
-                .spyOn(userRepos, 'createSimpleUser')
+                .spyOn(userRepo, 'createUser')
                 .mockResolvedValue({} as any);
                 const user = {
                     id: 1,
@@ -173,7 +176,7 @@ describe("UserController", () => {
                 countryCode: countryCode,
             }
             const userRepoSpy = jest
-                .spyOn(userRepos, 'updateUser')
+                .spyOn(userRepo, 'updateUser')
                 .mockResolvedValueOnce(user as any);
 
             //  Arrange

@@ -6,17 +6,6 @@ import { upload } from '../middlewares/multerUpload';
 
 const router = express.Router();
 
-<<<<<<< HEAD
-router.get('/getAllUsers', userController.getAllUsers);
-
-router.get('/getUserByEmail', validate(userSchema.getUserByEmailSchema), userController.getUserByEmail);
-
-router.post('/createSampleUser', userController.createSampleUser);
-
-router.post('/createSimpleUser', validate(userSchema.createUserSchema), userController.createSimpleUser);
-
-router.post('/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
-=======
 /** validate(...): Throw proper error when request is invalid */
 
 /** GET */
@@ -32,7 +21,6 @@ router.get('/user/get/:id/activities', validate(userSchema.getUserActivityList),
 /** PUT */
 
 router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
->>>>>>> dev
 
 /** POST */
 
