@@ -2,9 +2,9 @@ import { Genre } from '../models';
 import { createNewObjectCaughtError } from './error';
 
 /** Get all genres from table Genre */
-const getAllGenres = async () => {
+const getAllGenres = async (option?: string) => {
     await Genre.sync({ alter: true });
-    return Genre.findAll();
+    return !option ? Genre.findAll() : Genre.findAll({ where: { category: option } });
 };
 
 /** Add a new genre to the DB */

@@ -1,7 +1,7 @@
 import { genreRepo } from '../repos';
 
-const getAllGenres = async () => {
-    return genreRepo.getAllGenres();
+const getAllGenres = async (option?: string) => {
+    return genreRepo.getAllGenres(option);
 };
 
 const addGenre = async (genre: any) => {
