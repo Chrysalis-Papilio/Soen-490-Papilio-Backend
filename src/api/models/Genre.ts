@@ -5,6 +5,7 @@ class Genre extends Model {
     declare id: CreationOptional<number>;
     declare name: string;
     declare url: string | null;
+    declare category: string | null;
 }
 
 Genre.init(
@@ -20,6 +21,9 @@ Genre.init(
             unique: true
         },
         url: {
+            type: DataTypes.STRING
+        },
+        category: {
             type: DataTypes.STRING
         }
     },
