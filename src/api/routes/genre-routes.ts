@@ -11,6 +11,6 @@ router.get('/genre/all', validate(genreSchema.getAllGenres), genreController.get
 
 /** POST */
 
-router.post('/genre/add', genreController.addGenre);
+router.post('/genre/add', validate(genreSchema.addGenre), genreController.addGenre);
 
 export = router;

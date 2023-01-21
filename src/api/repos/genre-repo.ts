@@ -12,7 +12,8 @@ const addGenre = async (genre: Genre) => {
     await Genre.sync({ alter: true });
     const newGenre = await Genre.create({
         name: genre.name,
-        url: genre.url || null
+        url: genre.url || null,
+        category: genre.category
     }).catch((err) => createNewObjectCaughtError(err, 'addGenre', 'There has been an error in adding a new Genre'));
     return {
         success: !!newGenre

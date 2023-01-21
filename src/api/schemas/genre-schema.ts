@@ -31,5 +31,11 @@ const genreSchema = object({
 
 const getAllGenres = object({});
 
+const addGenre = object({
+    body: object({
+        genre: genreSchema.strict('Genre field contains an invalid key')
+    })
+});
+
 export { name, url, category };
-export { genreSchema, getAllGenres };
+export { genreSchema, getAllGenres, addGenre };
