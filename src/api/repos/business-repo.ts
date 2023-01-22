@@ -79,7 +79,8 @@ const createSimpleBusiness = async (business: any) => {
     return await Business.create({
         businessId: business.businessId,
         name: business.name,
-        address: business.address
+        address: business.address,
+        email: business.email
     }).catch((err) => createNewObjectCaughtError(err, 'createSimpleBusiness'));
 };
 
@@ -90,7 +91,8 @@ const createBusinessWithEmployeeAddress = async (business: Business, employee: E
     const newBusiness = await Business.create({
         businessId: business.businessId,
         name: business.name,
-        address: business.address
+        address: business.address,
+        email: business.email
     }).catch((err) => createNewObjectCaughtError(err, 'createBusinessWithEmployeeAddress', 'There has been an error in creating the Business.'));
     await newBusiness.createEmployee(employee).catch(async (err) => {
         createNewObjectCaughtError(err, 'createBusinessWithEmployeeAddress', 'There has been an error in creating the Employee.');
@@ -180,7 +182,7 @@ const removeEmployee = async (id: string, employeeId: string) => {
 const updateBusiness = async (identifier: any, update: any) => {
     await Business.sync({ alter: true });
     const result = await Business.update(update, {
-        returning: ['businessId', 'name'],
+        returning: ['businessId', 'name', 'address', 'email'],
         where: identifier
     }).catch((err) => {
         console.log(err);
@@ -206,6 +208,7 @@ const updateEmployee = async (id: string, employeeId: string, update: any) => {
     };
 };
 
+// TODO: here (future task)
 // @ts-ignore
 const updateActivity = async (id: string, activityId: number, update: any) => {
     await Business.sync({ alter: true });
