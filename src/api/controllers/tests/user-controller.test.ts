@@ -95,7 +95,6 @@ describe("UserController", () => {
                 .send({
                     email: testEmail
                 });
-                console.log(res.body);
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);
                 expect(userRepoSpy).toHaveBeenCalledTimes(1);
@@ -175,7 +174,7 @@ describe("UserController", () => {
             const firebase_id = 'uf4938jvkuelb238210gaswsd'
             const firstname = 'Anastassy';
             const lastName = 'Cap';
-            const phone = '';
+            const phone = '5140006868';
             const countryCode = 1;
             const email = 'anacap123@gmail.com';
             const expectedStatusCode = 200;
@@ -190,21 +189,20 @@ describe("UserController", () => {
             }
             const userRepoSpy = jest
                 .spyOn(userRepo, 'updateUser')
-                .mockResolvedValueOnce(
+                .mockResolvedValue(
                     {   success: true,
                         //  @ts-expect-error
                         update: user
                     });
-
             //  Arrange
             const res = await request(app)
-            .post(endpoint)
+            .put(endpoint)
             .send({
                 identifier: {
-                    firebase_id: firebase_id
+                    firebase_id: user.firebase_id
                 },
                 update: {
-                    email: user.email
+                    phone: user.phone
                 }
             });
 
