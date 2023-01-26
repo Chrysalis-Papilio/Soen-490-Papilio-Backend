@@ -1,11 +1,13 @@
 import request from 'supertest';
 import app, { server } from '../../../app';
-import { User } from '../../models';
+import { User, Activity } from '../../models';
 
 describe('UserController', () => {
     beforeEach(() => {
         // @ts-expect-error
         jest.spyOn(User, 'sync').mockResolvedValue(null);
+        // @ts-expect-error
+        jest.spyOn(Activity, 'sync').mockResolvedValue(null);
     });
 
     afterEach(() => {
@@ -42,8 +44,6 @@ describe('UserController', () => {
                 //  Assert
                 expect(res.statusCode).toBe(expectedStatusCode);
                 expect(mockUser).toHaveBeenCalled();
-                // expect(userRepoSpy).toHaveBeenCalledWith();
-                // expect(userRepoSpy).toHaveBeenCalledTimes(1);
                 expect(res.headers['content-type']).toBe('application/json; charset=utf-8');
                 expect(res.body[0]).toHaveProperty('id');
                 expect(res.body[0]).toHaveProperty('firstName');
