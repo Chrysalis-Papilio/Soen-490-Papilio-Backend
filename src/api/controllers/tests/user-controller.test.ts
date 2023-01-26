@@ -1,13 +1,28 @@
 import request from 'supertest';
 import app, { server } from '../../../app';
-import { User, Activity } from '../../models';
+import { User } from '../../models';
+
+jest.mock('../../models', () => ({
+    __esModule: true,
+    User: {
+        sync: jest.fn(),
+        findAll: jest.fn(),
+        findOne: jest.fn(),
+        update: jest.fn()
+    },
+    Activity: {
+        sync: jest.fn()
+    }
+}));
 
 describe('UserController', () => {
     beforeEach(() => {
         // @ts-expect-error
-        jest.spyOn(User, 'sync').mockResolvedValue(null);
+        User.findAll.mockRestore();
         // @ts-expect-error
-        jest.spyOn(Activity, 'sync').mockResolvedValue(null);
+        User.findOne.mockRestore();
+        // @ts-expect-error
+        User.update.mockRestore();
     });
 
     afterEach(() => {
@@ -23,10 +38,9 @@ describe('UserController', () => {
                 //  Arrange
                 const endpoint = '/api/user/getAllUsers';
                 const expectedStatusCode = 200;
-
-                const mockUser = jest.spyOn(User, 'findAll').mockResolvedValueOnce([
+                // @ts-expect-error
+                User.findAll.mockResolvedValueOnce([
                     {
-                        // @ts-expect-error
                         firstName: 'Test',
                         lastName: 'User',
                         phone: '5141234567',
@@ -43,7 +57,7 @@ describe('UserController', () => {
 
                 //  Assert
                 expect(res.statusCode).toBe(expectedStatusCode);
-                expect(mockUser).toHaveBeenCalled();
+                expect(User.findAll).toHaveBeenCalled();
                 expect(res.headers['content-type']).toBe('application/json; charset=utf-8');
                 expect(res.body[0]).toHaveProperty('id');
                 expect(res.body[0]).toHaveProperty('firstName');
@@ -51,14 +65,14 @@ describe('UserController', () => {
                 expect(res.body[0]).toHaveProperty('countryCode');
                 expect(res.body[0]).toHaveProperty('phone');
                 expect(res.body[0]).toHaveProperty('email');
-                mockUser.mockRestore();
             });
 
             it('should return an empty array.', async () => {
                 //  Arrange
                 const endpoint = '/api/user/getAllUsers';
                 const expectedStatusCode = 200;
-                const mockUser = jest.spyOn(User, 'findAll').mockResolvedValueOnce([]);
+                // @ts-expect-error
+                User.findAll.mockResolvedValueOnce([]);
 
                 //  Act
                 const res = await request(app).get(endpoint);
@@ -66,9 +80,8 @@ describe('UserController', () => {
                 //  Assert
                 expect(res.statusCode).toBe(expectedStatusCode);
                 expect(res.body).toEqual([]);
-                expect(mockUser).toHaveBeenCalled();
-                expect(mockUser).toHaveBeenCalledTimes(1);
-                mockUser.mockRestore();
+                expect(User.findAll).toHaveBeenCalled();
+                expect(User.findAll).toHaveBeenCalledTimes(1);
             });
         });
         describe('getUserByEmail endpoint', () => {
@@ -80,8 +93,8 @@ describe('UserController', () => {
                 const testEmail = 'sample2@gmail.com';
                 const endpoint = `/api/user/getUserByEmail/${testEmail}`;
                 const expectedStatusCode = 200;
-                const mockUser = jest.spyOn(User, 'findOne').mockResolvedValueOnce({
-                    //  @ts-expect-error
+                //  @ts-expect-error
+                User.findOne.mockResolvedValueOnce({
                     firebase_id: '1fnj3u4hsd',
                     firstName: 'Lenny',
                     lastName: 'Jenkins-Joules',
@@ -96,8 +109,8 @@ describe('UserController', () => {
                 });
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);
-                expect(mockUser).toHaveBeenCalledTimes(1);
-                expect(mockUser).toHaveBeenCalledWith(
+                expect(User.findOne).toHaveBeenCalledTimes(1);
+                expect(User.findOne).toHaveBeenCalledWith(
                     expect.objectContaining({
                         where: { email: testEmail }
                     })
@@ -110,7 +123,6 @@ describe('UserController', () => {
                 expect(res.body.user.email).toEqual('sample2@gmail.com');
                 expect(res.body.user.phone).toEqual('6146156164');
                 expect(res.body.user.countryCode).toEqual(1);
-                mockUser.mockRestore();
             });
 
             it('should return a BADREQUEST[400] status code.', async () => {
@@ -118,8 +130,8 @@ describe('UserController', () => {
                 const testEmail = 'invalidEmail';
                 const endpoint = `/api/user/getUserByEmail/${testEmail}`;
                 const expectedStatusCode = 400;
-                const mockUser = jest.spyOn(User, 'findOne').mockResolvedValueOnce({
-                    //  @ts-expect-error
+                //  @ts-expect-error
+                User.findOne.mockResolvedValueOnce({
                     firebase_id: '1fnj3u4hsd',
                     firstName: 'Lenny',
                     lastName: 'Jenkins-Joules',
@@ -134,9 +146,8 @@ describe('UserController', () => {
                 });
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);
-                expect(mockUser).not.toHaveBeenCalled();
+                expect(User.findOne).not.toHaveBeenCalled();
                 expect(res.body).toEqual({});
-                mockUser.mockRestore();
             });
         });
     });
@@ -151,9 +162,8 @@ describe('UserController', () => {
                 //  Arrange
                 const endpoint = '/api/user/createUser';
                 const expectedStatusCode = 400;
-                // const userRepoSpy = jest.spyOn(userRepo, 'createUser').mockResolvedValue(resultValue);
-                const mockFindOne = jest.spyOn(User, 'findOne').mockResolvedValueOnce({
-                    //  @ts-expect-error
+                // @ts-expect-error
+                User.findOne.mockResolvedValueOnce({
                     firebase_id: '1fnj3u4hsd',
                     firstName: 'Lenny',
                     lastName: 'Jenkins-Joules',
@@ -176,10 +186,10 @@ describe('UserController', () => {
 
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);
-                expect(mockFindOne).toHaveBeenCalledTimes(0);
-                mockFindOne.mockRestore();
+                expect(User.findOne).toHaveBeenCalledTimes(0);
             });
         });
+
         it('Updates a user profile and returns the user object.', async () => {
             //  Act
             const endpoint = '/api/user/updateUserProfile';
@@ -200,7 +210,7 @@ describe('UserController', () => {
                 bio: 'my bio'
             };
             // @ts-expect-error
-            const mockUpdate = jest.spyOn(User, 'update').mockResolvedValueOnce([1, [user]]);
+            User.update.mockResolvedValueOnce([1, [user]]);
 
             //  Arrange
             const res = await request(app)
@@ -216,7 +226,7 @@ describe('UserController', () => {
 
             //  Assert
             expect(res.statusCode).toEqual(expectedStatusCode);
-            expect(mockUpdate).toHaveBeenCalledTimes(1);
+            expect(User.update).toHaveBeenCalledTimes(1);
             expect(res.headers['content-type']).toEqual('application/json; charset=utf-8');
             expect(res.body.success).toEqual(true);
             expect(res.body.update.firebase_id).toEqual(firebase_id);
@@ -225,7 +235,6 @@ describe('UserController', () => {
             expect(res.body.update.email).toEqual(email);
             expect(res.body.update.phone).toEqual(phone);
             expect(res.body.update.countryCode).toEqual(countryCode);
-            mockUpdate.mockRestore();
         });
     });
 });
