@@ -2,8 +2,9 @@ import request from 'supertest';
 import app, { server } from '../../../app';
 import { User } from '../../models';
 
+jest.mock('sequelize');
+
 jest.mock('../../models', () => ({
-    __esModule: true,
     User: {
         sync: jest.fn(),
         findAll: jest.fn(),
