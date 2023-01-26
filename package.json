@@ -4,7 +4,7 @@
     "description": "",
     "main": "app.js",
     "scripts": {
-        "test": "jest --runInBand",
+        "test": "jest src/ --runInBand",
         "watch": "jest --runInBand --watchAll",
         "dev": "tsc-watch --onSuccess \"node dist/app.js\"",
         "lint": "eslint ./**/*.ts --fix",
