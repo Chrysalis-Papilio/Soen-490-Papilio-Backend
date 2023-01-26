@@ -64,6 +64,7 @@ describe('UserController', () => {
                 //  Act
                 const res = await request(app).get(endpoint);
 
+
                 //  Assert
                 expect(res.statusCode).toBe(expectedStatusCode);
 
@@ -687,3 +688,4 @@ describe('UserController', () => {
         });
     });
 });
+
