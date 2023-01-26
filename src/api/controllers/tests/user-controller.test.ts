@@ -3,6 +3,9 @@ import app, { server } from '../../../app';
 import { APIError } from '../../../errors/api-error';
 import { httpStatusCode } from '../../../types/httpStatusCodes';
 import { userRepo } from '../../repos';
+jest.mock('sequelize');
+// jest.mock('../../models');
+// jest.mock('../../../api/repos/user-repo');
 
 /**
  * Get
