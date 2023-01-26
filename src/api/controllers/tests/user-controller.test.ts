@@ -1,29 +1,30 @@
 import request from 'supertest';
 import app, { server } from '../../../app';
-import { User } from '../../models';
+import { getAllUsers, getUserByEmail, createUser, updateUser } from '../../../api/repos/user-repo';
 
 jest.mock('sequelize');
-
-jest.mock('../../models', () => ({
-    User: {
-        sync: jest.fn(),
-        findAll: jest.fn(),
-        findOne: jest.fn(),
-        update: jest.fn()
-    },
-    Activity: {
-        sync: jest.fn()
-    }
-}));
+jest.mock('../../models');
+jest.mock('../../../api/repos/user-repo');
 
 describe('UserController', () => {
+    const user = {
+        firebase_id: '1fnj3u4hsd',
+        firstName: 'Lenny',
+        lastName: 'Jenkins-Joules',
+        email: 'sample2@gmail.com',
+        phone: '6146156164',
+        countryCode: 1
+    };
+
     beforeEach(() => {
         // @ts-expect-error
-        User.findAll.mockRestore();
+        getAllUsers.mockRestore();
         // @ts-expect-error
-        User.findOne.mockRestore();
+        getUserByEmail.mockRestore();
         // @ts-expect-error
-        User.update.mockRestore();
+        createUser.mockRestore();
+        // @ts-expect-error
+        updateUser.mockRestore();
     });
 
     afterEach(() => {
@@ -32,15 +33,12 @@ describe('UserController', () => {
 
     describe('GET /user', () => {
         describe('getAllUsers endpoint', () => {
-            afterEach(() => {
-                server.close();
-            });
             it('returns an non-empty array of users.', async () => {
                 //  Arrange
                 const endpoint = '/api/user/getAllUsers';
                 const expectedStatusCode = 200;
                 // @ts-expect-error
-                User.findAll.mockResolvedValueOnce([
+                getAllUsers.mockResolvedValueOnce([
                     {
                         firstName: 'Test',
                         lastName: 'User',
@@ -58,7 +56,7 @@ describe('UserController', () => {
 
                 //  Assert
                 expect(res.statusCode).toBe(expectedStatusCode);
-                expect(User.findAll).toHaveBeenCalled();
+                expect(getAllUsers).toHaveBeenCalled();
                 expect(res.headers['content-type']).toBe('application/json; charset=utf-8');
                 expect(res.body[0]).toHaveProperty('id');
                 expect(res.body[0]).toHaveProperty('firstName');
@@ -73,7 +71,7 @@ describe('UserController', () => {
                 const endpoint = '/api/user/getAllUsers';
                 const expectedStatusCode = 200;
                 // @ts-expect-error
-                User.findAll.mockResolvedValueOnce([]);
+                getAllUsers.mockResolvedValueOnce([]);
 
                 //  Act
                 const res = await request(app).get(endpoint);
@@ -81,27 +79,19 @@ describe('UserController', () => {
                 //  Assert
                 expect(res.statusCode).toBe(expectedStatusCode);
                 expect(res.body).toEqual([]);
-                expect(User.findAll).toHaveBeenCalled();
-                expect(User.findAll).toHaveBeenCalledTimes(1);
+                expect(getAllUsers).toHaveBeenCalledTimes(1);
             });
         });
         describe('getUserByEmail endpoint', () => {
-            afterEach(() => {
-                server.close();
-            });
             it('should return the correct user.', async () => {
                 //  Arrange
                 const testEmail = 'sample2@gmail.com';
                 const endpoint = `/api/user/getUserByEmail/${testEmail}`;
                 const expectedStatusCode = 200;
                 //  @ts-expect-error
-                User.findOne.mockResolvedValueOnce({
-                    firebase_id: '1fnj3u4hsd',
-                    firstName: 'Lenny',
-                    lastName: 'Jenkins-Joules',
-                    email: 'sample2@gmail.com',
-                    phone: '6146156164',
-                    countryCode: 1
+                getUserByEmail.mockResolvedValueOnce({
+                    found: true,
+                    user
                 });
 
                 //  Act
@@ -110,12 +100,8 @@ describe('UserController', () => {
                 });
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);
-                expect(User.findOne).toHaveBeenCalledTimes(1);
-                expect(User.findOne).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        where: { email: testEmail }
-                    })
-                );
+                expect(getUserByEmail).toHaveBeenCalledTimes(1);
+                expect(getUserByEmail).toHaveBeenCalledWith(testEmail);
                 expect(res.headers['content-type']).toEqual('application/json; charset=utf-8');
                 expect(res.body.found).toEqual(true);
                 expect(res.body.user.firebase_id).toEqual('1fnj3u4hsd');
@@ -132,13 +118,9 @@ describe('UserController', () => {
                 const endpoint = `/api/user/getUserByEmail/${testEmail}`;
                 const expectedStatusCode = 400;
                 //  @ts-expect-error
-                User.findOne.mockResolvedValueOnce({
-                    firebase_id: '1fnj3u4hsd',
-                    firstName: 'Lenny',
-                    lastName: 'Jenkins-Joules',
-                    email: 'sample2@gmail.com',
-                    phone: '6146156164',
-                    countryCode: 1
+                getUserByEmail.mockResolvedValueOnce({
+                    found: false,
+                    user: {}
                 });
 
                 //  Act
@@ -147,7 +129,7 @@ describe('UserController', () => {
                 });
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);
-                expect(User.findOne).not.toHaveBeenCalled();
+                expect(getUserByEmail).not.toHaveBeenCalled();
                 expect(res.body).toEqual({});
             });
         });
@@ -156,38 +138,24 @@ describe('UserController', () => {
     /** Testing POST endpoints. */
     describe('POST /user', () => {
         describe('createUser endpoint', () => {
-            afterEach(() => {
-                server.close();
-            });
             it('should return a BADREQUEST[400] status code.', async () => {
                 //  Arrange
                 const endpoint = '/api/user/createUser';
                 const expectedStatusCode = 400;
                 // @ts-expect-error
-                User.findOne.mockResolvedValueOnce({
-                    firebase_id: '1fnj3u4hsd',
-                    firstName: 'Lenny',
-                    lastName: 'Jenkins-Joules',
-                    email: 'sample2@gmail.com',
-                    phone: '6146156164',
-                    countryCode: 1
-                });
-                const user = {
+                createUser.mockResolvedValueOnce({});
+                const { firebase_id, ...rest } = user;
+                const mockUser = {
                     id: 1,
-                    //  missing firebase_id: '1fnj3u4hsd',
-                    firstName: 'Lenny',
-                    lastName: 'Jenkins-Joules',
-                    email: 'sample2@gmail.com',
-                    phone: '6146156164',
-                    countryCode: 1
+                    ...rest
                 };
 
                 //  Act
-                const res = await request(app).post(endpoint).send(user);
+                const res = await request(app).post(endpoint).send(mockUser);
 
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);
-                expect(User.findOne).toHaveBeenCalledTimes(0);
+                expect(createUser).toHaveBeenCalledTimes(0);
             });
         });
 
@@ -211,7 +179,10 @@ describe('UserController', () => {
                 bio: 'my bio'
             };
             // @ts-expect-error
-            User.update.mockResolvedValueOnce([1, [user]]);
+            updateUser.mockResolvedValueOnce({
+                success: true,
+                update: user
+            });
 
             //  Arrange
             const res = await request(app)
@@ -227,7 +198,7 @@ describe('UserController', () => {
 
             //  Assert
             expect(res.statusCode).toEqual(expectedStatusCode);
-            expect(User.update).toHaveBeenCalledTimes(1);
+            expect(updateUser).toHaveBeenCalledTimes(1);
             expect(res.headers['content-type']).toEqual('application/json; charset=utf-8');
             expect(res.body.success).toEqual(true);
             expect(res.body.update.firebase_id).toEqual(firebase_id);
