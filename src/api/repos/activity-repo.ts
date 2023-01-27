@@ -5,4 +5,13 @@ const getAllActivities = async () => {
     return Activity.findAll();
 };
 
-export { getAllActivities };
+const getActivity = async (id: number) => {
+    await Activity.sync();
+    const activity = await Activity.findByPk(id);
+    return {
+        found: !!activity,
+        activity: activity
+    };
+};
+
+export { getAllActivities, getActivity };

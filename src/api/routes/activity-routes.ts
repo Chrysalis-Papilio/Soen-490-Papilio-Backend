@@ -5,9 +5,8 @@ const router = express.Router();
 
 /** GET */
 
-router.get('/activity/get/:activityId', (req, res) => {
-    res.send(`GET /activity/get/${req.params.activityId}`);
-});
+// FIXME: force activityId to be numerical, might consider using UUID in future
+router.get('/activity/get/:activityId', activityController.getActivity);
 
 // FIXME: TESTING PURPOSE ONLY
 router.get('/activity/getAllActivities', activityController.getAllActivities);

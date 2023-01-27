@@ -4,4 +4,8 @@ const getAllActivities = async () => {
     return activityRepo.getAllActivities();
 };
 
-export { getAllActivities };
+const getActivity = async (id: number) => {
+    return activityRepo.getActivity(id);
+};
+
+export { getAllActivities, getActivity };
