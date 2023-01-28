@@ -27,6 +27,21 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
+const addFavoriteActivity = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.body.user.firebase_id;
+    const activity = Number(req.body.activity.id);
+    try {
+        /** Call to service layer */
+        const statusCode = await userServices.addFavoriteActivity(user, activity);
+
+        /** Return a response to client. */
+        return res.sendStatus(statusCode);
+    } catch (err) {
+        next(err);
+        console.error(err);
+    }
+};
+
 const getUserById = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     try {
@@ -105,4 +120,4 @@ const addNewUserActivity = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUserProfile, addNewUserActivity };
+export { getAllUsers, createUser, addFavoriteActivity, getUserById, getUserByEmail, getUserActivityList, updateUserProfile, addNewUserActivity };

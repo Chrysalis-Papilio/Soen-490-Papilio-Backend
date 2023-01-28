@@ -6,6 +6,8 @@ import {
     HasManyCreateAssociationMixin,
     HasManyGetAssociationsMixin,
     HasManyRemoveAssociationMixin,
+    BelongsToManyAddAssociationMixin,
+    BelongsToManyHasAssociationMixin,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -37,6 +39,9 @@ class User extends Model<InferAttributes<User, { omit: 'userReviews' | 'activiti
     declare removeUserReview: HasManyRemoveAssociationMixin<ActivityReview, number>;
     declare countUserReviews: HasManyCountAssociationsMixin;
     declare createUserReview: HasManyCreateAssociationMixin<ActivityReview>;
+
+    declare addFavoriteActivity: BelongsToManyAddAssociationMixin<Activity, number>;
+    declare findFavoriteActivity: BelongsToManyHasAssociationMixin<Activity, number>;
 
     declare static associations: {
         userReviews: Association<User, ActivityReview>;
@@ -109,6 +114,18 @@ User.init(
     { sequelize }
 );
 
+const Favorite_Activities = sequelize.define(
+    'Favorite_Activities',
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        }
+    },
+    { timestamps: false }
+);
+
 User.hasMany(ActivityReview, {
     as: 'userReviews',
     foreignKey: 'userId',
@@ -121,4 +138,7 @@ User.hasMany(Activity, {
     sourceKey: 'firebase_id'
 });
 
-export { User };
+User.belongsToMany(Activity, {through: Favorite_Activities})
+Activity.belongsToMany(User, {through: Favorite_Activities})
+
+export { User, Favorite_Activities};

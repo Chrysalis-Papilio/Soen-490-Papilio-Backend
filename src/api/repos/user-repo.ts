@@ -2,6 +2,7 @@ import { Activity, User } from '../models';
 import { APIError } from '../../errors/api-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
 import { createNewObjectCaughtError } from './error';
+import { Favorite_Activities } from '../models/User';
 
 /** Get all accounts from table account */
 const getAllUsers = async () => {
@@ -74,6 +75,43 @@ const createUser = async (user: User) => {
     return httpStatusCode.OK;
 };
 
+/**  Add a favorite activity for the user */
+const addFavoriteActivity = async (userId: string, activityId: number) => {
+
+    await Favorite_Activities.sync({alter:true});
+
+    await User.sync();
+    await Activity.sync();
+
+    const user = (await getUserById(userId)).user;
+
+    if (!user) {
+        throw new APIError(`Cannot find User with firebase_id ${userId}`, 'addFavoriteActivity', httpStatusCode.CONFLICT);
+    }
+
+    // const activity = await Activity.findOne(
+    //     {
+    //         where: {
+    //             id: activityId
+    //         }
+    //     }
+    // )
+    
+    // if(!activity)
+    //     throw new APIError(`Cannot find activity with id ${activityId}`, 'addFavoriteActivity', httpStatusCode.CONFLICT);
+
+    console.log(activityId)
+    console.log(await user.findFavoriteActivity(activityId))
+
+    if (!(await user.findFavoriteActivity(activityId))) {
+        await user.addFavoriteActivity(activityId)
+        .catch((err) => createNewObjectCaughtError(err, 'addFavorite', 'Yo this thing dont work'))
+        return httpStatusCode.OK;
+    }
+
+    return httpStatusCode.OK;
+};
+
 /** Update User */
 const updateUser = async (identifier: any, update: any) => {
     await User.sync({ alter: true });
@@ -107,4 +145,4 @@ const addNewUserActivity = async (id: string, activity: Activity) => {
     };
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUser, addNewUserActivity };
+export { getAllUsers, createUser, addFavoriteActivity, getUserById, getUserByEmail, getUserActivityList, updateUser, addNewUserActivity };
