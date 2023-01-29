@@ -1,11 +1,14 @@
 import express from 'express';
+import { activityController } from '../controllers';
+import * as activitySchema from '../schemas/activity-schema';
+import { validate } from '../middlewares/validateResource';
 
 const router = express.Router();
 
 /** GET */
 
-router.get('/activity/get/:activityId', (req, res) => {
-    res.send(`GET /activity/get/${req.params.activityId}`);
-});
+router.get('/activity/get/:activityId', validate(activitySchema.getActivity), activityController.getActivity);
+
+router.get('/activity/getFeeds', validate(activitySchema.getFeeds), activityController.getAllActivities);
 
 export default router;
