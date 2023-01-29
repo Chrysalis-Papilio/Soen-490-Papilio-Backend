@@ -39,7 +39,7 @@ const bio = string({
     invalid_type_error: invalidMessage('Bio', 'string')
 });
 
-const favoriteActivities = string({
+const favoriteActivities = number({
     required_error: requiredMessage('favoriteActivities'),
     invalid_type_error: invalidMessage('favoriteActivities', 'number')
 });
