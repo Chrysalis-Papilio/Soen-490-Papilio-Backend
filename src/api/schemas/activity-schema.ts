@@ -3,9 +3,9 @@ import { invalidMessage, requiredMessage } from './util';
 
 /** Attributes */
 
-const activityId = string({
+const activityId = coerce.number({
     required_error: requiredMessage('Activity ID'),
-    invalid_type_error: invalidMessage('Activity ID', 'string')
+    invalid_type_error: invalidMessage('Activity ID', 'number')
 });
 
 const title = string({
@@ -62,6 +62,12 @@ const activitySchema = object({
     endTime: endTime.optional()
 });
 
+const getActivity = object({
+    params: object({
+        activityId: activityId
+    }).strict('Params contain invalid key')
+});
+
 const getFeeds = object({
     // Query
     query: object({
@@ -82,4 +88,4 @@ const getFeeds = object({
 });
 
 export { activityId, title, description, costPerIndividual, costPerGroup, groupSize, startTime, endTime, address };
-export { activitySchema, getFeeds };
+export { activitySchema, getActivity, getFeeds };
