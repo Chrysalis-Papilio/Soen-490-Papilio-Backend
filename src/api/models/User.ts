@@ -110,7 +110,8 @@ User.init(
         },
         bio: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            defaultValue: 'My bio'
         },
         favoriteActivities: {
             type: DataTypes.ARRAY(DataTypes.INTEGER),

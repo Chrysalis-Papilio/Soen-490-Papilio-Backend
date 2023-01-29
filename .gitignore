@@ -8,5 +8,6 @@ LICENSE
 /.idea
 /node_modules
 /dist
+/coverage
 /cert
 /.vscode
