@@ -42,7 +42,7 @@ const bio = string({
 const favoriteActivities = string({
     required_error: requiredMessage('favoriteActivities'),
     invalid_type_error: invalidMessage('favoriteActivities', 'number[]')
-});
+}).array();
 
 const indoor = boolean({
     required_error: requiredMessage('Indoor'),
@@ -114,10 +114,8 @@ const userAddFavoriteActivitySchema = object({
 
         //  Update attribute
         update: object({
-            favoriteActivities: favoriteActivities.optional()
-        })
-            .strict('Update field contains an invalid key')
-            .refine(({ favoriteActivities }) => favoriteActivities !== undefined, { message: 'favoriteActivities field must be defined' })
+            favoriteActivities: favoriteActivities
+        }).strict('Update field contains an invalid key')
     })
 });
 
@@ -178,7 +176,7 @@ export {
     getUserById,
     getUserActivityList,
     updateUserSchema,
-    userAddFavoriteActivitySchema as userFavoriteActivityListSchema,
+    userAddFavoriteActivitySchema,
     addNewUserActivity,
     submitQuiz
 };

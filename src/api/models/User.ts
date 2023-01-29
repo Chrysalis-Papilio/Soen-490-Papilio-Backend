@@ -114,7 +114,7 @@ User.init(
         },
         favoriteActivities: {
             type: DataTypes.ARRAY(DataTypes.INTEGER),
-            allowNull: true
+            defaultValue: []
         }
     },
     { sequelize }

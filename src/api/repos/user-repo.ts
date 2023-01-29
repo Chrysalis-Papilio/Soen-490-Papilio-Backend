@@ -40,7 +40,7 @@ const getUserByEmail = async (email: string) => {
 /** Get The List of Activity Created by User */
 const getUserActivityList = async (id: string) => {
     await User.sync();
-    await Activity.sync({ alter: true });
+    await Activity.sync();
     const user = (await getUserById(id)).user;
     if (!user) {
         throw new APIError(`Cannot find User with firebase_id ${id}`, 'getUserActivityList', httpStatusCode.CONFLICT);
@@ -53,7 +53,7 @@ const getUserActivityList = async (id: string) => {
 
 const getUserFavoriteActivityList = async (id: string) => {
     await User.sync();
-    await Activity.sync({ alter: true });
+    await Activity.sync();
     const user = (await getUserById(id)).user;
     if (!user) {
         throw new APIError(`Cannot find User with firebase_id ${id}`, 'getUserFavoriteActivityList', httpStatusCode.CONFLICT);
@@ -61,7 +61,6 @@ const getUserFavoriteActivityList = async (id: string) => {
     return {
         count: user.favoriteActivities.length || 0,
         activities: await Activity.findAll({
-            attributes: { exclude: ['id'] },
             where: { id: user.favoriteActivities }
         })
     };
@@ -83,7 +82,7 @@ const createUser = async (user: User) => {
             phone: user.phone ? user.phone : undefined,
             countryCode: user.countryCode ? user.countryCode : undefined,
             bio: `Hello! I'm ${user.firstName}!`,
-            favoriteActivities: user.favoriteActivities
+            favoriteActivities: user.favoriteActivities ? user.favoriteActivities : []
         }).catch((err) => createNewObjectCaughtError(err, 'createUser', 'There has been an error in creating the User.'));
         return httpStatusCode.CREATED;
     }
@@ -109,7 +108,7 @@ const updateUser = async (identifier: any, update: any) => {
 /** Create a new Activity associated with this User */
 const addNewUserActivity = async (id: string, activity: Activity) => {
     await User.sync();
-    await Activity.sync({ alter: true });
+    await Activity.sync();
     const user = (await getUserById(id)).user;
     if (!user) {
         throw new APIError(`Cannot find User with firebase_id ${id}`, 'addNewUserActivity', httpStatusCode.CONFLICT);

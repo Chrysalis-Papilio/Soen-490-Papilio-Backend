@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { userServices } from '../services';
 import { uploadImageFirebase } from '../../config/storage';
+import { httpStatusCode } from '../../types/httpStatusCodes';
+import { APIError } from '../../errors/api-error';
 
 const getAllUsers = async (_: Request, res: Response, next: NextFunction) => {
     try {
@@ -95,47 +97,49 @@ const updateUserProfile = async (req: Request, res: Response, next: NextFunction
 const addFavoriteActivity = async (req: Request, res: Response, next: NextFunction) => {
     /** Get the user firebase id (identifier) and the id of the activity we want to favorite (update) */
     const { identifier } = req.body;
-    var { update } = req.body;
+    let { update } = req.body;
 
-    /** Verify user exists */
-    const userCheck = await userServices.getUserById(identifier.firebase_id);
+    try{
 
-    /** If user exists */
-    if (userCheck.found && userCheck.user) {
-        /** array to be sent to the update method in the service layer */
-        let favoriteActivitiesOld = userCheck.user.favoriteActivities;
-
-        /** If the user already has a list of favorite activities, then we will modify the current list and send it to the service layer*/
-        if (userCheck.user.favoriteActivities) {
-            const index = favoriteActivitiesOld.findIndex((element) => element == update.favoriteActivities);
-
-            /** If the current activity was not already favorited, then add it to the user's list of favorites*/
-            if (index == -1) {
-                favoriteActivitiesOld.push(update.favoriteActivities);
-            } /** If the current activity was already favorited in the past, then simply un-favorite it*/ else {
-                favoriteActivitiesOld.splice(index, 1);
+        /** Verify user exists */
+        const userCheck = await userServices.getUserById(identifier.firebase_id);
+        
+         /** If user exists */
+        if (userCheck.user) {
+            /** array to be sent to the update method in the service layer */
+            let favoriteActivitiesOld = userCheck.user.favoriteActivities;
+    
+            /** If the user already has a list of favorite activities, then we will modify the current list and send it to the service layer*/
+            if (userCheck.user.favoriteActivities) {
+                const index = favoriteActivitiesOld.findIndex((element) => element == update.favoriteActivities);
+    
+                /** If the current activity was not already favorited, then add it to the user's list of favorites*/
+                if (index == -1) {
+                    favoriteActivitiesOld.push(update.favoriteActivities);
+                } /** If the current activity was already favorited in the past, then simply un-favorite it*/ else {
+                    favoriteActivitiesOld.splice(index, 1);
+                }
+            } /** If the user had not favorited any activity before this, then we create a new array and add our current activity on it, then send this array to the service layer to update the user model */ else {
+                favoriteActivitiesOld = [update.favoriteActivities];
             }
-        } /** If the user had not favorited any activity before this, then we create a new array and add our current activity on it, then send this array to the service layer to update the user model */ else {
-            favoriteActivitiesOld = [update.favoriteActivities];
+    
+            /** Assigning our new array to the update variable so it can be sent to the service layer and update the user's list of favorite activities**/
+            update = { favoriteActivities: favoriteActivitiesOld };
+    
+            try {
+                /** Call service layer - Reusing the updateUserProfile call for this whole route */
+                const result = await userServices.updateUserProfile(identifier, update);
+    
+                /** Return result */
+                return res.status(200).json(result);
+            } catch (err) {
+                next(err);
+            }
+        } else {
+            throw new APIError('The user does not exist.', 'addFavoriteActivity', httpStatusCode.BAD_REQUEST, true); /** If user doesn't exist */
         }
-
-        /** Assigning our new array to the update variable so it can be sent to the service layer and update the user's list of favorite activities**/
-        update = { favoriteActivities: favoriteActivitiesOld };
-
-        console.log(update);
-
-        try {
-            /** Call service layer - Reusing the updateUserProfile call for this whole route */
-            const result = await userServices.updateUserProfile(identifier, update);
-
-            /** Return result */
-            return res.status(200).json(result);
-        } catch (err) {
-            next(err);
-        }
-    } else {
-        console.log('no user');
-        return res.status(404).json('User not found!'); /** If user doesn't exist */
+    }catch(err){
+        next(err)
     }
 };
 
