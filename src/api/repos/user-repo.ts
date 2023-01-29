@@ -1,11 +1,11 @@
-import { Activity, User } from '../models';
+import { Activity, Quiz, User } from '../models';
 import { APIError } from '../../errors/api-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
 import { createNewObjectCaughtError } from './error';
 
 /** Get all accounts from table account */
 const getAllUsers = async () => {
-    await User.sync({ alter: true });
+    await User.sync();
     return User.findAll({
         attributes: { exclude: ['id'] }
     });
@@ -13,7 +13,7 @@ const getAllUsers = async () => {
 
 /** Get User from firebase_id */
 const getUserById = async (id: string) => {
-    await User.sync({ alter: true });
+    await User.sync();
     const user = await User.findOne({
         where: { firebase_id: id },
         attributes: { exclude: ['id'] }
@@ -26,7 +26,7 @@ const getUserById = async (id: string) => {
 
 /**  Get User from email */
 const getUserByEmail = async (email: string) => {
-    await User.sync({ alter: true });
+    await User.sync();
     const user = await User.findOne({
         where: { email: email },
         attributes: { exclude: ['id'] }
@@ -39,7 +39,7 @@ const getUserByEmail = async (email: string) => {
 
 /** Get The List of Activity Created by User */
 const getUserActivityList = async (id: string) => {
-    await User.sync({ alter: true });
+    await User.sync();
     await Activity.sync({ alter: true });
     const user = (await getUserById(id)).user;
     if (!user) {
@@ -53,7 +53,7 @@ const getUserActivityList = async (id: string) => {
 
 /**  Create a simple user with verified input */
 const createUser = async (user: User) => {
-    await User.sync({ alter: true });
+    await User.sync();
 
     // Check if the user is already in the database, if so, do nothing
     const checkForAlreadyExistingUser = await getUserById(user.firebase_id);
@@ -71,13 +71,12 @@ const createUser = async (user: User) => {
         }).catch((err) => createNewObjectCaughtError(err, 'createUser', 'There has been an error in creating the User.'));
         return httpStatusCode.CREATED;
     }
-
     return httpStatusCode.OK;
 };
 
 /** Update User */
 const updateUser = async (identifier: any, update: any) => {
-    await User.sync({ alter: true });
+    await User.sync();
     const result = await User.update(update, { returning: ['firebase_id', 'firstName', 'lastName', 'countryCode', 'phone', 'email', 'bio'], where: identifier }).catch((err) =>
         createNewObjectCaughtError(err, 'updateUser', 'There has been an error in updating User.')
     );
@@ -93,8 +92,8 @@ const updateUser = async (identifier: any, update: any) => {
 
 /** Create a new Activity associated with this User */
 const addNewUserActivity = async (id: string, activity: Activity) => {
-    await User.sync({ alter: true });
-    await Activity.sync({ alter: true });
+    await User.sync();
+    await Activity.sync();
     const user = (await getUserById(id)).user;
     if (!user) {
         throw new APIError(`Cannot find User with firebase_id ${id}`, 'addNewUserActivity', httpStatusCode.CONFLICT);
@@ -108,4 +107,21 @@ const addNewUserActivity = async (id: string, activity: Activity) => {
     };
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUser, addNewUserActivity };
+/** Submit the quiz */
+const submitQuiz = async (id: string, quiz: Quiz) => {
+    await User.sync();
+    await Quiz.sync();
+    const user = (await getUserById(id)).user;
+    if (!user) {
+        throw new APIError(`Cannot find User with firebase_id ${id}`, 'submitQuiz', httpStatusCode.CONFLICT);
+    }
+    const oldQuiz = await user.getQuiz();
+    if (!oldQuiz) {
+        await user.createQuiz(quiz).catch((err) => createNewObjectCaughtError(err, 'submitQuiz', 'Could not submit new quiz...'));
+        return httpStatusCode.CREATED;
+    }
+    await oldQuiz.update(quiz).catch((err) => createNewObjectCaughtError(err, 'submitQuiz', 'Could not update old quiz...'));
+    return httpStatusCode.OK;
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUser, addNewUserActivity, submitQuiz };

@@ -2,7 +2,7 @@ import express from 'express';
 import config from './config/config';
 import { logger } from './config/logger';
 import { ErrorHandler } from './errors/error-handler';
-import { userRoute, activityRoute, businessRoute } from './api/routes';
+import { userRoute, activityRoute, businessRoute, genreRoute } from './api/routes';
 
 const app = express();
 const errorHandler = new ErrorHandler();
@@ -39,6 +39,7 @@ app.use((req, res, next) => {
 app.use('/api', userRoute);
 app.use('/api', activityRoute);
 app.use('/api', businessRoute);
+app.use('/api', genreRoute);
 
 /** Open port */
 export const server = app.listen(config.server.port, () => {
