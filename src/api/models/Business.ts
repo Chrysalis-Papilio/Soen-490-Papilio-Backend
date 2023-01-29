@@ -20,6 +20,7 @@ class Business extends Model<InferAttributes<Business, { omit: 'employees' | 'ac
     declare businessId: string;
     declare name: string;
     declare address: string;
+    declare email: string;
 
     declare employees?: NonAttribute<Employee[]>;
     declare activities?: NonAttribute<Activity[]>;
@@ -58,6 +59,11 @@ Business.init(
         },
         address: {
             type: DataTypes.STRING,
+            allowNull: false
+        },
+        email: {
+            type: DataTypes.STRING,
+            unique: true,
             allowNull: false
         }
         // TODO: More attributes for Business

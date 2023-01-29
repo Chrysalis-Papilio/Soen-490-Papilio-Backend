@@ -34,6 +34,11 @@ const countryCode = string({
     invalid_type_error: invalidMessage('Country Code', 'string')
 }).regex(new RegExp('^([0-9]|[1-9][0-9]|[1-9][0-9][0-9])$'), 'Invalid country code (0-999)');
 
+const bio = string({
+    required_error: requiredMessage('Bio'),
+    invalid_type_error: invalidMessage('Bio', 'string')
+});
+
 const indoor = boolean({
     required_error: requiredMessage('Indoor'),
     invalid_type_error: invalidMessage('Indoor', 'boolean')
@@ -60,7 +65,8 @@ const userSchema = object({
 
     //  Optional
     phone: phone.optional(),
-    countryCode: countryCode.optional()
+    countryCode: countryCode.optional(),
+    bio: bio.optional()
 });
 
 const createUserSchema = object({
@@ -106,11 +112,13 @@ const updateUserSchema = object({
             lastName: lastName.optional(),
             email: email.optional(),
             phone: phone.optional(),
-            countryCode: countryCode.optional()
+            countryCode: countryCode.optional(),
+            bio: bio.optional()
         })
             .strict('Update field contains an invalid key')
             .refine(
-                ({ firstName, lastName, email, phone, countryCode }) => firstName !== undefined || lastName !== undefined || email !== undefined || phone !== undefined || countryCode !== undefined,
+                ({ firstName, lastName, email, phone, countryCode, bio }) =>
+                    firstName !== undefined || lastName !== undefined || email !== undefined || phone !== undefined || countryCode !== undefined || bio !== undefined,
                 { message: 'One of the fields must be defined' }
             )
     })

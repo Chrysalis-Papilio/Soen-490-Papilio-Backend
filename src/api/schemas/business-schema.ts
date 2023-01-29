@@ -20,6 +20,11 @@ const address = string({
     invalid_type_error: invalidMessage('Address', 'string')
 });
 
+const email = string({
+    required_error: requiredMessage('Email'),
+    invalid_type_error: invalidMessage('Email', 'string')
+}).email();
+
 /** Schemas */
 
 const getBusinessById = object({
@@ -52,7 +57,8 @@ const createBusiness = object({
         business: object({
             businessId: businessId,
             name: name,
-            address: address
+            address: address,
+            email: email
         }).strict('Business field contains an invalid key'),
         // Employee
         employee: employeeSchema.strict('Employee field contains an invalid key')
@@ -89,7 +95,8 @@ const updateBusiness = object({
     body: object({
         update: object({
             name: name.optional(),
-            address: address.optional()
+            address: address.optional(),
+            email: email.optional()
         }).strict('Update field contains an invalid key')
     })
 });
@@ -125,7 +132,7 @@ const updateActivity = object({
     })
 });
 
-export { businessId, name, address };
+export { businessId, name, address, email };
 export {
     getBusinessById,
     getEmployee,

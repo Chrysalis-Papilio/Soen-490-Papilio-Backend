@@ -26,6 +26,7 @@ class User extends Model<InferAttributes<User, { omit: 'userReviews' | 'activiti
     declare countryCode: number | null;
     declare phone: string | null;
     declare email: string;
+    declare bio: string;
 
     declare userReviews?: NonAttribute<ActivityReview[]>;
     declare activities?: NonAttribute<Activity[]>;
@@ -105,6 +106,10 @@ User.init(
                 isEmail: true
             },
             unique: true
+        },
+        bio: {
+            type: DataTypes.STRING,
+            allowNull: false
         }
     },
     { sequelize }

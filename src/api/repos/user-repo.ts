@@ -65,7 +65,8 @@ const createUser = async (user: User) => {
             lastName: user.lastName,
             email: user.email,
             phone: user.phone ? user.phone : undefined,
-            countryCode: user.countryCode ? user.countryCode : undefined
+            countryCode: user.countryCode ? user.countryCode : undefined,
+            bio: `Hello! I'm ${user.firstName}!`
         }).catch((err) => createNewObjectCaughtError(err, 'createUser', 'There has been an error in creating the User.'));
         return httpStatusCode.CREATED;
     }
@@ -75,7 +76,7 @@ const createUser = async (user: User) => {
 /** Update User */
 const updateUser = async (identifier: any, update: any) => {
     await User.sync({ alter: true });
-    const result = await User.update(update, { returning: ['firebase_id', 'firstName', 'lastName', 'countryCode', 'phone', 'email'], where: identifier }).catch((err) =>
+    const result = await User.update(update, { returning: ['firebase_id', 'firstName', 'lastName', 'countryCode', 'phone', 'email', 'bio'], where: identifier }).catch((err) =>
         createNewObjectCaughtError(err, 'updateUser', 'There has been an error in updating User.')
     );
     if (!result[0])
