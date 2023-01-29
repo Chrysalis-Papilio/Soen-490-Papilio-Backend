@@ -41,8 +41,8 @@ const bio = string({
 
 const favoriteActivities = string({
     required_error: requiredMessage('favoriteActivities'),
-    invalid_type_error: invalidMessage('favoriteActivities', 'number[]')
-}).array();
+    invalid_type_error: invalidMessage('favoriteActivities', 'number')
+});
 
 const indoor = boolean({
     required_error: requiredMessage('Indoor'),
