@@ -42,7 +42,7 @@ app.use('/api', businessRoute);
 app.use('/api', genreRoute);
 
 /** Open port */
-app.listen(config.server.port, () => {
+export const server = app.listen(config.server.port, () => {
     logger.info(`${NAMESPACE}: Server is running ${config.server.hostname}:${config.server.port}`);
 });
 
@@ -59,3 +59,5 @@ process.on('uncaughtException', async (error: Error) => {
 process.on('unhandledRejection', (reason: Error) => {
     throw reason;
 });
+
+export default app;
