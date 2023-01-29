@@ -110,7 +110,7 @@ User.init(
         bio: {
             type: DataTypes.STRING,
             allowNull: false,
-            defaultValue: 'ChristianoIsBetterThanMessi'
+            defaultValue: 'My bio'
         }
     },
     { sequelize }
