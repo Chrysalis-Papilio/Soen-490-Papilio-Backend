@@ -2,11 +2,17 @@ import { initializeApp } from 'firebase/app';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 
-const firebaseConfig = require('../../credentials.json');
-
 // Initialize Firebase
 // @ts-ignore
-const app = initializeApp(firebaseConfig);
+const app = initializeApp({
+    apiKey: process.env.API_KEY,
+    authDomain: process.env.AUTH_DOMAIN,
+    projectId: process.env.PROJECT_ID,
+    storageBucket: process.env.STORAGE_BUCKET,
+    messagingSenderId: process.env.MESSAGING_SENDER_ID,
+    appId: process.env.APP_ID,
+    measurementId: process.env.MEASUREMENT_ID
+});
 const storage = getStorage();
 
 export const uploadImageFirebase = async (file: Express.Multer.File) => {
