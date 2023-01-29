@@ -105,4 +105,20 @@ const addNewUserActivity = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUserProfile, addNewUserActivity };
+const submitQuiz = async (req: Request, res: Response, next: NextFunction) => {
+    const indoor: boolean = req.body.indoor;
+    const outdoor: boolean = req.body.outdoor;
+    const genres: number[] = req.body.genres;
+    const id: string = req.params.id;
+    try {
+        /** Call to service layer */
+        const result = await userServices.submitQuiz(id, { indoor: indoor, outdoor: outdoor, genres: genres });
+
+        /** Response is a status code */
+        return res.sendStatus(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUserProfile, addNewUserActivity, submitQuiz };

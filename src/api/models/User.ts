@@ -6,6 +6,9 @@ import {
     HasManyCreateAssociationMixin,
     HasManyGetAssociationsMixin,
     HasManyRemoveAssociationMixin,
+    HasOneCreateAssociationMixin,
+    HasOneGetAssociationMixin,
+    HasOneSetAssociationMixin,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -14,6 +17,7 @@ import {
 import sequelize from '../../config/sequelize';
 import { ActivityReview } from './ActivityReview';
 import { Activity } from './Activity';
+import { Quiz } from './Quiz';
 
 class User extends Model<InferAttributes<User, { omit: 'userReviews' | 'activities' }>, InferCreationAttributes<User, { omit: 'userReviews' | 'activities' }>> {
     declare id: CreationOptional<number>;
@@ -36,6 +40,10 @@ class User extends Model<InferAttributes<User, { omit: 'userReviews' | 'activiti
     declare removeUserReview: HasManyRemoveAssociationMixin<ActivityReview, number>;
     declare countUserReviews: HasManyCountAssociationsMixin;
     declare createUserReview: HasManyCreateAssociationMixin<ActivityReview>;
+
+    declare createQuiz: HasOneCreateAssociationMixin<Quiz>;
+    declare setQuiz: HasOneSetAssociationMixin<Quiz, any>;
+    declare getQuiz: HasOneGetAssociationMixin<Quiz>;
 
     declare static associations: {
         userReviews: Association<User, ActivityReview>;
@@ -115,5 +123,7 @@ User.hasMany(Activity, {
     foreignKey: 'userId',
     sourceKey: 'firebase_id'
 });
+
+User.hasOne(Quiz, { sourceKey: 'firebase_id' });
 
 export { User };

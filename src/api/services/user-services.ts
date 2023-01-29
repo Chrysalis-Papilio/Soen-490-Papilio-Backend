@@ -28,4 +28,8 @@ const addNewUserActivity = async (id: string, activity: any) => {
     return userRepo.addNewUserActivity(id, activity);
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUserProfile, addNewUserActivity };
+const submitQuiz = async (id: string, quiz: any) => {
+    return userRepo.submitQuiz(id, quiz);
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUserProfile, addNewUserActivity, submitQuiz };

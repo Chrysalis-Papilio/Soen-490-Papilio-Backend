@@ -1,4 +1,4 @@
-import { Activity, User } from '../models';
+import { Activity, Quiz, User } from '../models';
 import { APIError } from '../../errors/api-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
 import { createNewObjectCaughtError } from './error';
@@ -69,7 +69,6 @@ const createUser = async (user: User) => {
         }).catch((err) => createNewObjectCaughtError(err, 'createUser', 'There has been an error in creating the User.'));
         return httpStatusCode.CREATED;
     }
-
     return httpStatusCode.OK;
 };
 
@@ -106,4 +105,21 @@ const addNewUserActivity = async (id: string, activity: Activity) => {
     };
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUser, addNewUserActivity };
+/** Submit the quiz */
+const submitQuiz = async (id: string, quiz: Quiz) => {
+    await User.sync({ alter: true });
+    await Quiz.sync({ alter: true });
+    const user = (await getUserById(id)).user;
+    if (!user) {
+        throw new APIError(`Cannot find User with firebase_id ${id}`, 'submitQuiz', httpStatusCode.CONFLICT);
+    }
+    const oldQuiz = await user.getQuiz();
+    if (!oldQuiz) {
+        await user.createQuiz(quiz).catch((err) => createNewObjectCaughtError(err, 'submitQuiz', 'Could not submit new quiz...'));
+        return httpStatusCode.CREATED;
+    }
+    await oldQuiz.update(quiz).catch((err) => createNewObjectCaughtError(err, 'submitQuiz', 'Could not update old quiz...'));
+    return httpStatusCode.OK;
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUser, addNewUserActivity, submitQuiz };

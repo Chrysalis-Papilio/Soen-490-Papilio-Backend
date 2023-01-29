@@ -22,6 +22,8 @@ router.get('/user/get/:id/activities', validate(userSchema.getUserActivityList),
 
 router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
 
+router.put('/user/submitQuiz/:id', userController.submitQuiz);
+
 /** POST */
 
 router.post('/user/createUser', validate(userSchema.createUserSchema), userController.createUser);

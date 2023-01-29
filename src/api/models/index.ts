@@ -6,5 +6,6 @@ import { Genre } from './Genre';
 import { Label } from './Label';
 import { User } from './User';
 import { Watchlist } from './Watchlist';
+import { Quiz } from './Quiz';
 
-export { Activity, ActivityReview, Business, Employee, Genre, Label, User, Watchlist };
+export { Activity, ActivityReview, Business, Employee, Genre, Label, Quiz, User, Watchlist };
