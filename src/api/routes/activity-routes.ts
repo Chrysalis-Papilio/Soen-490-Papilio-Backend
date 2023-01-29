@@ -8,7 +8,6 @@ const router = express.Router();
 // FIXME: force activityId to be numerical, might consider using UUID in future
 router.get('/activity/get/:activityId', activityController.getActivity);
 
-// FIXME: TESTING PURPOSE ONLY
-router.get('/activity/getAllActivities', activityController.getAllActivities);
+router.get('/activity/getFeeds', activityController.getAllActivities);
 
 export default router;

@@ -1,7 +1,7 @@
 import { activityRepo } from '../repos';
 
-const getAllActivities = async () => {
-    return activityRepo.getAllActivities();
+const getAllActivities = async (page: number, size: number) => {
+    return activityRepo.getAllActivities(page, size);
 };
 
 const getActivity = async (id: number) => {
