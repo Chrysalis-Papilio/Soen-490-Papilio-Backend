@@ -39,6 +39,11 @@ const bio = string({
     invalid_type_error: invalidMessage('Bio', 'string')
 });
 
+const favoriteActivities = string({
+    required_error: requiredMessage('favoriteActivities'),
+    invalid_type_error: invalidMessage('favoriteActivities', 'number[]')
+});
+
 /** Schemas */
 
 const userSchema = object({
@@ -51,7 +56,8 @@ const userSchema = object({
     //  Optional
     phone: phone.optional(),
     countryCode: countryCode.optional(),
-    bio: bio.optional()
+    bio: bio.optional(),
+    favoriteActivities: favoriteActivities.optional()
 });
 
 const createUserSchema = object({
@@ -92,12 +98,14 @@ const updateUserSchema = object({
             email: email.optional(),
             phone: phone.optional(),
             countryCode: countryCode.optional(),
-            bio: bio.optional()
+            bio: bio.optional(),
+            favoriteActivities: favoriteActivities.optional()
+            
         })
             .strict('Update field contains an invalid key')
             .refine(
                 ({ firstName, lastName, email, phone, countryCode, bio }) =>
-                    firstName !== undefined || lastName !== undefined || email !== undefined || phone !== undefined || countryCode !== undefined || bio !== undefined,
+                    firstName !== undefined || lastName !== undefined || email !== undefined || phone !== undefined || countryCode !== undefined || bio !== undefined || favoriteActivities !== undefined,
                 { message: 'One of the fields must be defined' }
             )
     })

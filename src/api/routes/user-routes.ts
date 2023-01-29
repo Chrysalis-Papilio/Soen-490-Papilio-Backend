@@ -22,11 +22,11 @@ router.get('/user/get/:id/activities', validate(userSchema.getUserActivityList),
 
 router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
 
+router.put('/user/addFavoriteActivity', userController.addFavoriteActivity);
+
 /** POST */
 
 router.post('/user/createUser', validate(userSchema.createUserSchema), userController.createUser);
-
-router.post('/user/addFavoriteActivity', userController.addFavoriteActivity);
 
 router.post('/user/addActivity/:id', [upload.array('images', 5), validate(userSchema.addNewUserActivity)], userController.addNewUserActivity);
 

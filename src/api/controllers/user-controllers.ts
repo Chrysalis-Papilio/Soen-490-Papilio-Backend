@@ -27,21 +27,6 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-const addFavoriteActivity = async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.body.user.firebase_id;
-    const activity = Number(req.body.activity.id);
-    try {
-        /** Call to service layer */
-        const statusCode = await userServices.addFavoriteActivity(user, activity);
-
-        /** Return a response to client. */
-        return res.sendStatus(statusCode);
-    } catch (err) {
-        next(err);
-        console.error(err);
-    }
-};
-
 const getUserById = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     try {
@@ -94,6 +79,58 @@ const updateUserProfile = async (req: Request, res: Response, next: NextFunction
     }
 };
 
+
+const addFavoriteActivity = async (req: Request, res: Response, next: NextFunction) => {
+
+    const { identifier } = req.body
+    var { update } = req.body
+
+    const userCheck = await userServices.getUserById(identifier.firebase_id);
+
+    if(userCheck.found && userCheck.user)
+    {
+        var favoriteActivitiesOld = userCheck.user.favoriteActivities
+
+        if(userCheck.user.favoriteActivities)
+        {
+            const index = favoriteActivitiesOld.findIndex((element) => element == update.favoriteActivities)
+
+            if(index == -1)
+            {
+                favoriteActivitiesOld.push(update.favoriteActivities)
+            }
+            else
+            {
+                favoriteActivitiesOld.splice(index, 1)
+            }
+        }
+        else
+        {
+            var newArray = [update.favoriteActivities]
+            favoriteActivitiesOld = newArray
+            console.log('bengbongogogsgdsdgsd')
+        }
+
+        update = {favoriteActivities: favoriteActivitiesOld}
+        console.log(update)
+
+        try {
+            /** Call service layer */
+            const result = await userServices.updateUserProfile(identifier, update);
+    
+            /** Return result */
+            return res.status(200).json(result);
+        } catch (err) {
+            next(err);
+        }
+    }
+    else return res.status(404).json("User not found!");
+
+
+    
+};
+
+
 const addNewUserActivity = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     const { activity } = req.body;
@@ -120,4 +157,4 @@ const addNewUserActivity = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
-export { getAllUsers, createUser, addFavoriteActivity, getUserById, getUserByEmail, getUserActivityList, updateUserProfile, addNewUserActivity };
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUserProfile, addFavoriteActivity, addNewUserActivity };

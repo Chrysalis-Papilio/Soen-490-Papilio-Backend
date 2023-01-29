@@ -6,12 +6,10 @@ import {
     HasManyCreateAssociationMixin,
     HasManyGetAssociationsMixin,
     HasManyRemoveAssociationMixin,
-    BelongsToManyAddAssociationMixin,
-    BelongsToManyHasAssociationMixin,
     InferAttributes,
     InferCreationAttributes,
     Model,
-    NonAttribute
+    NonAttribute,
 } from 'sequelize';
 import sequelize from '../../config/sequelize';
 import { ActivityReview } from './ActivityReview';
@@ -26,6 +24,7 @@ class User extends Model<InferAttributes<User, { omit: 'userReviews' | 'activiti
     declare phone: string | null;
     declare email: string;
     declare bio: string;
+    declare favoriteActivities: Array<number>
 
     declare userReviews?: NonAttribute<ActivityReview[]>;
     declare activities?: NonAttribute<Activity[]>;
@@ -39,9 +38,6 @@ class User extends Model<InferAttributes<User, { omit: 'userReviews' | 'activiti
     declare removeUserReview: HasManyRemoveAssociationMixin<ActivityReview, number>;
     declare countUserReviews: HasManyCountAssociationsMixin;
     declare createUserReview: HasManyCreateAssociationMixin<ActivityReview>;
-
-    declare addFavoriteActivity: BelongsToManyAddAssociationMixin<Activity, number>;
-    declare findFavoriteActivity: BelongsToManyHasAssociationMixin<Activity, number>;
 
     declare static associations: {
         userReviews: Association<User, ActivityReview>;
@@ -109,21 +105,13 @@ User.init(
         bio: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        favoriteActivities: {
+            type: DataTypes.ARRAY(DataTypes.INTEGER),
+            allowNull: true,
         }
     },
     { sequelize }
-);
-
-const Favorite_Activities = sequelize.define(
-    'Favorite_Activities',
-    {
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
-        }
-    },
-    { timestamps: false }
 );
 
 User.hasMany(ActivityReview, {
@@ -138,7 +126,4 @@ User.hasMany(Activity, {
     sourceKey: 'firebase_id'
 });
 
-User.belongsToMany(Activity, {through: Favorite_Activities})
-Activity.belongsToMany(User, {through: Favorite_Activities})
-
-export { User, Favorite_Activities};
+export { User };
