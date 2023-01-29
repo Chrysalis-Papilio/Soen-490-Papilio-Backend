@@ -1,10 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import { activityServices } from '../services';
 
+const DEFAULT_PAGE = 1;
+const MAX_PER_PAGE = 20;
+
 const getAllActivities = async (req: Request, res: Response, next: NextFunction) => {
     /** Values for response pagination */
-    const page = req.query.page ? Number(req.query.page) : 1; // DEFAULT _PAGE = 1
-    const size = req.query.size ? Number(req.query.size) : 20; // MAX_PER_PAGE = 20
+    const page = req.query.page ? Number(req.query.page) : DEFAULT_PAGE;
+    const size = req.query.size ? Number(req.query.size) : MAX_PER_PAGE;
 
     try {
         /** Call to service layer */

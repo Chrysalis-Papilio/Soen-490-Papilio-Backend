@@ -92,7 +92,7 @@ const updateUser = async (identifier: any, update: any) => {
 /** Create a new Activity associated with this User */
 const addNewUserActivity = async (id: string, activity: Activity) => {
     await User.sync();
-    await Activity.sync({ alter: true });
+    await Activity.sync();
     const user = (await getUserById(id)).user;
     if (!user) {
         throw new APIError(`Cannot find User with firebase_id ${id}`, 'addNewUserActivity', httpStatusCode.CONFLICT);
