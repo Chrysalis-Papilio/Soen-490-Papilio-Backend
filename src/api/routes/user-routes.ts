@@ -22,7 +22,7 @@ router.get('/user/get/:id/activities', validate(userSchema.getUserActivityList),
 
 router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
 
-router.put('/user/submitQuiz/:id', userController.submitQuiz);
+router.put('/user/submitQuiz/:id', validate(userSchema.submitQuiz), userController.submitQuiz);
 
 /** POST */
 

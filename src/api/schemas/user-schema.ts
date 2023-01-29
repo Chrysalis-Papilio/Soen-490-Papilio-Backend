@@ -1,4 +1,4 @@
-import { object, string } from 'zod';
+import { boolean, number, object, string } from 'zod';
 import { requiredMessage, invalidMessage } from './util';
 import { activitySchema } from './activity-schema';
 
@@ -34,6 +34,21 @@ const countryCode = string({
     invalid_type_error: invalidMessage('Country Code', 'string')
 }).regex(new RegExp('^([0-9]|[1-9][0-9]|[1-9][0-9][0-9])$'), 'Invalid country code (0-999)');
 
+const indoor = boolean({
+    required_error: requiredMessage('Indoor'),
+    invalid_type_error: invalidMessage('Indoor', 'boolean')
+});
+
+const outdoor = boolean({
+    required_error: requiredMessage('Outdoor'),
+    invalid_type_error: invalidMessage('Outdoor', 'boolean')
+});
+
+const genres = number({
+    required_error: requiredMessage('Genre List'),
+    invalid_type_error: invalidMessage('Genre List', 'number[]')
+}).array();
+
 /** Schemas */
 
 const userSchema = object({
@@ -52,6 +67,12 @@ const createUserSchema = object({
     body: object({
         user: userSchema.strict('Request contains an invalid key')
     })
+});
+
+const quizSchema = object({
+    indoor: indoor,
+    outdoor: outdoor,
+    genres: genres
 });
 
 const getAllUsers = object({});
@@ -104,5 +125,12 @@ const addNewUserActivity = object({
     })
 });
 
+const submitQuiz = object({
+    params: object({
+        id: firebase_id
+    }).strict('Request URL contains an invalid key'),
+    body: quizSchema.strict('Quiz field contains an invalid key')
+});
+
 export { firebase_id, firstName, lastName, email, phone, countryCode };
-export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, addNewUserActivity };
+export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, addNewUserActivity, submitQuiz };

@@ -8,7 +8,6 @@ import {
     HasManyRemoveAssociationMixin,
     HasOneCreateAssociationMixin,
     HasOneGetAssociationMixin,
-    HasOneSetAssociationMixin,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -42,7 +41,6 @@ class User extends Model<InferAttributes<User, { omit: 'userReviews' | 'activiti
     declare createUserReview: HasManyCreateAssociationMixin<ActivityReview>;
 
     declare createQuiz: HasOneCreateAssociationMixin<Quiz>;
-    declare setQuiz: HasOneSetAssociationMixin<Quiz, any>;
     declare getQuiz: HasOneGetAssociationMixin<Quiz>;
 
     declare static associations: {
