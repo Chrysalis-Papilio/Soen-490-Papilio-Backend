@@ -103,7 +103,7 @@ const addFavoriteActivity = async (req: Request, res: Response, next: NextFuncti
     /** If user exists */
     if (userCheck.found && userCheck.user) {
         /** array to be sent to the update method in the service layer */
-        var favoriteActivitiesOld = userCheck.user.favoriteActivities;
+        let favoriteActivitiesOld = userCheck.user.favoriteActivities;
 
         /** If the user already has a list of favorite activities, then we will modify the current list and send it to the service layer*/
         if (userCheck.user.favoriteActivities) {
@@ -116,8 +116,7 @@ const addFavoriteActivity = async (req: Request, res: Response, next: NextFuncti
                 favoriteActivitiesOld.splice(index, 1);
             }
         } /** If the user had not favorited any activity before this, then we create a new array and add our current activity on it, then send this array to the service layer to update the user model */ else {
-            var newArray = [update.favoriteActivities];
-            favoriteActivitiesOld = newArray;
+            favoriteActivitiesOld = [update.favoriteActivities];
         }
 
         /** Assigning our new array to the update variable so it can be sent to the service layer and update the user's list of favorite activities**/
