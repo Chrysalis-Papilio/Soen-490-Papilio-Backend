@@ -40,7 +40,7 @@ const getUserByEmail = async (email: string) => {
 /** Get The List of Activity Created by User */
 const getUserActivityList = async (id: string) => {
     await User.sync();
-    await Activity.sync({ alter: true });
+    await Activity.sync();
     const user = (await getUserById(id)).user;
     if (!user) {
         throw new APIError(`Cannot find User with firebase_id ${id}`, 'getUserActivityList', httpStatusCode.CONFLICT);
@@ -48,6 +48,21 @@ const getUserActivityList = async (id: string) => {
     return {
         count: (await user.countActivities()) || 0,
         activities: await user.getActivities()
+    };
+};
+
+const getUserFavoriteActivityList = async (id: string) => {
+    await User.sync();
+    await Activity.sync();
+    const user = (await getUserById(id)).user;
+    if (!user) {
+        throw new APIError(`Cannot find User with firebase_id ${id}`, 'getUserFavoriteActivityList', httpStatusCode.CONFLICT);
+    }
+    return {
+        count: user.favoriteActivities.length || 0,
+        activities: await Activity.findAll({
+            where: { id: user.favoriteActivities }
+        })
     };
 };
 
@@ -67,7 +82,8 @@ const createUser = async (user: User) => {
             email: user.email,
             phone: user.phone ? user.phone : undefined,
             countryCode: user.countryCode ? user.countryCode : undefined,
-            bio: `Hello! I'm ${user.firstName}!`
+            bio: `Hello! I'm ${user.firstName}!`,
+            favoriteActivities: user.favoriteActivities ? user.favoriteActivities : []
         }).catch((err) => createNewObjectCaughtError(err, 'createUser', 'There has been an error in creating the User.'));
         return httpStatusCode.CREATED;
     }
@@ -77,7 +93,7 @@ const createUser = async (user: User) => {
 /** Update User */
 const updateUser = async (identifier: any, update: any) => {
     await User.sync();
-    const result = await User.update(update, { returning: ['firebase_id', 'firstName', 'lastName', 'countryCode', 'phone', 'email', 'bio'], where: identifier }).catch((err) =>
+    const result = await User.update(update, { returning: ['firebase_id', 'firstName', 'lastName', 'countryCode', 'phone', 'email', 'bio', 'favoriteActivities'], where: identifier }).catch((err) =>
         createNewObjectCaughtError(err, 'updateUser', 'There has been an error in updating User.')
     );
     if (!result[0])
@@ -124,4 +140,4 @@ const submitQuiz = async (id: string, quiz: Quiz) => {
     return httpStatusCode.OK;
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUser, addNewUserActivity, submitQuiz };
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUser, addNewUserActivity, submitQuiz };

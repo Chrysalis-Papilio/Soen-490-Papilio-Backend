@@ -18,9 +18,13 @@ router.get('/user/getUserByEmail/:email', validate(userSchema.getUserByEmailSche
 
 router.get('/user/get/:id/activities', validate(userSchema.getUserActivityList), userController.getUserActivityList);
 
+router.get('/user/get/:id/favoriteActivities', validate(userSchema.getUserActivityList), userController.getUserFavoriteActivityList);
+
 /** PUT */
 
 router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
+
+router.put('/user/addFavoriteActivity', validate(userSchema.userAddFavoriteActivitySchema), userController.addFavoriteActivity);
 
 router.put('/user/submitQuiz/:id', validate(userSchema.submitQuiz), userController.submitQuiz);
 
