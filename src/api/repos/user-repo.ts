@@ -108,8 +108,8 @@ const addNewUserActivity = async (id: string, activity: Activity) => {
 
 /** Submit the quiz */
 const submitQuiz = async (id: string, quiz: Quiz) => {
-    await User.sync({ alter: true });
-    await Quiz.sync({ alter: true });
+    await User.sync();
+    await Quiz.sync();
     const user = (await getUserById(id)).user;
     if (!user) {
         throw new APIError(`Cannot find User with firebase_id ${id}`, 'submitQuiz', httpStatusCode.CONFLICT);
