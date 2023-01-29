@@ -99,20 +99,19 @@ const addFavoriteActivity = async (req: Request, res: Response, next: NextFuncti
     const { identifier } = req.body;
     let { update } = req.body;
 
-    try{
-
+    try {
         /** Verify user exists */
         const userCheck = await userServices.getUserById(identifier.firebase_id);
-        
-         /** If user exists */
+
+        /** If user exists */
         if (userCheck.user) {
             /** array to be sent to the update method in the service layer */
             let favoriteActivitiesOld = userCheck.user.favoriteActivities;
-    
+
             /** If the user already has a list of favorite activities, then we will modify the current list and send it to the service layer*/
             if (userCheck.user.favoriteActivities) {
                 const index = favoriteActivitiesOld.findIndex((element) => element == update.favoriteActivities);
-    
+
                 /** If the current activity was not already favorited, then add it to the user's list of favorites*/
                 if (index == -1) {
                     favoriteActivitiesOld.push(update.favoriteActivities);
@@ -122,24 +121,20 @@ const addFavoriteActivity = async (req: Request, res: Response, next: NextFuncti
             } /** If the user had not favorited any activity before this, then we create a new array and add our current activity on it, then send this array to the service layer to update the user model */ else {
                 favoriteActivitiesOld = [update.favoriteActivities];
             }
-    
+
             /** Assigning our new array to the update variable so it can be sent to the service layer and update the user's list of favorite activities**/
             update = { favoriteActivities: favoriteActivitiesOld };
-    
-            try {
-                /** Call service layer - Reusing the updateUserProfile call for this whole route */
-                const result = await userServices.updateUserProfile(identifier, update);
-    
-                /** Return result */
-                return res.status(200).json(result);
-            } catch (err) {
-                next(err);
-            }
+
+            /** Call service layer - Reusing the updateUserProfile call for this whole route */
+            const result = await userServices.updateUserProfile(identifier, update);
+
+            /** Return result */
+            return res.status(200).json(result);
         } else {
             throw new APIError('The user does not exist.', 'addFavoriteActivity', httpStatusCode.BAD_REQUEST, true); /** If user doesn't exist */
         }
-    }catch(err){
-        next(err)
+    } catch (err) {
+        next(err);
     }
 };
 
