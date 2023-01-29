@@ -11,7 +11,7 @@ import {
     InferAttributes,
     InferCreationAttributes,
     Model,
-    NonAttribute,
+    NonAttribute
 } from 'sequelize';
 import sequelize from '../../config/sequelize';
 import { ActivityReview } from './ActivityReview';
@@ -27,7 +27,7 @@ class User extends Model<InferAttributes<User, { omit: 'userReviews' | 'activiti
     declare phone: string | null;
     declare email: string;
     declare bio: string;
-    declare favoriteActivities: Array<number>
+    declare favoriteActivities: Array<number>;
 
     declare userReviews?: NonAttribute<ActivityReview[]>;
     declare activities?: NonAttribute<Activity[]>;
@@ -114,7 +114,7 @@ User.init(
         },
         favoriteActivities: {
             type: DataTypes.ARRAY(DataTypes.INTEGER),
-            allowNull: true,
+            allowNull: true
         }
     },
     { sequelize }

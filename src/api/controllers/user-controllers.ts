@@ -66,6 +66,19 @@ const getUserActivityList = async (req: Request, res: Response, next: NextFuncti
     }
 };
 
+const getUserFavoriteActivityList = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        /** Call to service layer */
+        const { id } = req.params;
+        const result = await userServices.getUserFavoriteActivityList(id);
+
+        /** Return a response to client */
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
 const updateUserProfile = async (req: Request, res: Response, next: NextFunction) => {
     const { identifier, update } = req.body;
     try {
@@ -79,57 +92,53 @@ const updateUserProfile = async (req: Request, res: Response, next: NextFunction
     }
 };
 
-
 const addFavoriteActivity = async (req: Request, res: Response, next: NextFunction) => {
+    /** Get the user firebase id (identifier) and the id of the activity we want to favorite (update) */
+    const { identifier } = req.body;
+    var { update } = req.body;
 
-    const { identifier } = req.body
-    var { update } = req.body
-
+    /** Verify user exists */
     const userCheck = await userServices.getUserById(identifier.firebase_id);
 
-    if(userCheck.found && userCheck.user)
-    {
-        var favoriteActivitiesOld = userCheck.user.favoriteActivities
+    /** If user exists */
+    if (userCheck.found && userCheck.user) {
+        /** array to be sent to the update method in the service layer */
+        var favoriteActivitiesOld = userCheck.user.favoriteActivities;
 
-        if(userCheck.user.favoriteActivities)
-        {
-            const index = favoriteActivitiesOld.findIndex((element) => element == update.favoriteActivities)
+        /** If the user already has a list of favorite activities, then we will modify the current list and send it to the service layer*/
+        if (userCheck.user.favoriteActivities) {
+            const index = favoriteActivitiesOld.findIndex((element) => element == update.favoriteActivities);
 
-            if(index == -1)
-            {
-                favoriteActivitiesOld.push(update.favoriteActivities)
+            /** If the current activity was not already favorited, then add it to the user's list of favorites*/
+            if (index == -1) {
+                favoriteActivitiesOld.push(update.favoriteActivities);
+            } /** If the current activity was already favorited in the past, then simply un-favorite it*/ else {
+                favoriteActivitiesOld.splice(index, 1);
             }
-            else
-            {
-                favoriteActivitiesOld.splice(index, 1)
-            }
-        }
-        else
-        {
-            var newArray = [update.favoriteActivities]
-            favoriteActivitiesOld = newArray
-            console.log('bengbongogogsgdsdgsd')
+        } /** If the user had not favorited any activity before this, then we create a new array and add our current activity on it, then send this array to the service layer to update the user model */ else {
+            var newArray = [update.favoriteActivities];
+            favoriteActivitiesOld = newArray;
         }
 
-        update = {favoriteActivities: favoriteActivitiesOld}
-        console.log(update)
+        /** Assigning our new array to the update variable so it can be sent to the service layer and update the user's list of favorite activities**/
+        update = { favoriteActivities: favoriteActivitiesOld };
+
+        console.log(update);
 
         try {
-            /** Call service layer */
+            /** Call service layer - Reusing the updateUserProfile call for this whole route */
             const result = await userServices.updateUserProfile(identifier, update);
-    
+
             /** Return result */
             return res.status(200).json(result);
         } catch (err) {
             next(err);
         }
+    } else {
+        console.log('no user');
+        return res.status(404).json('User not found!'); /** If user doesn't exist */
     }
-    else return res.status(404).json("User not found!");
-
-
-    
 };
-
 
 const addNewUserActivity = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
@@ -173,4 +182,4 @@ const submitQuiz = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUserProfile, addFavoriteActivity, addNewUserActivity, submitQuiz };
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addFavoriteActivity, addNewUserActivity, submitQuiz };

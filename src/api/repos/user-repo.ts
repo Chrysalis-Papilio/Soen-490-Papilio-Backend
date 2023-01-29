@@ -51,6 +51,22 @@ const getUserActivityList = async (id: string) => {
     };
 };
 
+const getUserFavoriteActivityList = async (id: string) => {
+    await User.sync();
+    await Activity.sync({ alter: true });
+    const user = (await getUserById(id)).user;
+    if (!user) {
+        throw new APIError(`Cannot find User with firebase_id ${id}`, 'getUserFavoriteActivityList', httpStatusCode.CONFLICT);
+    }
+    return {
+        count: user.favoriteActivities.length || 0,
+        activities: await Activity.findAll({
+            attributes: { exclude: ['id'] },
+            where: { id: user.favoriteActivities }
+        })
+    };
+};
+
 /**  Create a simple user with verified input */
 const createUser = async (user: User) => {
     await User.sync();
@@ -124,4 +140,4 @@ const submitQuiz = async (id: string, quiz: Quiz) => {
     return httpStatusCode.OK;
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUser, addNewUserActivity, submitQuiz };
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUser, addNewUserActivity, submitQuiz };

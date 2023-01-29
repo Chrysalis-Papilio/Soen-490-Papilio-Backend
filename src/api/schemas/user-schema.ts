@@ -105,6 +105,22 @@ const getUserById = object({
 
 const getUserActivityList = getUserById;
 
+const userAddFavoriteActivitySchema = object({
+    body: object({
+        //  Identifier attribute
+        identifier: object({
+            firebase_id: firebase_id
+        }).strict('Identifier field contains an invalid key'),
+
+        //  Update attribute
+        update: object({
+            favoriteActivities: favoriteActivities.optional()
+        })
+            .strict('Update field contains an invalid key')
+            .refine(({ favoriteActivities }) => favoriteActivities !== undefined, { message: 'favoriteActivities field must be defined' })
+    })
+});
+
 const updateUserSchema = object({
     body: object({
         //  Identifier attribute
@@ -121,12 +137,17 @@ const updateUserSchema = object({
             countryCode: countryCode.optional(),
             bio: bio.optional(),
             favoriteActivities: favoriteActivities.optional()
-            
         })
             .strict('Update field contains an invalid key')
             .refine(
                 ({ firstName, lastName, email, phone, countryCode, bio }) =>
-                    firstName !== undefined || lastName !== undefined || email !== undefined || phone !== undefined || countryCode !== undefined || bio !== undefined || favoriteActivities !== undefined,
+                    firstName !== undefined ||
+                    lastName !== undefined ||
+                    email !== undefined ||
+                    phone !== undefined ||
+                    countryCode !== undefined ||
+                    bio !== undefined ||
+                    favoriteActivities !== undefined,
                 { message: 'One of the fields must be defined' }
             )
     })
@@ -149,4 +170,15 @@ const submitQuiz = object({
 });
 
 export { firebase_id, firstName, lastName, email, phone, countryCode };
-export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, addNewUserActivity, submitQuiz };
+export {
+    userSchema,
+    createUserSchema,
+    getAllUsers,
+    getUserByEmailSchema,
+    getUserById,
+    getUserActivityList,
+    updateUserSchema,
+    userAddFavoriteActivitySchema as userFavoriteActivityListSchema,
+    addNewUserActivity,
+    submitQuiz
+};

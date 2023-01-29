@@ -16,6 +16,10 @@ const getUserActivityList = async (id: string) => {
     return userRepo.getUserActivityList(id);
 };
 
+const getUserFavoriteActivityList = async (id: string) => {
+    return userRepo.getUserFavoriteActivityList(id);
+};
+
 const createUser = async (user: any) => {
     return userRepo.createUser(user);
 };
@@ -32,4 +36,4 @@ const submitQuiz = async (id: string, quiz: any) => {
     return userRepo.submitQuiz(id, quiz);
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, updateUserProfile, addNewUserActivity, submitQuiz };
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addNewUserActivity, submitQuiz };
