@@ -1,8 +1,6 @@
 # File
 .env
 credentials.json
-yarn.lock
-LICENSE
 
 # Folder
 /.idea
@@ -10,4 +8,4 @@ LICENSE
 /dist
 /coverage
 /cert
-/coverage
+/.vscode

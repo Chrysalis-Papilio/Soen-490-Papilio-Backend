@@ -39,6 +39,11 @@ const bio = string({
     invalid_type_error: invalidMessage('Bio', 'string')
 });
 
+const favoriteActivities = number({
+    required_error: requiredMessage('favoriteActivities'),
+    invalid_type_error: invalidMessage('favoriteActivities', 'number')
+});
+
 const indoor = boolean({
     required_error: requiredMessage('Indoor'),
     invalid_type_error: invalidMessage('Indoor', 'boolean')
@@ -66,7 +71,8 @@ const userSchema = object({
     //  Optional
     phone: phone.optional(),
     countryCode: countryCode.optional(),
-    bio: bio.optional()
+    bio: bio.optional(),
+    favoriteActivities: favoriteActivities.optional()
 });
 
 const createUserSchema = object({
@@ -99,6 +105,20 @@ const getUserById = object({
 
 const getUserActivityList = getUserById;
 
+const userAddFavoriteActivitySchema = object({
+    body: object({
+        //  Identifier attribute
+        identifier: object({
+            firebase_id: firebase_id
+        }).strict('Identifier field contains an invalid key'),
+
+        //  Update attribute
+        update: object({
+            favoriteActivities: favoriteActivities
+        }).strict('Update field contains an invalid key')
+    })
+});
+
 const updateUserSchema = object({
     body: object({
         //  Identifier attribute
@@ -113,12 +133,19 @@ const updateUserSchema = object({
             email: email.optional(),
             phone: phone.optional(),
             countryCode: countryCode.optional(),
-            bio: bio.optional()
+            bio: bio.optional(),
+            favoriteActivities: favoriteActivities.optional()
         })
             .strict('Update field contains an invalid key')
             .refine(
                 ({ firstName, lastName, email, phone, countryCode, bio }) =>
-                    firstName !== undefined || lastName !== undefined || email !== undefined || phone !== undefined || countryCode !== undefined || bio !== undefined,
+                    firstName !== undefined ||
+                    lastName !== undefined ||
+                    email !== undefined ||
+                    phone !== undefined ||
+                    countryCode !== undefined ||
+                    bio !== undefined ||
+                    favoriteActivities !== undefined,
                 { message: 'One of the fields must be defined' }
             )
     })
@@ -141,4 +168,4 @@ const submitQuiz = object({
 });
 
 export { firebase_id, firstName, lastName, email, phone, countryCode };
-export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, addNewUserActivity, submitQuiz };
+export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, userAddFavoriteActivitySchema, addNewUserActivity, submitQuiz };
