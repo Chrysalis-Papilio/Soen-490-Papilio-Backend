@@ -62,5 +62,24 @@ const activitySchema = object({
     endTime: endTime.optional()
 });
 
+const getFeeds = object({
+    // Query
+    query: object({
+        // Optional
+        page: coerce
+            .number({
+                invalid_type_error: invalidMessage('Page', 'number')
+            })
+            .gte(1, 'Page has to be greater or equal to 1')
+            .optional(),
+        size: coerce
+            .number({
+                invalid_type_error: invalidMessage('Size', 'number')
+            })
+            .gte(5, 'Size has to be greater or equal to 5')
+            .optional()
+    }).strict('Query contains invalid key')
+});
+
 export { activityId, title, description, costPerIndividual, costPerGroup, groupSize, startTime, endTime, address };
-export { activitySchema };
+export { activitySchema, getFeeds };
