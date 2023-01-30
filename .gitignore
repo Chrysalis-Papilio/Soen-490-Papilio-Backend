@@ -1,8 +1,11 @@
 # File
 .env
-LICENSE
+credentials.json
 
 # Folder
 /.idea
 /node_modules
-/dist/**/*
+/dist
+/coverage
+/cert
+/.vscode
