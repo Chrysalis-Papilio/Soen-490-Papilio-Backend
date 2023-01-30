@@ -19,6 +19,9 @@ jest.mock('sequelize');
  */
 
 describe('UserController', () => {
+    afterAll(() => {
+        server.close();
+    });
     let emptyResultValue: any = null;
     const activity = {
         title: 'title',
@@ -298,6 +301,12 @@ describe('UserController', () => {
         //    GETUSERACTIVITYLIST ENDPOINT    //
         ////////////////////////////////////////
         describe('getUserActivityList endpoint', () => {
+            afterEach(() => {
+                server.close();
+            });
+            afterAll(() => {
+                server.close();
+            });
             it('should return OK[200] count if user exists.', async () => {
                 //  Arrange
                 const endpoint = `/api/user/get/${user.firebase_id}/activities`;

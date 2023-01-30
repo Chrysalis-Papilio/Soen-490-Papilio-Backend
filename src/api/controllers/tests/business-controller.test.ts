@@ -2,10 +2,10 @@ import request from 'supertest';
 import app, { server } from '../../../app';
 import { APIError } from '../../../errors/api-error';
 import { httpStatusCode } from '../../../types/httpStatusCodes';
-import { userRepo } from '../../repos';
+import { businessRepo } from '../../repos';
 jest.mock('sequelize');
 // jest.mock('../../models');
-// jest.mock('../../../api/repos/user-repo');
+// jest.mock('../../../api/repos/business-repo');
 
 /**
  * GET
@@ -25,9 +25,26 @@ jest.mock('sequelize');
  *  - updateEmployee
  */
 
-describe('UserController', () => {
+describe('BusinessController', () => {
+    afterAll(() => {
+        server.close();
+    });
+    /** used to return empty responses */
     let emptyResultValue: any = null;
-    const activity = {
+
+    /** testing business object */
+    const testEmployee = {
+        firebase_id: 'uf4938jvkuelb238210gaswsd',
+        firstName: 'Anastassy',
+        lastName: 'Cap',
+        phone: '5140006868',
+        countryCode: '1',
+        email: 'anacap123@gmail.com',
+        bio: 'My bio'
+    };
+
+    /** testing acitvity object */
+    const testActivity = {
         title: 'title',
         description: 'description',
         address: 'address',
@@ -37,78 +54,169 @@ describe('UserController', () => {
         groupSize: 10,
         endTime: '05 October 2011 14:48 UTC'
     };
-    const user = {
-        firebase_id: 'uf4938jvkuelb238210gaswsd',
-        firstName: 'Anastassy',
-        lastName: 'Cap',
-        phone: '5140006868',
-        countryCode: '1',
-        email: 'anacap123@gmail.com',
-        bio: 'My bio'
+
+    /** testing buesiness object */
+    const testBusiness = {
+        id: 1,
+        businessId: 'testId',
+        name: 'testName',
+        address: 'testingAddress',
+        email: 'testingEmail',
+        employees: [testEmployee],
+        activities: [testActivity]
     };
+
     /////////////////////////
     //                     //
     //    GET ENDPOINTS    //
     //                     //
     /////////////////////////
 
-    describe('GET /user', () => {
+    describe('GET /business', () => {
         ///////////////////////////////
-        //    GETALLUSERS EDNPOINT   //
+        //  GETBUSINESSBYID EDNPOINT //
         ///////////////////////////////
-        describe('getAllUsers endpoint', () => {
+        describe('getBusinessById endpoint', () => {
             afterEach(() => {
                 server.close();
             });
-            it('should return OK[200] and all users if found.', async () => {
+            it('should return OK[200] and and a valid business if business found.', async () => {
                 //  Arrange
-                const endpoint = '/api/user/getAllUsers';
+                const endpoint = `/api/business/get/${testBusiness.businessId}`;
                 const expectedStatusCode = 200;
-
-                const secondUser = user;
-
-                const userRepoSpy = jest.spyOn(userRepo, 'getAllUsers').mockResolvedValueOnce([user as any, secondUser as any]);
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getBusinessById')
+                .mockResolvedValueOnce({
+                    found: true,
+                    // @ts-expect-error
+                    business: testBusiness
+                });
 
                 //  Act
-                const res = await request(app).get(endpoint);
-
+                const response = await request(app).get(endpoint);
 
                 //  Assert
-                expect(res.statusCode).toBe(expectedStatusCode);
-
-                expect(res.body).toHaveLength(2);
-
-                expect(userRepoSpy).toHaveBeenCalledWith();
-                expect(userRepoSpy).toHaveBeenCalledTimes(1);
-
-                userRepoSpy.mockRestore();
+                expect(response.statusCode).toEqual(expectedStatusCode);
+                expect(response.body.found).toEqual(true);
+                expect(response.body.business.businessId).toEqual(testBusiness.businessId);
+                expect(businessRepoSpy).toHaveBeenCalledTimes(1);
+                expect(businessRepoSpy).toHaveBeenCalledWith(testBusiness.businessId);
+                businessRepoSpy.mockRestore();
             });
-            it('should return OK[200] and an empty array if no users found.', async () => {
+            it('should return OK[200] and not found if business not found.', async () => {
                 //  Arrange
-                const endpoint = '/api/user/getAllUsers';
+                const badID = 'bad ID';
+
+                const endpoint = `/api/business/get/${badID}`;
                 const expectedStatusCode = 200;
 
-                const userRepoSpy = jest.spyOn(userRepo, 'getAllUsers').mockResolvedValueOnce([]);
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getBusinessById').mockResolvedValueOnce({
+                    found: false,
+                    business: null
+                });
+
+                //  Act
+                const response = await request(app).get(endpoint);
+
+                //  Assert
+                expect(response.statusCode).toEqual(expectedStatusCode);
+                expect(response.body.found).toEqual(false);
+                expect(response.body.business).toEqual(null);
+                expect(businessRepoSpy).toHaveBeenCalledTimes(1);
+                expect(businessRepoSpy).toHaveBeenCalledWith(badID);
+                businessRepoSpy.mockRestore();
+            });
+            it('should return OK[202] if passed parameters is passing an empty string.', async () => {
+                //  Arrange
+                const endpoint = `/api/business/get/${emptyResultValue}`; //  Missing ID tag (:id)
+                const expectedStatusCode = 200;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getBusinessById').mockResolvedValueOnce(emptyResultValue);
+                
+                //  Act
+                const response = await request(app).get(endpoint);
+
+                //  Assert
+                expect(response.statusCode).toEqual(expectedStatusCode);
+                expect(response.body).toEqual(null);
+                expect(businessRepoSpy).toHaveBeenCalledTimes(1);
+                businessRepoSpy.mockRestore();
+            });
+        });
+        ////////////////////////////////
+        //  GETEMPLOYEELIST EDNPOINT  //
+        ////////////////////////////////
+        describe('getEmployeeList endpoint', () => {
+            afterEach(() => {
+                server.close();
+            });
+            it('should return OK[200] and all employees if business found.', async () => {
+                //  Arrange
+                const endpoint = `/api/business/get/${testBusiness.businessId}/employees`;
+                const expectedStatusCode = 200;
+                const secondEmployee = testEmployee;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployeeList')
+                .mockResolvedValueOnce({
+                    businessId: testBusiness.businessId,
+                    count: 2,
+                    employees: [testEmployee as any, secondEmployee as any]
+                });
+
+                //  Act
+                const res = await request(app).get(endpoint);
+
+
+                //  Assert
+                expect(res.statusCode).toBe(expectedStatusCode);
+                expect(res.body.count).toBe(2);
+                expect(businessRepoSpy).toHaveBeenCalledWith(testBusiness.businessId);
+                expect(businessRepoSpy).toHaveBeenCalledTimes(1);
+                businessRepoSpy.mockRestore();
+            });
+            it('should return NOTFOUND[409] and an empty array if businesss not found.', async () => {
+                //  Arrange
+                const endpoint = `/api/business/get/${testBusiness.businessId}/employees`;
+                const expectedStatusCode = 409;
+
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployeeList').mockImplementation(() => {
+                    throw new APIError(`Cannot find User with firebase_id ${businessRepo.getBusinessById}`, 'getEmployeeList', httpStatusCode.CONFLICT);
+                });
 
                 //  Act
                 const res = await request(app).get(endpoint);
 
                 //  Assert
                 expect(res.statusCode).toBe(expectedStatusCode);
+                expect(businessRepoSpy).toHaveBeenCalledWith(testBusiness.businessId);
+                expect(businessRepoSpy).toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
+            });
+            it('should return OK[200] and an empty array if businesss found with a total of 0 employees.', async () => {
+                //  Arrange
+                const endpoint = `/api/business/get/${testBusiness.businessId}/employees`;
+                const expectedStatusCode = 200;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployeeList')
+                .mockResolvedValueOnce({
+                    businessId: testBusiness.businessId,
+                    count: 0,
+                    employees: []
+                });
 
-                expect(res.body).toEqual([]);
+                //  Act
+                const res = await request(app).get(endpoint);
 
-                expect(userRepoSpy).toHaveBeenCalledWith();
-                expect(userRepoSpy).toHaveBeenCalledTimes(1);
 
-                userRepoSpy.mockRestore();
+                //  Assert
+                expect(res.statusCode).toBe(expectedStatusCode);
+                expect(res.body.businessId).toEqual(testBusiness.businessId);
+                expect(res.body.count).toEqual(0);
+                expect(res.body.employees).toEqual([]);
+                expect(businessRepoSpy).toHaveBeenCalledTimes(1);
+                businessRepoSpy.mockRestore();
             });
             it('should throw an error if exception thrown while fetching from DB.', async () => {
                 //  Arrange
-                const endpoint = '/api/user/getAllUsers';
+                const endpoint = `/api/business/get/${testBusiness.businessId}/employees`;
                 const expectedStatusCode = 500;
-
-                const userRepoSpy = jest.spyOn(userRepo, 'getAllUsers').mockImplementation(() => {
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployeeList').mockImplementation(() => {
                     throw new Error('DB error');
                 });
 
@@ -117,582 +225,201 @@ describe('UserController', () => {
 
                 //  Assert
                 expect(res.statusCode).toBe(expectedStatusCode);
-
-                expect(userRepoSpy).toHaveBeenCalledWith();
-                expect(userRepoSpy).toHaveBeenCalledTimes(1);
-
-                userRepoSpy.mockRestore();
+                expect(businessRepoSpy).toHaveBeenCalledTimes(1);
+                businessRepoSpy.mockRestore();
             });
         });
-        ///////////////////////////////
-        //    GETUSERBYID EDNPOINT   //
-        ///////////////////////////////
-        describe('getUserByID endpoint', () => {
+        ////////////////////////////////
+        //  GETACTIVITYLIST EDNPOINT  //
+        ////////////////////////////////
+        describe('getActivityList endpoint', () => {
             afterEach(() => {
                 server.close();
             });
-            it('should return OK[200] and and a valid user if user found.', async () => {
+            it('should return OK[200] and all activities if business found.', async () => {
                 //  Arrange
-                const endpoint = `/api/user/get/${user.firebase_id}`;
+                const endpoint = `/api/business/get/${testBusiness.businessId}/activities`;
                 const expectedStatusCode = 200;
-
-                const userRepoSpy = jest.spyOn(userRepo, 'getUserById').mockResolvedValueOnce({
-                    found: true,
+                const secondActivity = testActivity;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getActivityList')
+                .mockResolvedValueOnce({
+                    businessId: testBusiness.businessId,
+                    count: 2,
                     // @ts-expect-error
-                    user: user
+                    activities: [testActivity, secondActivity]
                 });
-
-                //  Act
-                const response = await request(app).get(endpoint);
-
-                //  Assert
-                expect(response.statusCode).toEqual(expectedStatusCode);
-
-                expect(response.body.found).toEqual(true);
-                expect(response.body.user.firebase_id).toEqual('uf4938jvkuelb238210gaswsd');
-
-                expect(userRepoSpy).toHaveBeenCalledTimes(1);
-                expect(userRepoSpy).toHaveBeenCalledWith(user.firebase_id);
-
-                userRepoSpy.mockRestore();
-            });
-            it('should return OK[200] and not found if user not found.', async () => {
-                //  Arrange
-                const badID = 'bad ID';
-
-                const endpoint = `/api/user/get/${badID}`;
-                const expectedStatusCode = 200;
-
-                const userRepoSpy = jest.spyOn(userRepo, 'getUserById').mockResolvedValueOnce({
-                    found: false,
-                    user: null
-                });
-
-                //  Act
-                const response = await request(app).get(endpoint);
-
-                //  Assert
-                expect(response.statusCode).toEqual(expectedStatusCode);
-
-                expect(response.body.found).toEqual(false);
-                expect(response.body.user).toEqual(null);
-
-                expect(userRepoSpy).toHaveBeenCalledTimes(1);
-                expect(userRepoSpy).toHaveBeenCalledWith(badID);
-
-                userRepoSpy.mockRestore();
-            });
-            it('should return NOTFOUND[404] and user not found if passed ID is empty string.', async () => {
-                //  Arrange
-                const emptyString = '';
-                const endpoint = `/api/user/get/${emptyString}`;
-                const expectedStatusCode = 404;
-
-                const userRepoSpy = jest.spyOn(userRepo, 'getUserById').mockResolvedValueOnce(emptyResultValue);
-                //  Act
-                const response = await request(app).get(endpoint);
-
-                //  Assert
-                expect(response.statusCode).toEqual(expectedStatusCode);
-
-                expect(response.body).toEqual({});
-
-                expect(userRepoSpy).not.toHaveBeenCalled();
-
-                userRepoSpy.mockRestore();
-            });
-            it('should return NOTFOUND[404] if passed parameters is missing id tag.', async () => {
-                //  Arrange
-                const endpoint = `/api/user/get/`; //  Missing ID tag (:id)
-                const expectedStatusCode = 404;
-
-                const userRepoSpy = jest.spyOn(userRepo, 'getUserById').mockResolvedValueOnce(emptyResultValue);
-                //  Act
-                const response = await request(app).get(endpoint);
-
-                //  Assert
-                expect(response.statusCode).toEqual(expectedStatusCode);
-
-                expect(response.body).toEqual({});
-
-                expect(userRepoSpy).not.toHaveBeenCalled();
-
-                userRepoSpy.mockRestore();
-            });
-        });
-        ///////////////////////////////
-        //  GETUSERBYEMAIL EDNPOINT  //
-        ///////////////////////////////
-        describe('getUserByEmail endpoint', () => {
-            afterEach(() => {
-                server.close();
-            });
-            it('should return OK[200] and the user if email is found.', async () => {
-                //  Arrange
-                const endpoint = `/api/user/getUserByEmail/${user.email}`;
-                const expectedStatusCode = 200;
-
-                const userRepoSpy = jest.spyOn(userRepo, 'getUserByEmail').mockResolvedValueOnce({
-                    found: true,
-                    //  @ts-expect-error
-                    user: user
-                });
-
-                //  Act
-                const res = await request(app).get(endpoint).send({
-                    email: user.email
-                });
-
-                //  Assert
-                expect(res.statusCode).toEqual(expectedStatusCode);
-
-                expect(res.body.found).toEqual(true);
-                expect(res.body.user.firebase_id).toEqual(user.firebase_id);
-
-                expect(userRepoSpy).toHaveBeenCalledTimes(1);
-                expect(userRepoSpy).toHaveBeenCalledWith(user.email);
-
-                userRepoSpy.mockRestore();
-            });
-            it('should return OK[200] and the user if email is not found.', async () => {
-                //  Arrange
-                const endpoint = `/api/user/getUserByEmail/${user.email}`;
-                const expectedStatusCode = 200;
-
-                const userRepoSpy = jest.spyOn(userRepo, 'getUserByEmail').mockResolvedValueOnce({
-                    found: false,
-                    user: null
-                });
-
-                //  Act
-                const res = await request(app).get(endpoint).send({
-                    email: user.email
-                });
-
-                //  Assert
-                expect(res.statusCode).toEqual(expectedStatusCode);
-
-                expect(res.body.found).toEqual(false);
-                expect(res.body.user).toEqual(null);
-
-                expect(userRepoSpy).toHaveBeenCalledTimes(1);
-                expect(userRepoSpy).toHaveBeenCalledWith(user.email);
-
-                userRepoSpy.mockRestore();
-            });
-            it('should return BADREQUEST[400] if email is invalid.', async () => {
-                //  Arrange
-                const invalidEmail = 'invalidEmail';
-
-                const endpoint = `/api/user/getUserByEmail/:email${invalidEmail}`;
-                const expectedStatusCode = 400;
-
-                const userRepoSpy = jest.spyOn(userRepo, 'getUserByEmail').mockResolvedValueOnce(emptyResultValue);
 
                 //  Act
                 const res = await request(app).get(endpoint);
+
+
                 //  Assert
-                expect(res.statusCode).toEqual(expectedStatusCode);
+                expect(res.statusCode).toBe(expectedStatusCode);
+                expect(res.body.count).toBe(2);
+                expect(businessRepoSpy).toHaveBeenCalledWith(testBusiness.businessId);
+                expect(businessRepoSpy).toHaveBeenCalledTimes(1);
+                businessRepoSpy.mockRestore();
+            });
+            it('should return OK[200] and an empty array if businesss found with a total of 0 activities.', async () => {
+                //  Arrange
+                const endpoint = `/api/business/get/${testBusiness.businessId}/activities`;
+                const expectedStatusCode = 200;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getActivityList')
+                .mockResolvedValueOnce({
+                    businessId: testBusiness.businessId,
+                    count: 0,
+                    activities: []
+                });
 
-                expect(res.body).toEqual({});
+                //  Act
+                const res = await request(app).get(endpoint);
 
-                expect(userRepoSpy).not.toHaveBeenCalled();
 
-                userRepoSpy.mockRestore();
+                //  Assert
+                expect(res.statusCode).toBe(expectedStatusCode);
+                expect(res.body.businessId).toEqual(testBusiness.businessId);
+                expect(res.body.count).toEqual(0);
+                expect(res.body.activities).toEqual([]);
+                expect(businessRepoSpy).toHaveBeenCalledTimes(1);
+                businessRepoSpy.mockRestore();
+            });
+            it('should return NOTFOUND[409] and an empty array if no businesss found.', async () => {
+                //  Arrange
+                const endpoint = `/api/business/get/${testBusiness.businessId}/activities`;
+                const expectedStatusCode = 409;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getActivityList').mockImplementation(() => {
+                    throw new APIError(`Cannot find User with firebase_id ${businessRepo.getBusinessById}`, 'getActivityList', httpStatusCode.CONFLICT);
+                });
+
+                //  Act
+                const res = await request(app).get(endpoint);
+
+                //  Assert
+                expect(res.statusCode).toBe(expectedStatusCode);
+                expect(businessRepoSpy).toHaveBeenCalledWith(testBusiness.businessId);
+                expect(businessRepoSpy).toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
+            });
+            it('should throw an error if exception thrown while fetching from DB.', async () => {
+                //  Arrange
+                const endpoint = `/api/business/get/${testBusiness.businessId}/activities`;
+                const expectedStatusCode = 500;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getActivityList').mockImplementation(() => {
+                    throw new Error('DB error');
+                });
+
+                //  Act
+                const res = await request(app).get(endpoint);
+
+                //  Assert
+                expect(res.statusCode).toBe(expectedStatusCode);
+                expect(businessRepoSpy).toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
             });
         });
-        ////////////////////////////////////////
-        //    GETUSERACTIVITYLIST ENDPOINT    //
-        ////////////////////////////////////////
-        describe('getUserActivityList endpoint', () => {
-            it('should return OK[200] count if user exists.', async () => {
+        ///////////////////////////////
+        //    GETEMPLOYEE EDNPOINT   //
+        ///////////////////////////////
+        describe('getEmployee endpoint', () => {
+            afterEach(() => {
+                server.close();
+            });
+            it('should return OK[200] and valid user if business found.', async () => {
                 //  Arrange
-                const endpoint = `/api/user/get/${user.firebase_id}/activities`;
+                const endpoint = `/api/business/${testBusiness.businessId}/employee/${testEmployee.firebase_id}`;
                 const expectedStatusCode = 200;
-
-                const userRepoSpy = jest.spyOn(userRepo, 'getUserActivityList').mockResolvedValueOnce({
-                    count: 5,
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployee')
+                .mockResolvedValueOnce({
                     // @ts-expect-error
-                    activities: activity
+                    employee: testEmployee
                 });
 
                 //  Act
-                const response = await request(app).get(endpoint);
+                const res = await request(app).get(endpoint);
 
                 //  Assert
-                expect(response.statusCode).toEqual(expectedStatusCode);
-
-                expect(response.body.count).toEqual(5);
-                expect(response.body.activities).not.toBeNull();
-
-                expect(userRepoSpy).toHaveBeenCalledTimes(1);
-                expect(userRepoSpy).toHaveBeenCalledWith(user.firebase_id);
-
-                userRepoSpy.mockRestore();
+                expect(res.statusCode).toBe(expectedStatusCode);
+                expect(res.body.employee.firebase_id).toBe(testEmployee.firebase_id);
+                expect(businessRepoSpy).toHaveBeenCalledWith(testBusiness.businessId, testEmployee.firebase_id);
+                expect(businessRepoSpy).toHaveBeenCalledTimes(1);
+                businessRepoSpy.mockRestore();
             });
-            it('should return CONFLICT[409] if user does not exists.', async () => {
+            it('should return CONFLICT[409] and valid user if business is not found.', async () => {
                 //  Arrange
-                const endpoint = `/api/user/get/${user.firebase_id}/activities`;
+                const endpoint = `/api/business/${testBusiness.businessId}/employee/${testEmployee.firebase_id}`;
                 const expectedStatusCode = 409;
 
-                const userRepoSpy = jest.spyOn(userRepo, 'getUserActivityList').mockImplementation(() => {
-                    throw new APIError(`Cannot find User with firebase_id ${user.firebase_id}`, 'getUserActivityList', httpStatusCode.CONFLICT);
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployee').mockImplementation(() => {
+                    throw new APIError(`Cannot find User with firebase_id ${businessRepo.getBusinessById}`, 'getEmployee', httpStatusCode.CONFLICT);
                 });
 
                 //  Act
-                const response = await request(app).get(endpoint);
+                const res = await request(app).get(endpoint);
 
                 //  Assert
-                expect(response.statusCode).toEqual(expectedStatusCode);
-
-                expect(response.body).toEqual({});
-
-                expect(userRepoSpy).toHaveBeenCalledTimes(1);
-                expect(userRepoSpy).toHaveBeenCalledWith(user.firebase_id);
-
-                userRepoSpy.mockRestore();
+                expect(res.statusCode).toBe(expectedStatusCode);
+                expect(businessRepoSpy).toHaveBeenCalledWith(testBusiness.businessId, testEmployee.firebase_id);
+                expect(businessRepoSpy).toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
             });
-        });
-    });
-
-    /////////////////////////
-    //                     //
-    //    PUT ENDPOINTS    //
-    //                     //
-    /////////////////////////
-    describe('PUT /user', () => {
-        ///////////////////////////////
-        //    UPDATEUSER EDNPOINT    //
-        ///////////////////////////////
-        describe('updateUser endpoint', () => {
-            afterEach(() => {
-                server.close();
-            });
-            it('should return OK[200] and update user if valid update is passed.', async () => {
+            it('should return OK[200] and valid user if business found and no employee found.', async () => {
                 //  Arrange
-                const endpoint = `/api/user/updateUserProfile`;
+                const endpoint = `/api/business/${testBusiness.businessId}/employee/${testEmployee.firebase_id}`;
                 const expectedStatusCode = 200;
-
-                const userRepoSpy = jest.spyOn(userRepo, 'updateUser').mockResolvedValueOnce({
-                    success: true,
-                    //  @ts-expect-error
-                    update: user
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployee')
+                .mockResolvedValueOnce({
+                    // @ts-expect-error
+                    employee: {}
                 });
 
                 //  Act
-                const res = await request(app)
-                    .put(endpoint)
-                    .send({
-                        identifier: {
-                            firebase_id: user.firebase_id
-                        },
-                        update: {
-                            phone: user.phone
-                        }
-                    });
-                //  Assert
-                expect(res.statusCode).toEqual(expectedStatusCode);
-
-                expect(res.body.success).toEqual(true);
-                expect(res.body.update.firebase_id).toEqual(user.firebase_id);
-                expect(res.body.update.phone).toEqual(user.phone);
-
-                expect(userRepoSpy).toHaveBeenCalledTimes(1);
-                userRepoSpy.mockRestore();
-            });
-            it('should return BADREQUEST[400] if invalid update is passed.', async () => {
-                //  Arrange
-                const invalidPhone = 'invalidPhone';
-                const endpoint = `/api/user/updateUserProfile`;
-                const expectedStatusCode = 400;
-
-                const userRepoSpy = jest.spyOn(userRepo, 'updateUser').mockResolvedValueOnce(emptyResultValue);
-
-                //  Act
-                const res = await request(app)
-                    .put(endpoint)
-                    .send({
-                        identifier: {
-                            firebase_id: user.firebase_id
-                        },
-                        update: {
-                            phone: invalidPhone
-                        }
-                    });
+                const res = await request(app).get(endpoint);
 
                 //  Assert
-                expect(res.statusCode).toEqual(expectedStatusCode);
-
-                expect(res.body).toEqual({});
-
-                expect(userRepoSpy).not.toHaveBeenCalled();
-
-                userRepoSpy.mockRestore();
+                expect(res.statusCode).toBe(expectedStatusCode);
+                expect(res.body).toStrictEqual({employee:{}});
+                expect(businessRepoSpy).toHaveBeenCalledWith(testBusiness.businessId, testEmployee.firebase_id);
+                expect(businessRepoSpy).toHaveBeenCalledTimes(1);
+                businessRepoSpy.mockRestore();
             });
-            it('should return CONFLICT[409] if user does not exist.', async () => {
+            it('should return NOTFOUND[404] if missing businessID tag.', async () => {
                 //  Arrange
-                const endpoint = `/api/user/updateUserProfile`;
-                const expectedStatusCode = 409;
-
-                const userRepoSpy = jest.spyOn(userRepo, 'updateUser').mockImplementation(() => {
-                    throw new APIError(`Cannot find User with firebase_id ${user.firebase_id}`, 'addNewUserActivity', httpStatusCode.CONFLICT);
-                });
-
-                //  Act
-                const res = await request(app)
-                    .put(endpoint)
-                    .send({
-                        identifier: {
-                            firebase_id: user.firebase_id
-                        },
-                        update: {
-                            phone: user.phone
-                        }
-                    });
-
-                //  Assert
-                expect(res.statusCode).toEqual(expectedStatusCode);
-
-                expect(res.body).toEqual({});
-
-                expect(userRepoSpy).toHaveBeenCalled();
-
-                userRepoSpy.mockRestore();
-            });
-            it('should return BADREQUEST[400] if request is missing identifier tag.', async () => {
-                //  Arrange
-                const endpoint = `/api/user/updateUserProfile`;
-                const expectedStatusCode = 400;
-
-                const userRepoSpy = jest.spyOn(userRepo, 'updateUser').mockResolvedValueOnce(emptyResultValue);
-
-                //  Act
-                const res = await request(app)
-                    .put(endpoint)
-                    .send({
-                        update: {
-                            phone: user.phone
-                        }
-                    });
-
-                //  Assert
-                expect(res.statusCode).toEqual(expectedStatusCode);
-
-                expect(res.body).toEqual({});
-
-                expect(userRepoSpy).not.toHaveBeenCalled();
-
-                userRepoSpy.mockRestore();
-            });
-            it('should return BADREQUEST[400] if request is missing update tag.', async () => {
-                //  Arrange
-                const endpoint = `/api/user/updateUserProfile`;
-                const expectedStatusCode = 400;
-
-                const userRepoSpy = jest.spyOn(userRepo, 'updateUser').mockResolvedValueOnce(emptyResultValue);
-
-                //  Act
-                const res = await request(app)
-                    .put(endpoint)
-                    .send({
-                        identifier: {
-                            firebase_id: user.firebase_id
-                        }
-                    });
-
-                //  Assert
-                expect(res.statusCode).toEqual(expectedStatusCode);
-
-                expect(res.body).toEqual({});
-
-                expect(userRepoSpy).not.toHaveBeenCalled();
-
-                userRepoSpy.mockRestore();
-            });
-            it('should return BADREQUEST[400] if passed update field does not match schema.', async () => {
-                //  Arrange
-                const endpoint = `/api/user/updateUserProfile`;
-                const expectedStatusCode = 400;
-
-                const userRepoSpy = jest.spyOn(userRepo, 'updateUser').mockResolvedValueOnce(emptyResultValue);
-
-                //  Act
-                const res = await request(app)
-                    .put(endpoint)
-                    .send({
-                        identifier: {
-                            firebase_id: user.firebase_id
-                        },
-                        update: {
-                            wrongField: user.phone //  Wrong field
-                        }
-                    });
-
-                //  Assert
-                expect(res.statusCode).toEqual(expectedStatusCode);
-
-                expect(res.body).toEqual({});
-
-                expect(userRepoSpy).not.toHaveBeenCalled();
-
-                userRepoSpy.mockRestore();
-            });
-        });
-    });
-
-    /////////////////////////
-    //                     //
-    //    POST ENDPOINTS   //
-    //                     //
-    /////////////////////////
-    describe('POST /user', () => {
-        ///////////////////////////////
-        //     CREATEUSER EDNPOINT    //
-        ///////////////////////////////
-        describe('createUser endpoint', () => {
-            afterEach(() => {
-                server.close();
-            });
-            it('should return OK[200] if user already exists.', async () => {
-                //  Arrange
-                const endpoint = '/api/user/createUser';
-                const expectedStatusCode = 200;
-                const userRepoSpy = jest.spyOn(userRepo, 'createUser').mockResolvedValueOnce(httpStatusCode.OK);
-
-                //  Act
-                const res = await request(app).post(endpoint).send({
-                    user: user
-                });
-
-                //  Assert
-                expect(res.statusCode).toEqual(expectedStatusCode);
-                expect(userRepoSpy).toHaveBeenCalled();
-                expect(userRepoSpy).toHaveBeenCalledWith(user);
-                userRepoSpy.mockRestore();
-            });
-            it('should return CREATED[201] if user does not exist.', async () => {
-                //  Arrange
-                const endpoint = '/api/user/createUser';
-                const expectedStatusCode = 201;
-                const userRepoSpy = jest.spyOn(userRepo, 'createUser').mockResolvedValueOnce(httpStatusCode.CREATED);
-
-                //  Act
-                const res = await request(app).post(endpoint).send({
-                    user: user
-                });
-
-                //  Assert
-                expect(res.statusCode).toEqual(expectedStatusCode);
-
-                expect(userRepoSpy).toHaveBeenCalled();
-                expect(userRepoSpy).toHaveBeenCalledWith(user);
-
-                userRepoSpy.mockRestore();
-            });
-            it('should return BADREQUEST[400] if passed parameters are missing core fields.', async () => {
-                //  Arrange
-                const badUser = {
-                    firebase_id: 'uf4938jvkuelb238210gaswsd',
-                    firstName: 'Anastassy',
-                    lastName: 'Cap',
-                    phone: '5140006868',
-                    countryCode: '1',
-                    //  email: 'anacap123@gmail.com',   //  Missing email
-                    bio: 'My bio'
-                };
-                const endpoint = '/api/user/createUser';
-                const expectedStatusCode = 400;
-                const userRepoSpy = jest.spyOn(userRepo, 'createUser').mockResolvedValueOnce(httpStatusCode.OK);
-
-                //  Act
-                const res = await request(app).post(endpoint).send({
-                    user: badUser
-                });
-
-                //  Assert
-                expect(res.statusCode).toEqual(expectedStatusCode);
-
-                expect(userRepoSpy).not.toHaveBeenCalled();
-
-                userRepoSpy.mockRestore();
-            });
-        });
-
-        ///////////////////////////////////////
-        //    ADDNEWUSERACTIVITY EDNPOINT    //
-        ///////////////////////////////////////
-        describe('addNewUserActivity endpoint', () => {
-            afterEach(() => {
-                server.close();
-            });
-            it('should return CREATED[201] and an activity if user exists.', async () => {
-                //  Arrange
-                const endpoint = `/api/user/addActivity/${user.firebase_id}`;
-                const expectedStatusCode = 201;
-                const userRepoSpy = jest.spyOn(userRepo, 'addNewUserActivity').mockResolvedValueOnce({
-                    success: true,
-                    //@ts-expect-error
-                    activity: activity
-                });
-
-                //  Act
-                const res = await request(app).post(endpoint).send({
-                    user: user,
-                    activity: activity
-                });
-
-                //  Assert
-                expect(res.statusCode).toEqual(expectedStatusCode);
-
-                expect(res.body.success).toEqual(true);
-                expect(res.body.activity).toEqual(activity);
-
-                expect(userRepoSpy).toHaveBeenCalled();
-
-                userRepoSpy.mockRestore();
-            });
-            it('should return BADREQUEST[400] if activity tag is missing.', async () => {
-                //  Arrange
-                const endpoint = `/api/user/addActivity/${user.firebase_id}`;
-                const expectedStatusCode = 400;
-                const userRepoSpy = jest.spyOn(userRepo, 'addNewUserActivity').mockResolvedValueOnce(emptyResultValue);
-
-                //  Act
-                const res = await request(app).post(endpoint).send({
-                    //  activity: activity  //  missing activity tag
-                });
-
-                //  Assert
-                expect(res.statusCode).toEqual(expectedStatusCode);
-
-                expect(res.body).toEqual({});
-
-                expect(userRepoSpy).not.toHaveBeenCalled();
-
-                userRepoSpy.mockRestore();
-            });
-            it('should return BADREQUEST[404] if id parameter is missing.', async () => {
-                //  Arrange
-                const badId = ''
-                const endpoint = `/api/user/addActivity/${badId}`;  //  Missing id parameter
+                const endpoint = `/api/business//employee/${testEmployee.firebase_id}`;
                 const expectedStatusCode = 404;
-                const userRepoSpy = jest.spyOn(userRepo, 'addNewUserActivity').mockResolvedValueOnce(emptyResultValue);
-
-                //  Act
-                const res = await request(app).post(endpoint).send({
-                    //  activity: activity  //  missing activity tag
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployee')
+                .mockResolvedValueOnce({
+                    // @ts-expect-error
+                    employee: {}
                 });
 
+                //  Act
+                const res = await request(app).get(endpoint);
+
                 //  Assert
-                expect(res.statusCode).toEqual(expectedStatusCode);
-
-                expect(res.body).toEqual({});
-
-                expect(userRepoSpy).not.toHaveBeenCalled();
-
-                userRepoSpy.mockRestore();
+                expect(res.statusCode).toBe(expectedStatusCode);
+                expect(businessRepoSpy).not.toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
             });
-            
-        });
-    });
-});
+            it('should return OK[200] if passing empty string as a parameter for the businessID tag.', async () => {
+                //  Arrange
+                const endpoint = `/api/business/${emptyResultValue}/employee/${testEmployee.firebase_id}`;
+                const expectedStatusCode = 200;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployee')
+                .mockResolvedValueOnce({
+                    // @ts-expect-error
+                    employee: {}
+                });
+
+                //  Act
+                const res = await request(app).get(endpoint);
+
+                //  Assert
+                expect(res.statusCode).toBe(expectedStatusCode);
+                expect(res.body).toStrictEqual({employee:{}});
+                expect(businessRepoSpy).toHaveBeenCalledWith("null", testEmployee.firebase_id);
+                expect(businessRepoSpy).toHaveBeenCalledTimes(1);
+                businessRepoSpy.mockRestore();
+            });
+        }); // GETEMPLOYEE
+    }); // DESCRIBE GET
+}); //  DESCRIBE BUSINESSCONTROLLER
