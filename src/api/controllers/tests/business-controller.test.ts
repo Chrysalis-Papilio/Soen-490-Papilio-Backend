@@ -71,6 +71,12 @@ describe('BusinessController', () => {
     //    GET ENDPOINTS    //
     //                     //
     /////////////////////////
+    /**
+     *  - getBusinessById
+     *  - getEmployeeList
+     *  - getActivityList
+     *  - getEmployee
+    */
 
     describe('GET /business', () => {
         ///////////////////////////////
@@ -422,4 +428,103 @@ describe('BusinessController', () => {
             });
         }); // GETEMPLOYEE
     }); // DESCRIBE GET
+
+    //////////////////////////
+    //                      //
+    //    POST ENDPOINTS    //
+    //                      //
+    //////////////////////////
+    /**
+    *   - createBusiness
+    *   - addNewEmployee
+    *   - addNewActivity
+    */
+
+    describe('POST /business', () => {
+        ///////////////////////////////
+        //  CREATEBUSINESS EDNPOINT  //
+        ///////////////////////////////
+        describe('createBusiness endpoint', () => {
+            afterEach(() => {
+                server.close();
+            });
+        }); //  DESCRIBE createBusiness endpoint
+
+        ///////////////////////////////
+        //  ADDNEWEMPLOYEE EDNPOINT  //
+        ///////////////////////////////
+        describe('addNewEmployee endpoint', () => {
+            afterEach(() => {
+                server.close();
+            });
+        }); //  DESCRIBE addNewEmployee endpoint
+
+        ///////////////////////////////
+        //  ADDNEWACTIVITY EDNPOINT  //
+        ///////////////////////////////
+        describe('addNewActivity endpoint', () => {
+            afterEach(() => {
+                server.close();
+            });
+        }); //  DESCRIBE addNewActivity endpoint
+    }); // DESCRIBE POST
+
+    ////////////////////////////
+    //                        //
+    //    DELETE ENDPOINTS    //
+    //                        //
+    ////////////////////////////
+    /**
+    *   - removeEmployee
+    *   - removeActivity
+    */
+
+    describe('DELETE /business', () => {
+        ///////////////////////////////
+        //  REMOVEEMPLOYEE EDNPOINT  //
+        ///////////////////////////////
+        describe('removeEmployee endpoint', () => {
+            afterEach(() => {
+                server.close();
+            });
+        }); //  removeEmployee enpoint
+
+        ///////////////////////////////
+        //  REMOVEACTIVITY EDNPOINT  //
+        ///////////////////////////////
+        describe('removeActivity endpoint', () => {
+            afterEach(() => {
+                server.close();
+            });
+        }); //  removeActivity enpoint
+    }); // DESCRIBE DELETE
+
+    //////////////////////////
+    //                      //
+    //    PUT ENDPOINTS     //
+    //                      //
+    //////////////////////////
+    /**
+    *   - updateBusiness
+    *   - updateEmployee
+    */
+    describe('PUT /business', () => {
+        ///////////////////////////////
+        //  UPDATEBUSINESS EDNPOINT  //
+        ///////////////////////////////
+        describe('updateBusiness endpoint', () => {
+            afterEach(() => {
+                server.close();
+            });
+        }); //  updateBusiness endpoint
+
+        ///////////////////////////////
+        //  UPDATEEMPLOYEE EDNPOINT  //
+        ///////////////////////////////
+        describe('updateEmployee endpoint', () => {
+            afterEach(() => {
+                server.close();
+            });
+        }); //  updateEmployee endpoint
+    }); // DESCRIBE PUT
 }); //  DESCRIBE BUSINESSCONTROLLER
