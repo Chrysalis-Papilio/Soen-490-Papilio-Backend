@@ -36,7 +36,10 @@ const getActivity = async (req: Request, res: Response, next: NextFunction) => {
 const searchActivities = async (req: Request, res: Response, next: NextFunction) => {
     const { keyword } = req.body;
     try {
-        const result = await activityServices.searchActivities(keyword);
+        /** Call to service layer */
+        const result = await activityServices.searchActivities(keyword.trim());
+
+        /** Return a response */
         return res.status(200).json(result);
     } catch (e) {
         next(e);
