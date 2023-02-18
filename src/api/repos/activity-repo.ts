@@ -33,10 +33,9 @@ const searchActivities = async (keyword: string) => {
     const keywordListRepacked = keyword
         .split(' ')
         .filter((item) => {
-            return item.trim().length > 0;
+            return item.trim().length > 1; // Remove meaningless empty or 1-letter words
         })
         .join(' & ');
-    console.log(keywordListRepacked);
 
     const MAX_SEARCH_RESULT = 30;
     const queryString =
