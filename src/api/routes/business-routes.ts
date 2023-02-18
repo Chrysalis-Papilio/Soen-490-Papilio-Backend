@@ -2,6 +2,7 @@ import express from 'express';
 import { businessController } from '../controllers';
 import * as businessSchema from '../schemas/business-schema';
 import { validate } from '../middlewares/validateResource';
+import { upload } from '../middlewares/multerUpload';
 
 const router = express.Router();
 
@@ -25,7 +26,8 @@ router.post('/business/createBusiness', validate(businessSchema.createBusiness),
 
 router.post('/business/addEmployee/:businessId', validate(businessSchema.addNewEmployee), businessController.addNewEmployee);
 
-router.post('/business/addActivity/:businessId', validate(businessSchema.addNewActivity), businessController.addNewActivity);
+// router.post('/business/addActivity/:businessId', validate(businessSchema.addNewActivity), businessController.addNewActivity);
+router.post('/business/addActivity/:businessId', [upload.array('images', 5), validate(businessSchema.addNewBusinessActivity)], businessController.addNewActivity);
 
 /** DELETE */
 

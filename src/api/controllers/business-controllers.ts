@@ -108,14 +108,41 @@ const addNewEmployee = async (req: Request, res: Response, next: NextFunction) =
 };
 
 const addNewActivity = async (req: Request, res: Response, next: NextFunction) => {
+    // try {
+    //     /** Call to service layer */
+    //     const { businessId } = req.params;
+    //     const { activity } = req.body;
+    //     const result = await businessServices.addNewActivity(businessId, activity);
+
+    //     /** Return a response to client */
+    //     return res.status(200).json(result);
+    // } catch (err) {
+    //     next(err);
+    // }
+    addNewBusinessActivity(req, res, next);
+};
+
+const addNewBusinessActivity = async (req: Request, res: Response, next: NextFunction) => {
+    const { businessId } = req.params;
+    const { activity } = req.body;
     try {
+        /** Check if middleware uploaded and retrieved the images' URLs */
+        const imageUrls: string[] = [];
+        if (req.files) {
+            const fileKeys = Object.keys(req.files);
+            for (const key of fileKeys) {
+                // @ts-ignore - THIS IS NECESSARY
+                const url = await uploadImageFirebase(req.files[key]);
+                imageUrls.push(url);
+            }
+        }
+        activity['images'] = imageUrls;
+
         /** Call to service layer */
-        const { businessId } = req.params;
-        const { activity } = req.body;
         const result = await businessServices.addNewActivity(businessId, activity);
 
         /** Return a response to client */
-        return res.status(200).json(result);
+        return res.status(201).json(result);
     } catch (err) {
         next(err);
     }
