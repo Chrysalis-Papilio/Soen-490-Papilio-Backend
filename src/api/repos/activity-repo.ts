@@ -36,6 +36,7 @@ const searchActivities = async (keyword: string) => {
             return item.trim().length > 0;
         })
         .join(' & ');
+    console.log(keywordListRepacked);
 
     const MAX_SEARCH_RESULT = 30;
     const queryString =
@@ -43,9 +44,8 @@ const searchActivities = async (keyword: string) => {
         `SELECT A."id", "title", "description", "images"[1]
          FROM "Activities_Tokens_Search" ATS,
               "Activities" A
-         WHERE ("description_tokens" @@ to_tsquery('english', '${keywordListRepacked}')
-             OR "title_tokens" @@ to_tsquery('english', '${keywordListRepacked}')
-             )
+         WHERE 
+           ATS."tokens" @@ to_tsquery('english', '${keywordListRepacked}')
            AND ATS."id" = A."id"
          ORDER BY "startTime" DESC
          LIMIT ${MAX_SEARCH_RESULT}
