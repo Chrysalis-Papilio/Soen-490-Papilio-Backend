@@ -33,4 +33,14 @@ const getActivity = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-export { getAllActivities, getActivity };
+const searchActivities = async (req: Request, res: Response, next: NextFunction) => {
+    const { keyword } = req.body;
+    try {
+        const result = await activityServices.searchActivities(keyword);
+        return res.status(200).json(result);
+    } catch (e) {
+        next(e);
+    }
+};
+
+export { getAllActivities, getActivity, searchActivities };
