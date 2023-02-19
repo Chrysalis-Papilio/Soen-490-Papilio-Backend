@@ -103,18 +103,7 @@ const updateActivity = object({
             groupSize: groupSize.optional(),
             costPerIndividual: costPerIndividual.optional(),
             costPerGroup: costPerGroup.optional()
-        }).refine(
-            ({ title, description, address, startTime, endTime, groupSize, costPerIndividual, costPerGroup }) =>
-                title !== undefined ||
-                description !== undefined ||
-                address !== undefined ||
-                startTime !== undefined ||
-                endTime !== undefined ||
-                groupSize !== undefined ||
-                costPerIndividual !== undefined ||
-                costPerGroup !== undefined,
-            { message: 'One of the fields must be defined' }
-        )
+        }).refine((attributes) => Object.values(attributes).some((attribute) => attribute !== undefined), { message: 'One of the fields must be defined' })
     }).strict('Body contains invalid key')
 });
 

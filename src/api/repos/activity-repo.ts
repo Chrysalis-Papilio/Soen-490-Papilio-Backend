@@ -30,7 +30,7 @@ const getActivity = async (id: number) => {
 const updateActivity = async (id: number, update: any) => {
     await Activity.sync();
     const result = await Activity.update(update, {
-        where: { id: id },
+        where: { id },
         returning: true
     }).catch((err) => {
         console.log(err);
