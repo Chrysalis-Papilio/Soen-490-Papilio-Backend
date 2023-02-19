@@ -203,6 +203,17 @@ const updateActivity = async (req: Request, res: Response, next: NextFunction) =
 };
 
 export {
-    getBusinessById, getEmployee, getEmployeeList, getActivityList, createSimpleBusiness, createBusiness,
-    addNewEmployee, addNewActivity, removeEmployee, removeActivity, updateBusiness, updateEmployee, updateActivity
+    getBusinessById,
+    getEmployee,
+    getEmployeeList,
+    getActivityList,
+    createSimpleBusiness,
+    createBusiness,
+    addNewEmployee,
+    addNewActivity,
+    removeEmployee,
+    removeActivity,
+    updateBusiness,
+    updateEmployee,
+    updateActivity
 };

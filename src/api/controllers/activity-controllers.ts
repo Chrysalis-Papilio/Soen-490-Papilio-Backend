@@ -33,4 +33,18 @@ const getActivity = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-export { getAllActivities, getActivity };
+const updateActivity = async (req: Request, res: Response, next: NextFunction) => {
+    const { activityId } = req.params;
+    const { update } = req.body;
+    try {
+        /** Call to service layer */
+        const result = await activityServices.updateActivity(Number(activityId), update);
+
+        /** Return a response */
+        return res.status(200).json(result);
+    } catch (e) {
+        next(e);
+    }
+};
+
+export { getAllActivities, getActivity, updateActivity };
