@@ -3,7 +3,8 @@ import { APIError } from '../../errors/api-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
 import { BaseError } from '../../errors/base-error';
 
-/** Catching error */
+/** Catching errors */
+
 const createNewObjectCaughtError = (error: any, methodName: string, message?: string) => {
     console.log(error);
     if (error.name === 'SequelizeUniqueConstraintError') {
@@ -15,4 +16,9 @@ const createNewObjectCaughtError = (error: any, methodName: string, message?: st
     } else throw new BaseError('ORM Sequelize Error', message ? message : 'There has been an error in the DB', methodName, httpStatusCode.INTERNAL_SERVER, true);
 };
 
-export { createNewObjectCaughtError };
+const queryResultError = (error: any, methodName: string, message?: string) => {
+    console.log(error);
+    throw new BaseError('ORM Sequelize Error', message ? message : 'Error in query execution in the DB', methodName, httpStatusCode.INTERNAL_SERVER, true);
+};
+
+export { createNewObjectCaughtError, queryResultError };

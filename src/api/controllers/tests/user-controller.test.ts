@@ -68,7 +68,6 @@ describe('UserController', () => {
                 //  Act
                 const res = await request(app).get(endpoint);
 
-
                 //  Assert
                 expect(res.statusCode).toBe(expectedStatusCode);
 
@@ -675,8 +674,8 @@ describe('UserController', () => {
             });
             it('should return BADREQUEST[404] if id parameter is missing.', async () => {
                 //  Arrange
-                const badId = ''
-                const endpoint = `/api/user/addActivity/${badId}`;  //  Missing id parameter
+                const badId = '';
+                const endpoint = `/api/user/addActivity/${badId}`; //  Missing id parameter
                 const expectedStatusCode = 404;
                 const userRepoSpy = jest.spyOn(userRepo, 'addNewUserActivity').mockResolvedValueOnce(emptyResultValue);
 
@@ -694,8 +693,6 @@ describe('UserController', () => {
 
                 userRepoSpy.mockRestore();
             });
-            
         });
     });
 });
-
