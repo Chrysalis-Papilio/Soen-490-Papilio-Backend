@@ -39,6 +39,19 @@ const updateActivity = async (req: Request, res: Response, next: NextFunction) =
     try {
         /** Call to service layer */
         const result = await activityServices.updateActivity(Number(activityId), update);
+        
+        /** Return a response */
+        return res.status(200).json(result);
+    } catch (e) {
+        next(e);
+    }
+};
+
+const searchActivities = async (req: Request, res: Response, next: NextFunction) => {
+    const { keyword } = req.body;
+    try {
+        /** Call to service layer */
+        const result = await activityServices.searchActivities(keyword.trim());
 
         /** Return a response */
         return res.status(200).json(result);
@@ -47,4 +60,4 @@ const updateActivity = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
-export { getAllActivities, getActivity, updateActivity };
+export { getAllActivities, getActivity, searchActivities, updateActivity };

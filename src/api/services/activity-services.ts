@@ -12,4 +12,8 @@ const updateActivity = async (id: number, update: any) => {
     return activityRepo.updateActivity(id, update);
 };
 
-export { getAllActivities, getActivity, updateActivity };
+const searchActivities = async (keyword: string) => {
+    return activityRepo.searchActivities(keyword);
+};
+
+export { getAllActivities, getActivity, searchActivities, updateActivity };

@@ -107,5 +107,15 @@ const updateActivity = object({
     }).strict('Body contains invalid key')
 });
 
+const searchActivities = object({
+    body: object({
+        // Required
+        keyword: string({
+            required_error: requiredMessage('Keyword'),
+            invalid_type_error: invalidMessage('Keyword', 'string')
+        })
+    }).strict('Body contains invalid key')
+})
+
 export { activityId, title, description, costPerIndividual, costPerGroup, groupSize, startTime, endTime, address };
-export { activitySchema, getActivity, getFeeds, updateActivity };
+export { activitySchema, getActivity, getFeeds, searchActivities, updateActivity };

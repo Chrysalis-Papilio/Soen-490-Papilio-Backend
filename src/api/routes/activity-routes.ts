@@ -13,4 +13,6 @@ router.get('/activity/getFeeds', validate(activitySchema.getFeeds), activityCont
 
 router.post('/activity/update/:activityId', validate(activitySchema.updateActivity), activityController.updateActivity);
 
+router.get('/activity/search', validate(activitySchema.searchActivities), activityController.searchActivities);
+
 export default router;
