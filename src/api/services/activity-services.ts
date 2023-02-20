@@ -8,4 +8,8 @@ const getActivity = async (id: number) => {
     return activityRepo.getActivity(id);
 };
 
-export { getAllActivities, getActivity };
+const searchActivities = async (keyword: string) => {
+    return activityRepo.searchActivities(keyword);
+};
+
+export { getAllActivities, getActivity, searchActivities };
