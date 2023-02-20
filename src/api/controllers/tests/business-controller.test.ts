@@ -603,6 +603,7 @@ describe('BusinessController', () => {
     *   - removeActivity
     */
 
+    // TODO: Implement tests
     describe('DELETE /business', () => {
         ///////////////////////////////
         //  REMOVEEMPLOYEE EDNPOINT  //
@@ -644,6 +645,7 @@ describe('BusinessController', () => {
     *   - updateBusiness
     *   - updateEmployee
     */
+   // TODO: Implement tests
     describe('PUT /business', () => {
         ///////////////////////////////
         //  UPDATEBUSINESS EDNPOINT  //
