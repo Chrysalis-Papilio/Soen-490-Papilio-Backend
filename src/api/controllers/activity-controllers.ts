@@ -39,7 +39,7 @@ const updateActivity = async (req: Request, res: Response, next: NextFunction) =
     try {
         /** Call to service layer */
         const result = await activityServices.updateActivity(Number(activityId), update);
-        
+
         /** Return a response */
         return res.status(200).json(result);
     } catch (e) {

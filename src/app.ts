@@ -1,12 +1,13 @@
 import express from 'express';
-import config from './config/config';
 import { logger } from './config/logger';
 import { ErrorHandler } from './errors/error-handler';
 import { userRoute, activityRoute, businessRoute, genreRoute } from './api/routes';
+import config from './config/config';
+
+const NAMESPACE = 'App';
 
 const app = express();
 const errorHandler = new ErrorHandler();
-const NAMESPACE = 'app';
 
 /** Log the request */
 app.use((req, res, next) => {
@@ -35,16 +36,16 @@ app.use((req, res, next) => {
     next();
 });
 
+/** Open port */
+export const server = app.listen(config.server.port, () => {
+    logger.info(`${NAMESPACE}: Server is running ${config.server.hostname}:${config.server.port}`);
+});
+
 /** Routes go here */
 app.use('/api', userRoute);
 app.use('/api', activityRoute);
 app.use('/api', businessRoute);
 app.use('/api', genreRoute);
-
-/** Open port */
-export const server = app.listen(config.server.port, () => {
-    logger.info(`${NAMESPACE}: Server is running ${config.server.hostname}:${config.server.port}`);
-});
 
 /** Error handling */
 app.use(errorHandler.handleError);
