@@ -1,4 +1,6 @@
 import { Activity } from '../models';
+import { BaseError } from '../../errors/base-error';
+import { httpStatusCode } from '../../types/httpStatusCodes';
 import sequelize from '../../config/sequelize';
 import { queryResultError } from './error';
 
@@ -23,6 +25,22 @@ const getActivity = async (id: number) => {
     return {
         found: !!activity,
         activity: activity
+    };
+};
+
+/** Update details of the Activity */
+const updateActivity = async (id: number, update: any) => {
+    await Activity.sync();
+    const result = await Activity.update(update, {
+        where: { id },
+        returning: true
+    }).catch((err) => {
+        console.log(err);
+        throw new BaseError('ORM Sequelize Error', 'There has been an error in updating the Activity', 'updateActivity', httpStatusCode.INTERNAL_SERVER, true);
+    });
+    return {
+        success: !!result,
+        activity: result[1][0]
     };
 };
 
@@ -58,4 +76,4 @@ const searchActivities = async (keyword: string) => {
     };
 };
 
-export { getAllActivities, getActivity, searchActivities };
+export { getAllActivities, getActivity, searchActivities, updateActivity };
