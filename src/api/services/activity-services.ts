@@ -8,4 +8,8 @@ const getActivity = async (id: number) => {
     return activityRepo.getActivity(id);
 };
 
-export { getAllActivities, getActivity };
+const updateActivity = async (id: number, update: any) => {
+    return activityRepo.updateActivity(id, update);
+};
+
+export { getAllActivities, getActivity, updateActivity };
