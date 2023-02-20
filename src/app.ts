@@ -2,6 +2,9 @@ import express from 'express';
 import { logger } from './config/logger';
 import { ErrorHandler } from './errors/error-handler';
 import { userRoute, activityRoute, businessRoute, genreRoute } from './api/routes';
+import config from './config/config';
+
+const NAMESPACE = "App";
 
 const app = express();
 const errorHandler = new ErrorHandler();
@@ -31,6 +34,11 @@ app.use((req, res, next) => {
         return res.status(200).json({});
     }
     next();
+});
+
+/** Open port */
+export const server = app.listen(config.server.port, () => {
+    logger.info(`${NAMESPACE}: Server is running ${config.server.hostname}:${config.server.port}`);
 });
 
 /** Routes go here */

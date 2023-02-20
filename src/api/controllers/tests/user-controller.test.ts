@@ -1,6 +1,5 @@
 import request from 'supertest';
-import app from '../../../app';
-import server from '../../../server';
+import app, {server} from '../../../app';
 import { APIError } from '../../../errors/api-error';
 import { httpStatusCode } from '../../../types/httpStatusCodes';
 import { userRepo } from '../../repos';

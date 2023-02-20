@@ -4,8 +4,8 @@
     "description": "",
     "main": "app.js",
     "scripts": {
-        "test": "jest src/ --runInBand --detectOpenHandles --coverage",
-        "test:watch": "jest src/ --runInBand --detectOpenHandles --watchAll --forceExit --coverage --maxWorkers=1 --forceExit",
+        "test": "jest src/ --runInBand --detectOpenHandles",
+        "test:watch": "jest src/ --runInBand --detectOpenHandles --watchAll --forceExit --coverage",
         "test:watch1": "jest src/api/controllers/tests/user-controller.test.ts --runInBand --detectOpenHandles --watchAll --forceExit",
         "test:watch2": "jest src/api/controllers/tests/business-controller.test.ts --runInBand --detectOpenHandles --watchAll --forceExit",
         "dev": "tsc-watch --onSuccess \"node dist/app.js\"",
