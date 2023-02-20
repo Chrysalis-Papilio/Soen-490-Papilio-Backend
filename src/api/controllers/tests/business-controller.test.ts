@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app, {server} from '../../../app';
+import app, { server } from '../../../app';
 import { APIError } from '../../../errors/api-error';
 import { httpStatusCode } from '../../../types/httpStatusCodes';
 import { businessRepo } from '../../repos';
@@ -37,7 +37,7 @@ describe('BusinessController', () => {
         lastName: 'LP',
         email: 'anacap123@gmail.com',
         root: true,
-        role: "Admin"
+        role: 'Admin'
     };
 
     /** testing acitvity object */
@@ -57,7 +57,7 @@ describe('BusinessController', () => {
         businessId: 'testId',
         name: 'testName',
         address: 'An address',
-        email: 'testingEmail@gmail.com',
+        email: 'testingEmail@gmail.com'
     };
 
     /////////////////////////
@@ -70,7 +70,7 @@ describe('BusinessController', () => {
      *  - getEmployeeList
      *  - getActivityList
      *  - getEmployee
-    */
+     */
 
     describe('GET /business', () => {
         afterEach(() => {
@@ -87,8 +87,7 @@ describe('BusinessController', () => {
                 //  Arrange
                 const endpoint = `/api/business/get/${testBusiness.businessId}`;
                 const expectedStatusCode = 200;
-                const businessRepoSpy = jest.spyOn(businessRepo, 'getBusinessById')
-                .mockResolvedValueOnce({
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getBusinessById').mockResolvedValueOnce({
                     found: true,
                     // @ts-expect-error
                     business: testBusiness
@@ -133,7 +132,7 @@ describe('BusinessController', () => {
                 const endpoint = `/api/business/get/${emptyResultValue}`; //  Missing ID tag (:id)
                 const expectedStatusCode = 200;
                 const businessRepoSpy = jest.spyOn(businessRepo, 'getBusinessById').mockResolvedValueOnce(emptyResultValue);
-                
+
                 //  Act
                 const response = await request(app).get(endpoint);
 
@@ -156,8 +155,7 @@ describe('BusinessController', () => {
                 const endpoint = `/api/business/get/${testBusiness.businessId}/employees`;
                 const expectedStatusCode = 200;
                 const secondEmployee = testEmployee;
-                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployeeList')
-                .mockResolvedValueOnce({
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployeeList').mockResolvedValueOnce({
                     businessId: testBusiness.businessId,
                     count: 2,
                     employees: [testEmployee as any, secondEmployee as any]
@@ -165,7 +163,6 @@ describe('BusinessController', () => {
 
                 //  Act
                 const res = await request(app).get(endpoint);
-
 
                 //  Assert
                 expect(res.statusCode).toBe(expectedStatusCode);
@@ -196,8 +193,7 @@ describe('BusinessController', () => {
                 //  Arrange
                 const endpoint = `/api/business/get/${testBusiness.businessId}/employees`;
                 const expectedStatusCode = 200;
-                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployeeList')
-                .mockResolvedValueOnce({
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployeeList').mockResolvedValueOnce({
                     businessId: testBusiness.businessId,
                     count: 0,
                     employees: []
@@ -205,7 +201,6 @@ describe('BusinessController', () => {
 
                 //  Act
                 const res = await request(app).get(endpoint);
-
 
                 //  Assert
                 expect(res.statusCode).toBe(expectedStatusCode);
@@ -244,8 +239,7 @@ describe('BusinessController', () => {
                 const endpoint = `/api/business/get/${testBusiness.businessId}/activities`;
                 const expectedStatusCode = 200;
                 const secondActivity = testActivity;
-                const businessRepoSpy = jest.spyOn(businessRepo, 'getActivityList')
-                .mockResolvedValueOnce({
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getActivityList').mockResolvedValueOnce({
                     businessId: testBusiness.businessId,
                     count: 2,
                     // @ts-expect-error
@@ -254,7 +248,6 @@ describe('BusinessController', () => {
 
                 //  Act
                 const res = await request(app).get(endpoint);
-
 
                 //  Assert
                 expect(res.statusCode).toBe(expectedStatusCode);
@@ -267,8 +260,7 @@ describe('BusinessController', () => {
                 //  Arrange
                 const endpoint = `/api/business/get/${testBusiness.businessId}/activities`;
                 const expectedStatusCode = 200;
-                const businessRepoSpy = jest.spyOn(businessRepo, 'getActivityList')
-                .mockResolvedValueOnce({
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getActivityList').mockResolvedValueOnce({
                     businessId: testBusiness.businessId,
                     count: 0,
                     activities: []
@@ -276,7 +268,6 @@ describe('BusinessController', () => {
 
                 //  Act
                 const res = await request(app).get(endpoint);
-
 
                 //  Assert
                 expect(res.statusCode).toBe(expectedStatusCode);
@@ -331,8 +322,7 @@ describe('BusinessController', () => {
                 //  Arrange
                 const endpoint = `/api/business/${testBusiness.businessId}/employee/${testEmployee.firebase_id}`;
                 const expectedStatusCode = 200;
-                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployee')
-                .mockResolvedValueOnce({
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployee').mockResolvedValueOnce({
                     // @ts-expect-error
                     employee: testEmployee
                 });
@@ -369,8 +359,7 @@ describe('BusinessController', () => {
                 //  Arrange
                 const endpoint = `/api/business/${testBusiness.businessId}/employee/${testEmployee.firebase_id}`;
                 const expectedStatusCode = 200;
-                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployee')
-                .mockResolvedValueOnce({
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployee').mockResolvedValueOnce({
                     // @ts-expect-error
                     employee: {}
                 });
@@ -380,7 +369,7 @@ describe('BusinessController', () => {
 
                 //  Assert
                 expect(res.statusCode).toBe(expectedStatusCode);
-                expect(res.body).toStrictEqual({employee:{}});
+                expect(res.body).toStrictEqual({ employee: {} });
                 expect(businessRepoSpy).toHaveBeenCalledWith(testBusiness.businessId, testEmployee.firebase_id);
                 expect(businessRepoSpy).toHaveBeenCalledTimes(1);
                 businessRepoSpy.mockRestore();
@@ -389,8 +378,7 @@ describe('BusinessController', () => {
                 //  Arrange
                 const endpoint = `/api/business//employee/${testEmployee.firebase_id}`;
                 const expectedStatusCode = 404;
-                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployee')
-                .mockResolvedValueOnce({
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployee').mockResolvedValueOnce({
                     // @ts-expect-error
                     employee: {}
                 });
@@ -407,8 +395,7 @@ describe('BusinessController', () => {
                 //  Arrange
                 const endpoint = `/api/business/${emptyResultValue}/employee/${testEmployee.firebase_id}`;
                 const expectedStatusCode = 200;
-                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployee')
-                .mockResolvedValueOnce({
+                const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployee').mockResolvedValueOnce({
                     // @ts-expect-error
                     employee: {}
                 });
@@ -418,8 +405,8 @@ describe('BusinessController', () => {
 
                 //  Assert
                 expect(res.statusCode).toBe(expectedStatusCode);
-                expect(res.body).toStrictEqual({employee:{}});
-                expect(businessRepoSpy).toHaveBeenCalledWith("null", testEmployee.firebase_id);
+                expect(res.body).toStrictEqual({ employee: {} });
+                expect(businessRepoSpy).toHaveBeenCalledWith('null', testEmployee.firebase_id);
                 expect(businessRepoSpy).toHaveBeenCalledTimes(1);
                 businessRepoSpy.mockRestore();
             });
@@ -432,10 +419,10 @@ describe('BusinessController', () => {
     //                      //
     //////////////////////////
     /**
-    *   - createBusiness
-    *   - addNewEmployee
-    *   - addNewActivity
-    */
+     *   - createBusiness
+     *   - addNewEmployee
+     *   - addNewActivity
+     */
 
     describe('POST /business', () => {
         ///////////////////////////////
@@ -457,10 +444,13 @@ describe('BusinessController', () => {
                 });
 
                 //  Act
-                const response = await request(app).post(endpoint).send({ 
-                    business: testBusiness,
-                    employee: testEmployee
-                }).set('Content-Type', 'application/json');
+                const response = await request(app)
+                    .post(endpoint)
+                    .send({
+                        business: testBusiness,
+                        employee: testEmployee
+                    })
+                    .set('Content-Type', 'application/json');
 
                 //  Assert
                 expect(response.statusCode).toEqual(expectedStatusCode);
@@ -483,10 +473,13 @@ describe('BusinessController', () => {
                 });
 
                 //  Act
-                const response = await request(app).post(endpoint).send({
-                    business: testBusiness,
-                    employee: testEmployee
-                }).set('Content-Type', 'application/json');
+                const response = await request(app)
+                    .post(endpoint)
+                    .send({
+                        business: testBusiness,
+                        employee: testEmployee
+                    })
+                    .set('Content-Type', 'application/json');
 
                 //  Assert
                 expect(response.statusCode).toEqual(expectedStatusCode);
@@ -505,10 +498,13 @@ describe('BusinessController', () => {
                 });
 
                 //  Act
-                const res = await request(app).post(endpoint).send({
-                    //  business: testBusiness, //  Missing business tag
-                    employee: testEmployee
-                }).set('Content-Type', 'application/json');
+                const res = await request(app)
+                    .post(endpoint)
+                    .send({
+                        //  business: testBusiness, //  Missing business tag
+                        employee: testEmployee
+                    })
+                    .set('Content-Type', 'application/json');
 
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);
@@ -540,28 +536,28 @@ describe('BusinessController', () => {
                 expect(businessRepoSpy).toHaveBeenCalled();
                 businessRepoSpy.mockRestore();
             });
-            
+
             it('should return OK[200] if both employee and business exists', async () => {
-                 //  Arrange
-                 const endpoint = `/api/business/addEmployee/${testBusiness.businessId}`;
-                 const expectedStatusCode = 200;
-                 const businessRepoSpy = jest.spyOn(businessRepo, 'addNewEmployee').mockResolvedValueOnce({
-                     id: testBusiness.businessId,
-                     //@ts-expect-error
-                     employee: testEmployee
-                 });
-                 //  Act
-                 const res = await request(app).post(endpoint).send({
-                     success: true,
-                     businessId: testBusiness.businessId,
-                     employee: testEmployee
-                 });
-                 //  Assert
-                 expect(res.statusCode).toEqual(expectedStatusCode);
-                 expect(res.body.id).toEqual(testBusiness.businessId);
-                 expect(res.body.employee).toEqual(testEmployee);
-                 expect(businessRepoSpy).toHaveBeenCalled();
-                 businessRepoSpy.mockRestore();
+                //  Arrange
+                const endpoint = `/api/business/addEmployee/${testBusiness.businessId}`;
+                const expectedStatusCode = 200;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'addNewEmployee').mockResolvedValueOnce({
+                    id: testBusiness.businessId,
+                    //@ts-expect-error
+                    employee: testEmployee
+                });
+                //  Act
+                const res = await request(app).post(endpoint).send({
+                    success: true,
+                    businessId: testBusiness.businessId,
+                    employee: testEmployee
+                });
+                //  Assert
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                expect(res.body.id).toEqual(testBusiness.businessId);
+                expect(res.body.employee).toEqual(testEmployee);
+                expect(businessRepoSpy).toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
             });
             it('should return BADREQUEST[400] if passed parameters are missing core fields.', async () => {
                 //  Arrange
@@ -573,7 +569,7 @@ describe('BusinessController', () => {
                     lastName: 'Cap',
                     //  email: 'anacap123@gmail.com',   // Missing param
                     root: true,
-                    role: "Admin"
+                    role: 'Admin'
                 };
                 const businessRepoSpy = jest.spyOn(businessRepo, 'addNewEmployee').mockResolvedValueOnce({
                     id: testBusiness.businessId,
@@ -599,9 +595,9 @@ describe('BusinessController', () => {
     //                        //
     ////////////////////////////
     /**
-    *   - removeEmployee
-    *   - removeActivity
-    */
+     *   - removeEmployee
+     *   - removeActivity
+     */
 
     // TODO: Implement tests
     describe('DELETE /business', () => {
@@ -612,12 +608,9 @@ describe('BusinessController', () => {
             afterEach(() => {
                 server.close();
             });
-            it('should return OK[200] if employee & business exists', async () => {
-            });
-            it('should return CONFLCIT[409] if employee or business does not exists', async () => {
-            });
-            it('should return BADREQUEST[400] if passed parameters are missing core fields.', async () => {
-            });
+            it('should return OK[200] if employee & business exists', async () => {});
+            it('should return CONFLCIT[409] if employee or business does not exists', async () => {});
+            it('should return BADREQUEST[400] if passed parameters are missing core fields.', async () => {});
         }); //  removeEmployee enpoint
 
         ///////////////////////////////
@@ -627,12 +620,9 @@ describe('BusinessController', () => {
             afterEach(() => {
                 server.close();
             });
-            it('should return OK[200] if acitivty & business exists', async () => {
-            });
-            it('should return CONFLCIT[409] if activity or business does not exists', async () => {
-            });
-            it('should return BADREQUEST[400] if passed parameters are missing core fields.', async () => {
-            });
+            it('should return OK[200] if acitivty & business exists', async () => {});
+            it('should return CONFLCIT[409] if activity or business does not exists', async () => {});
+            it('should return BADREQUEST[400] if passed parameters are missing core fields.', async () => {});
         }); //  removeActivity enpoint
     }); // DESCRIBE DELETE
 
@@ -642,10 +632,10 @@ describe('BusinessController', () => {
     //                      //
     //////////////////////////
     /**
-    *   - updateBusiness
-    *   - updateEmployee
-    */
-   // TODO: Implement tests
+     *   - updateBusiness
+     *   - updateEmployee
+     */
+    // TODO: Implement tests
     describe('PUT /business', () => {
         ///////////////////////////////
         //  UPDATEBUSINESS EDNPOINT  //
@@ -654,14 +644,10 @@ describe('BusinessController', () => {
             afterEach(() => {
                 server.close();
             });
-            it('should return OK[200] if activity exists', async () => {
-            });
-            it('should return OK[200] if activity does not exists', async () => {
-            });
-            it('should return OK[200] if business does not exists', async () => {
-            });
-            it('should return BADREQUEST[400] if passed parameters are missing core fields.', async () => {
-            });
+            it('should return OK[200] if activity exists', async () => {});
+            it('should return OK[200] if activity does not exists', async () => {});
+            it('should return OK[200] if business does not exists', async () => {});
+            it('should return BADREQUEST[400] if passed parameters are missing core fields.', async () => {});
         }); //  updateBusiness endpoint
 
         ///////////////////////////////
@@ -671,12 +657,9 @@ describe('BusinessController', () => {
             afterEach(() => {
                 server.close();
             });
-            it('should return OK[200] if employee exists', async () => {
-            });
-            it('should return OK[200] if employee does not exists', async () => {
-            });
-            it('should return BADREQUEST[400] if passed parameters are missing core fields.', async () => {
-            });
+            it('should return OK[200] if employee exists', async () => {});
+            it('should return OK[200] if employee does not exists', async () => {});
+            it('should return BADREQUEST[400] if passed parameters are missing core fields.', async () => {});
         }); //  updateEmployee endpoint
     }); // DESCRIBE PUT
 }); //  DESCRIBE BUSINESSCONTROLLER

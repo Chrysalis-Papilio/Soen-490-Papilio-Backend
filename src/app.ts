@@ -4,7 +4,7 @@ import { ErrorHandler } from './errors/error-handler';
 import { userRoute, activityRoute, businessRoute, genreRoute } from './api/routes';
 import config from './config/config';
 
-const NAMESPACE = "App";
+const NAMESPACE = 'App';
 
 const app = express();
 const errorHandler = new ErrorHandler();
@@ -46,7 +46,6 @@ app.use('/api', userRoute);
 app.use('/api', activityRoute);
 app.use('/api', businessRoute);
 app.use('/api', genreRoute);
-
 
 /** Error handling */
 app.use(errorHandler.handleError);
