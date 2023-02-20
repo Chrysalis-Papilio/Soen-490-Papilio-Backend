@@ -216,17 +216,6 @@ const updateActivity = async (id: string, activityId: number, update: any) => {
 };
 
 export {
-    getBusinessById,
-    getEmployeeList,
-    getEmployee,
-    getActivityList,
-    createSimpleBusiness,
-    createBusinessWithEmployeeAddress,
-    addNewEmployee,
-    addNewActivity,
-    removeEmployee,
-    removeActivity,
-    updateBusiness,
-    updateEmployee,
-    updateActivity
+    getBusinessById, getEmployeeList, getEmployee, getActivityList, createSimpleBusiness, createBusinessWithEmployeeAddress,
+    addNewEmployee, addNewActivity, removeEmployee, removeActivity, updateBusiness, updateEmployee, updateActivity
 };

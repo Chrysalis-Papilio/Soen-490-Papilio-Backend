@@ -87,25 +87,5 @@ const getFeeds = object({
     }).strict('Query contains invalid key')
 });
 
-const updateActivity = object({
-    // Params
-    params: object({
-        activityId: activityId
-    }).strict('Params contain invalid key'),
-    body: object({
-        update: object({
-            // Optional
-            title: title.optional(),
-            description: description.optional(),
-            address: address.optional(),
-            startTime: startTime.optional(),
-            endTime: endTime.optional(),
-            groupSize: groupSize.optional(),
-            costPerIndividual: costPerIndividual.optional(),
-            costPerGroup: costPerGroup.optional()
-        }).refine((attributes) => Object.values(attributes).some((attribute) => attribute !== undefined), { message: 'One of the fields must be defined' })
-    }).strict('Body contains invalid key')
-});
-
 export { activityId, title, description, costPerIndividual, costPerGroup, groupSize, startTime, endTime, address };
-export { activitySchema, getActivity, getFeeds, updateActivity };
+export { activitySchema, getActivity, getFeeds };
