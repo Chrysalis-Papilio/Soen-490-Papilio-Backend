@@ -1,4 +1,5 @@
 import { businessServices } from '../services';
+import { uploadImageFirebase } from '../../config/storage';
 import { Request, Response, NextFunction } from 'express';
 
 const getBusinessById = async (req: Request, res: Response, next: NextFunction) => {
