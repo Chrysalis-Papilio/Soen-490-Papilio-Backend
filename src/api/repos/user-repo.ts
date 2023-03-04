@@ -1,7 +1,8 @@
-import { Activity, Quiz, User } from '../models';
-import { APIError } from '../../errors/api-error';
-import { httpStatusCode } from '../../types/httpStatusCodes';
-import { createNewObjectCaughtError } from './error';
+import { Activity, Quiz, User } from "../models";
+import { APIError } from "../../errors/api-error";
+import { httpStatusCode } from "../../types/httpStatusCodes";
+import { createNewObjectCaughtError } from "./error";
+import { StreamChat } from "stream-chat";
 
 /** Get all accounts from table account */
 const getAllUsers = async () => {
@@ -140,4 +141,10 @@ const submitQuiz = async (id: string, quiz: Quiz) => {
     return httpStatusCode.OK;
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUser, addNewUserActivity, submitQuiz };
+const generateChatTokenForUser = async (userId: string) => {
+    // @ts-ignore
+    const client = StreamChat.getInstance(process.env.STREAM_CHAT_API_KEY, process.env.STREAM_CHAT_API_SECRET);
+    return client.createToken(userId);
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUser, addNewUserActivity, submitQuiz, generateChatTokenForUser };

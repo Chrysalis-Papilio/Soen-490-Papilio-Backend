@@ -167,5 +167,12 @@ const submitQuiz = object({
     body: quizSchema.strict('Quiz field contains an invalid key')
 });
 
+const getChatUserToken = object({
+    params: object({
+        // Required
+        id: firebase_id
+    }).strict('Request contains an invalid key')
+});
+
 export { firebase_id, firstName, lastName, email, phone, countryCode };
-export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, userAddFavoriteActivitySchema, addNewUserActivity, submitQuiz };
+export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, userAddFavoriteActivitySchema, addNewUserActivity, submitQuiz, getChatUserToken };

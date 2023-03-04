@@ -180,4 +180,17 @@ const submitQuiz = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addFavoriteActivity, addNewUserActivity, submitQuiz };
+const getChatUserToken = async (req: Request, res: Response, next: NextFunction) => {
+  const userId = req.params.id;
+  try {
+        /** Call to service layer */
+        const result = await userServices.generateChatTokenForUser(userId);
+
+        /** Return a response to client */
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err); //  Send any error to error-handler
+    }
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addFavoriteActivity, addNewUserActivity, submitQuiz, getChatUserToken };

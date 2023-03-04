@@ -36,4 +36,8 @@ const submitQuiz = async (id: string, quiz: any) => {
     return userRepo.submitQuiz(id, quiz);
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addNewUserActivity, submitQuiz };
+const generateChatTokenForUser = async(userId: string) => {
+    return userRepo.generateChatTokenForUser(userId);
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addNewUserActivity, submitQuiz, generateChatTokenForUser };

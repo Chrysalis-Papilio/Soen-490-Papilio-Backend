@@ -20,6 +20,8 @@ router.get('/user/get/:id/activities', validate(userSchema.getUserActivityList),
 
 router.get('/user/get/:id/favoriteActivities', validate(userSchema.getUserActivityList), userController.getUserFavoriteActivityList);
 
+router.get('/user/get-chat-user-token/:id', validate(userSchema.getChatUserToken), userController.getChatUserToken );
+
 /** PUT */
 
 router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
