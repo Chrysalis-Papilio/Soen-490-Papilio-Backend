@@ -221,4 +221,18 @@ const deleteActivityChat = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addFavoriteActivity, addNewUserActivity, submitQuiz, getChatUserToken, createChat, deleteActivityChat };
+const addMemberToActivityChat = async (req: Request, res: Response, next: NextFunction) => {
+  const user_chat_id = req.body.user_chat_id;
+  const user_name = req.body.user_name;
+  try {
+        /** Call to service layer */
+        const code = await userServices.addMemberToActivityChat(user_chat_id, user_name);
+
+        /** Return a response to client */
+        return res.sendStatus(code);
+    } catch (err) {
+        next(err); //  Send any error to error-handler
+    }
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addFavoriteActivity, addNewUserActivity, submitQuiz, getChatUserToken, createChat, deleteActivityChat, addMemberToActivityChat };

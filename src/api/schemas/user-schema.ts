@@ -69,6 +69,11 @@ const channel_id = string({
     invalid_type_error: invalidMessage('Channel id', 'string')
 }).min(1, 'Channel id too short!');
 
+const user_name = string({
+    required_error: requiredMessage('User Name'),
+    invalid_type_error: invalidMessage('User Name', 'string')
+}).min(2, 'User Name too short!');
+
 /** Schemas */
 
 const userSchema = object({
@@ -199,5 +204,13 @@ const deleteActivityChat = object({
     }).strict('Request contains an invalid key')
 });
 
+const addMemberToActivityChat = object({
+    body: object({
+        // Required
+        user_chat_id: firebase_id,
+        user_name: user_name
+    }).strict('Request contains an invalid key')
+});
+
 export { firebase_id, firstName, lastName, email, phone, countryCode };
-export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, userAddFavoriteActivitySchema, addNewUserActivity, submitQuiz, getChatUserToken, createChat, deleteActivityChat };
+export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, userAddFavoriteActivitySchema, addNewUserActivity, submitQuiz, getChatUserToken, createChat, deleteActivityChat, addMemberToActivityChat };

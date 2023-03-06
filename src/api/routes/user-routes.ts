@@ -30,6 +30,8 @@ router.put('/user/addFavoriteActivity', validate(userSchema.userAddFavoriteActiv
 
 router.put('/user/submitQuiz/:id', validate(userSchema.submitQuiz), userController.submitQuiz);
 
+router.put('/user/add-member-to-activity-chat', validate(userSchema.addMemberToActivityChat), userController.addMemberToActivityChat);
+
 /** POST */
 
 router.post('/user/createUser', validate(userSchema.createUserSchema), userController.createUser);

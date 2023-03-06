@@ -48,4 +48,8 @@ const deleteActivityChat = async(channelId: string) => {
     return userRepo.deleteActivityChat(channelId);
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addNewUserActivity, submitQuiz, generateChatTokenForUser, createChat, deleteActivityChat };
+const addMemberToActivityChat = async(user_chat_id: string, user_name: string) => {
+    return userRepo.addMemberToActivityChat(user_chat_id, user_name);
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addNewUserActivity, submitQuiz, generateChatTokenForUser, createChat, deleteActivityChat, addMemberToActivityChat };

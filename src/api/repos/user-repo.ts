@@ -156,7 +156,7 @@ const createChat = async (userId: string, channelId: string, channelName: string
         name: channelName
     });
     await channel.create()
-      .catch((err) => createNewObjectCaughtError(err, 'createChat', 'There has been an error in creating a new chat channel'));
+      .catch((err) => createNewObjectCaughtError(err, 'createChat', 'There has been an error in creating a new chat'));
 
     return httpStatusCode.CREATED;
 };
@@ -165,8 +165,17 @@ const deleteActivityChat = async (channelId: string) => {
     // @ts-ignore
     const client = StreamChat.getInstance(process.env.STREAM_CHAT_API_KEY, process.env.STREAM_CHAT_API_SECRET);
     const channel = client.channel('messaging', channelId);
-    await channel.delete().catch((err) => createNewObjectCaughtError(err, 'deleteActivityChat', 'There has been an error in creating a new chat channel'));
+    await channel.delete().catch((err) => createNewObjectCaughtError(err, 'deleteActivityChat', 'There has been an error in deleting a chat'));
     return httpStatusCode.DELETED;
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUser, addNewUserActivity, submitQuiz, generateChatTokenForUser, createChat, deleteActivityChat };
+const addMemberToActivityChat = async (user_chat_id: string, user_name: string) => {
+    // @ts-ignore
+    const client = StreamChat.getInstance(process.env.STREAM_CHAT_API_KEY, process.env.STREAM_CHAT_API_SECRET);
+    const channel = client.channel('messaging', user_chat_id);
+    await channel.addMembers([user_chat_id], { text: user_name + ' joined the channel.', user_id: user_chat_id })
+      .catch((err) => createNewObjectCaughtError(err, 'addMemberToActivityChat', 'There has been an error in adding a member to a chat'));
+    return httpStatusCode.OK;
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUser, addNewUserActivity, submitQuiz, generateChatTokenForUser, createChat, deleteActivityChat, addMemberToActivityChat };
