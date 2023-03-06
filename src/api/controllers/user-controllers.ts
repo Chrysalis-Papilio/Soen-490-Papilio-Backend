@@ -222,11 +222,12 @@ const deleteActivityChat = async (req: Request, res: Response, next: NextFunctio
 };
 
 const addMemberToActivityChat = async (req: Request, res: Response, next: NextFunction) => {
-  const user_chat_id = req.body.user_chat_id;
+  const user_id = req.body.user_id;
+  const channel_id = req.body.channel_id;
   const user_name = req.body.user_name;
   try {
         /** Call to service layer */
-        const code = await userServices.addMemberToActivityChat(user_chat_id, user_name);
+        const code = await userServices.addMemberToActivityChat(user_id, user_name, channel_id);
 
         /** Return a response to client */
         return res.sendStatus(code);
@@ -235,4 +236,18 @@ const addMemberToActivityChat = async (req: Request, res: Response, next: NextFu
     }
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addFavoriteActivity, addNewUserActivity, submitQuiz, getChatUserToken, createChat, deleteActivityChat, addMemberToActivityChat };
+const createNewStreamChatUser = async (req: Request, res: Response, next: NextFunction) => {
+  const user_id = req.body.id;
+  const user_name = req.body.name;
+  try {
+        /** Call to service layer */
+        const code = await userServices.createNewStreamChatUser(user_id, user_name);
+
+        /** Return a response to client */
+        return res.sendStatus(code);
+    } catch (err) {
+        next(err); //  Send any error to error-handler
+    }
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addFavoriteActivity, addNewUserActivity, submitQuiz, getChatUserToken, createChat, deleteActivityChat, addMemberToActivityChat, createNewStreamChatUser };

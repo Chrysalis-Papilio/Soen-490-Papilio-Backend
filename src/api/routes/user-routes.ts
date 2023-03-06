@@ -40,6 +40,8 @@ router.post('/user/addActivity/:id', [upload.array('images', 5), validate(userSc
 
 router.post('/user/create-chat-by-admin-user', validate(userSchema.createChat), userController.createChat);
 
+router.post('/user/create-stream-chat-user', validate(userSchema.newStreamChatUser), userController.createNewStreamChatUser);
+
 /** DELETE */
 
 router.delete('/user/delete-activity-chat/:channel_id', validate(userSchema.deleteActivityChat), userController.deleteActivityChat);

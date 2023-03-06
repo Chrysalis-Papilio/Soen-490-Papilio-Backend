@@ -207,10 +207,19 @@ const deleteActivityChat = object({
 const addMemberToActivityChat = object({
     body: object({
         // Required
-        user_chat_id: firebase_id,
+        user_id: firebase_id,
+        channel_id: channel_id,
         user_name: user_name
     }).strict('Request contains an invalid key')
 });
 
+const newStreamChatUser = object({
+    body: object({
+        // Required
+        id: firebase_id,
+        name: user_name
+    }).strict('Request contains an invalid key')
+});
+
 export { firebase_id, firstName, lastName, email, phone, countryCode };
-export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, userAddFavoriteActivitySchema, addNewUserActivity, submitQuiz, getChatUserToken, createChat, deleteActivityChat, addMemberToActivityChat };
+export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, userAddFavoriteActivitySchema, addNewUserActivity, submitQuiz, getChatUserToken, createChat, deleteActivityChat, addMemberToActivityChat, newStreamChatUser };
