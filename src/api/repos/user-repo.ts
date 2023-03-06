@@ -147,4 +147,18 @@ const generateChatTokenForUser = async (userId: string) => {
     return client.createToken(userId);
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUser, addNewUserActivity, submitQuiz, generateChatTokenForUser };
+const createChat = async (userId: string, channelId: string, channelName: string) => {
+    // @ts-ignore
+    const client = StreamChat.getInstance(process.env.STREAM_CHAT_API_KEY, process.env.STREAM_CHAT_API_SECRET);
+
+    const channel = client.channel('messaging', channelId, {
+        created_by_id: userId,
+        name: channelName
+    });
+    await channel.create()
+      .catch((err) => createNewObjectCaughtError(err, 'createChat', 'There has been an error in creating a new chat channel'));
+
+    return httpStatusCode.CREATED;
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUser, addNewUserActivity, submitQuiz, generateChatTokenForUser, createChat };

@@ -40,4 +40,8 @@ const generateChatTokenForUser = async(userId: string) => {
     return userRepo.generateChatTokenForUser(userId);
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addNewUserActivity, submitQuiz, generateChatTokenForUser };
+const createChat = async(userId: string, channelId: string, channelName: string) => {
+    return userRepo.createChat(userId, channelId, channelName);
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addNewUserActivity, submitQuiz, generateChatTokenForUser, createChat };

@@ -3,6 +3,7 @@ import { userController } from '../controllers';
 import { validate } from '../middlewares/validateResource';
 import * as userSchema from '../schemas/user-schema';
 import { upload } from '../middlewares/multerUpload';
+import { deleteActivityChat } from "../schemas/user-schema";
 
 const router = express.Router();
 
@@ -35,5 +36,7 @@ router.put('/user/submitQuiz/:id', validate(userSchema.submitQuiz), userControll
 router.post('/user/createUser', validate(userSchema.createUserSchema), userController.createUser);
 
 router.post('/user/addActivity/:id', [upload.array('images', 5), validate(userSchema.addNewUserActivity)], userController.addNewUserActivity);
+
+router.post('/user/create-chat-by-admin-user', validate(userSchema.createChat), userController.createChat);
 
 export = router;

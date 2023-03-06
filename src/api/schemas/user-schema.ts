@@ -59,6 +59,16 @@ const genres = number({
     invalid_type_error: invalidMessage('Genre List', 'number[]')
 }).array();
 
+const channelName = string({
+    required_error: requiredMessage('Channel Name'),
+    invalid_type_error: invalidMessage('Channel Name', 'string')
+}).min(2, 'Channel Name too short!');
+
+const channel_id = string({
+    required_error: requiredMessage('Channel id'),
+    invalid_type_error: invalidMessage('Channel id', 'string')
+}).min(1, 'Channel id too short!');
+
 /** Schemas */
 
 const userSchema = object({
@@ -174,5 +184,13 @@ const getChatUserToken = object({
     }).strict('Request contains an invalid key')
 });
 
+const createChat = object({
+   body: object({
+       channel_name: channelName, // name of the channel (should be the name of the activity or something like that)
+       channel_id: channel_id, // channel id is supposed to be the activity id since each activity has its own channel
+       created_by_id: firebase_id // firebase_id of the user that created the activity
+   }).strict('Request contains an invalid key')
+});
+
 export { firebase_id, firstName, lastName, email, phone, countryCode };
-export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, userAddFavoriteActivitySchema, addNewUserActivity, submitQuiz, getChatUserToken };
+export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, userAddFavoriteActivitySchema, addNewUserActivity, submitQuiz, getChatUserToken, createChat };

@@ -193,4 +193,19 @@ const getChatUserToken = async (req: Request, res: Response, next: NextFunction)
     }
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addFavoriteActivity, addNewUserActivity, submitQuiz, getChatUserToken };
+const createChat = async (req: Request, res: Response, next: NextFunction) => {
+  const userId = req.body.created_by_id;
+  const channelName = req.body.channel_name;
+  const channelId = req.body.channel_id;
+  try {
+        /** Call to service layer */
+        const code = await userServices.createChat(userId, channelId, channelName);
+
+        /** Return a response to client */
+        return res.sendStatus(code);
+    } catch (err) {
+        next(err); //  Send any error to error-handler
+    }
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addFavoriteActivity, addNewUserActivity, submitQuiz, getChatUserToken, createChat };
