@@ -161,4 +161,12 @@ const createChat = async (userId: string, channelId: string, channelName: string
     return httpStatusCode.CREATED;
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUser, addNewUserActivity, submitQuiz, generateChatTokenForUser, createChat };
+const deleteActivityChat = async (channelId: string) => {
+    // @ts-ignore
+    const client = StreamChat.getInstance(process.env.STREAM_CHAT_API_KEY, process.env.STREAM_CHAT_API_SECRET);
+    const channel = client.channel('messaging', channelId);
+    await channel.delete().catch((err) => createNewObjectCaughtError(err, 'deleteActivityChat', 'There has been an error in creating a new chat channel'));
+    return httpStatusCode.DELETED;
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUser, addNewUserActivity, submitQuiz, generateChatTokenForUser, createChat, deleteActivityChat };

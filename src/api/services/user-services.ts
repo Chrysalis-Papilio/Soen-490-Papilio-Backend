@@ -44,4 +44,8 @@ const createChat = async(userId: string, channelId: string, channelName: string)
     return userRepo.createChat(userId, channelId, channelName);
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addNewUserActivity, submitQuiz, generateChatTokenForUser, createChat };
+const deleteActivityChat = async(channelId: string) => {
+    return userRepo.deleteActivityChat(channelId);
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addNewUserActivity, submitQuiz, generateChatTokenForUser, createChat, deleteActivityChat };

@@ -192,5 +192,12 @@ const createChat = object({
    }).strict('Request contains an invalid key')
 });
 
+const deleteActivityChat = object({
+    params: object({
+        // Required
+        channel_id: channel_id
+    }).strict('Request contains an invalid key')
+});
+
 export { firebase_id, firstName, lastName, email, phone, countryCode };
-export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, userAddFavoriteActivitySchema, addNewUserActivity, submitQuiz, getChatUserToken, createChat };
+export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, userAddFavoriteActivitySchema, addNewUserActivity, submitQuiz, getChatUserToken, createChat, deleteActivityChat };

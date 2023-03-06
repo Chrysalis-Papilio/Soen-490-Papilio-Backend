@@ -208,4 +208,17 @@ const createChat = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addFavoriteActivity, addNewUserActivity, submitQuiz, getChatUserToken, createChat };
+const deleteActivityChat = async (req: Request, res: Response, next: NextFunction) => {
+  const channelId = req.params.channel_id;
+  try {
+        /** Call to service layer */
+        const code = await userServices.deleteActivityChat(channelId);
+
+        /** Return a response to client */
+        return res.sendStatus(code);
+    } catch (err) {
+        next(err); //  Send any error to error-handler
+    }
+};
+
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addFavoriteActivity, addNewUserActivity, submitQuiz, getChatUserToken, createChat, deleteActivityChat };
