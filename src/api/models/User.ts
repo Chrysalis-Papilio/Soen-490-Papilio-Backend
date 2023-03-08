@@ -132,6 +132,11 @@ User.hasMany(Activity, {
     foreignKey: 'userId',
     sourceKey: 'firebase_id'
 });
+Activity.belongsTo(User, {
+    as: 'user',
+    foreignKey: 'userId',
+    targetKey: 'firebase_id'
+});
 
 User.hasOne(Quiz, { sourceKey: 'firebase_id' });
 
