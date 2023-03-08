@@ -142,6 +142,11 @@ Activity.hasMany(ActivityReview, {
     foreignKey: 'activityId',
     sourceKey: 'id'
 });
+ActivityReview.belongsTo(Activity, {
+    as: 'activity',
+    foreignKey: 'activityId',
+    targetKey: 'id'
+});
 
 Activity.belongsToMany(Genre, { through: Activity_Genres });
 

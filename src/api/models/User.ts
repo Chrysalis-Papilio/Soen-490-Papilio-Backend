@@ -126,6 +126,11 @@ User.hasMany(ActivityReview, {
     foreignKey: 'userId',
     sourceKey: 'id'
 });
+ActivityReview.belongsTo(User, {
+    as: 'user',
+    foreignKey: 'userId',
+    targetKey: 'id'
+});
 
 User.hasMany(Activity, {
     as: 'activities',
@@ -139,5 +144,6 @@ Activity.belongsTo(User, {
 });
 
 User.hasOne(Quiz, { sourceKey: 'firebase_id' });
+Quiz.belongsTo(User, { targetKey: 'firebase_id' });
 
 export { User };
