@@ -158,6 +158,10 @@ const createChat = async (userId: string, channelId: string, channelName: string
     await channel.create()
       .catch((err) => createNewObjectCaughtError(err, 'createChat', 'There has been an error in creating a new chat'));
 
+    // Add the user that created this channel as a member otherwise the channel will not appear in his list on the mobile app
+    await channel.addMembers([userId])
+      .catch((err) => createNewObjectCaughtError(err, 'createChat', 'There has been an error in adding the user as a member into the newly created chat'));
+
     return httpStatusCode.CREATED;
 };
 
