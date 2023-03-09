@@ -182,6 +182,15 @@ const addMemberToActivityChat = async (user_id: string, user_name: string, chann
     return httpStatusCode.OK;
 };
 
+const removeMemberFromActivityChat = async (user_id: string,channel_id: string) => {
+    // @ts-ignore
+    const client = StreamChat.getInstance(process.env.STREAM_CHAT_API_KEY, process.env.STREAM_CHAT_API_SECRET);
+    const channel = client.channel('messaging', channel_id);
+    await channel.removeMembers([user_id])
+      .catch((err) => createNewObjectCaughtError(err, 'removeMemberFromActivityChat', 'There has been an error in removing a member from the chat'));
+    return httpStatusCode.OK;
+};
+
 const createNewStreamChatUser = async (user_id: string, user_name: string) => {
     // @ts-ignore
     const client = StreamChat.getInstance(process.env.STREAM_CHAT_API_KEY, process.env.STREAM_CHAT_API_SECRET);
@@ -192,4 +201,4 @@ const createNewStreamChatUser = async (user_id: string, user_name: string) => {
     return httpStatusCode.CREATED;
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUser, addNewUserActivity, submitQuiz, generateChatTokenForUser, createChat, deleteActivityChat, addMemberToActivityChat, createNewStreamChatUser };
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUser, addNewUserActivity, submitQuiz, generateChatTokenForUser, createChat, deleteActivityChat, addMemberToActivityChat, createNewStreamChatUser, removeMemberFromActivityChat };

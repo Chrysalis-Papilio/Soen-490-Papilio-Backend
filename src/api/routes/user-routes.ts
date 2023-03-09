@@ -32,6 +32,8 @@ router.put('/user/submitQuiz/:id', validate(userSchema.submitQuiz), userControll
 
 router.put('/user/add-member-to-activity-chat', validate(userSchema.addMemberToActivityChat), userController.addMemberToActivityChat);
 
+router.put('/user/remove-member-from-activity-chat', validate(userSchema.removeMemberFromActivityChat), userController.removeMemberFromActivityChat);
+
 /** POST */
 
 router.post('/user/createUser', validate(userSchema.createUserSchema), userController.createUser);

@@ -236,6 +236,20 @@ const addMemberToActivityChat = async (req: Request, res: Response, next: NextFu
     }
 };
 
+const removeMemberFromActivityChat = async (req: Request, res: Response, next: NextFunction) => {
+  const user_id = req.body.user_id;
+  const channel_id = req.body.channel_id;
+  try {
+        /** Call to service layer */
+        const code = await userServices.removeMemberFromActivityChat(user_id, channel_id);
+
+        /** Return a response to client */
+        return res.sendStatus(code);
+    } catch (err) {
+        next(err); //  Send any error to error-handler
+    }
+};
+
 const createNewStreamChatUser = async (req: Request, res: Response, next: NextFunction) => {
   const user_id = req.body.id;
   const user_name = req.body.name;
@@ -250,4 +264,4 @@ const createNewStreamChatUser = async (req: Request, res: Response, next: NextFu
     }
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addFavoriteActivity, addNewUserActivity, submitQuiz, getChatUserToken, createChat, deleteActivityChat, addMemberToActivityChat, createNewStreamChatUser };
+export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addFavoriteActivity, addNewUserActivity, submitQuiz, getChatUserToken, createChat, deleteActivityChat, addMemberToActivityChat, createNewStreamChatUser, removeMemberFromActivityChat };
