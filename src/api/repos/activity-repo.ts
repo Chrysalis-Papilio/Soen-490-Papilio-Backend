@@ -9,7 +9,20 @@ const getAllActivities = async (page: number, size: number) => {
     await Activity.sync();
     const result = await Activity.findAndCountAll({
         limit: size,
-        offset: (page - 1) * size
+        offset: (page - 1) * size,
+        attributes: { exclude: ['businessId', 'userId', 'createdAt', 'updatedAt'] },
+        include: [
+            {
+                model: Business,
+                attributes: ['businessId', 'email'],
+                as: 'business'
+            },
+            {
+                model: User,
+                attributes: ['id', 'email'],
+                as: 'user'
+            }
+        ]
     });
     return {
         ...result,
@@ -23,7 +36,7 @@ const getActivity = async (id: number, contact: boolean) => {
     await Activity.sync();
     const activity = contact
         ? await Activity.findByPk(id, {
-              attributes: { exclude: ['businessId', 'userId', 'createdAt', 'updatedAt'] },
+              attributes: { exclude: ['businessId', 'userId'] },
               include: [
                   {
                       model: Business,
