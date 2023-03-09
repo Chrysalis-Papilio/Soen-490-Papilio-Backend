@@ -1,4 +1,4 @@
-import { Activity } from '../models';
+import { Activity, Business, User } from '../models';
 import { BaseError } from '../../errors/base-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
 import sequelize from '../../config/sequelize';
@@ -19,9 +19,27 @@ const getAllActivities = async (page: number, size: number) => {
 };
 
 /** Get details of a particular Activity using 'id' */
-const getActivity = async (id: number) => {
+const getActivity = async (id: number, contact: boolean) => {
     await Activity.sync();
-    const activity = await Activity.findByPk(id);
+    const activity = contact
+        ? await Activity.findByPk(id, {
+              attributes: { exclude: ['businessId', 'userId', 'createdAt', 'updatedAt'] },
+              include: [
+                  {
+                      model: Business,
+                      attributes: ['businessId', 'email'], // customizable
+                      as: 'business'
+                  },
+                  {
+                      model: User,
+                      attributes: ['id', 'email'], // customizable
+                      as: 'user'
+                  }
+              ]
+          })
+        : await Activity.findByPk(id, {
+              attributes: { exclude: ['businessId', 'userId', 'createdAt', 'updatedAt'] }
+          });
     return {
         found: !!activity,
         activity: activity

@@ -78,11 +78,21 @@ Business.hasMany(Employee, {
     foreignKey: 'businessId',
     sourceKey: 'businessId'
 });
+Employee.belongsTo(Business, {
+    as: 'business',
+    foreignKey: 'businessId',
+    targetKey: 'businessId'
+});
 
 Business.hasMany(Activity, {
     as: 'activities',
     foreignKey: 'businessId',
     sourceKey: 'businessId'
+});
+Activity.belongsTo(Business, {
+    as: 'business',
+    foreignKey: 'businessId',
+    targetKey: 'businessId'
 });
 
 export { Business };
