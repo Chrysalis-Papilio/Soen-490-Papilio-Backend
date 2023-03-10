@@ -22,9 +22,10 @@ const getAllActivities = async (req: Request, res: Response, next: NextFunction)
 
 const getActivity = async (req: Request, res: Response, next: NextFunction) => {
     const { activityId } = req.params;
+    const contact = !!Number(req.query.contact);
     try {
         /** Call to service layer */
-        const result = await activityServices.getActivity(Number(activityId));
+        const result = await activityServices.getActivity(Number(activityId), contact);
 
         /** Return a response */
         return res.status(200).json(result);
