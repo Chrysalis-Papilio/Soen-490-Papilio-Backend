@@ -189,7 +189,7 @@ const updateBusiness = async (identifier: any, update: any) => {
         throw new BaseError('ORM Sequelize Error', 'There has been an error in the DB', 'updateBusiness', httpStatusCode.INTERNAL_SERVER, true);
     });
     return {
-        success: !!result,
+        success: !!result[1][0],
         business: result[1][0]
     };
 };

@@ -120,7 +120,7 @@ const updateEmployee = object({
         firstName: firstName.optional(),
         lastName: lastName.optional(),
         role: role.optional()
-    })
+    }).strict('Request URL contains an invalid key')
 });
 
 const updateActivity = object({
