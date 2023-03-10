@@ -8,6 +8,7 @@
         "test:watch": "jest src/ --runInBand --detectOpenHandles --watchAll --forceExit --coverage",
         "test:watch1": "jest src/api/controllers/tests/user-controller.test.ts --runInBand --detectOpenHandles --watchAll --forceExit",
         "test:watch2": "jest src/api/controllers/tests/business-controller.test.ts --runInBand --detectOpenHandles --watchAll --forceExit",
+        "test:watch3": "jest src/api/controllers/tests/activity-controller.test.ts --runInBand --detectOpenHandles --watchAll --forceExit",
         "dev": "tsc-watch --onSuccess \"node dist/app.js\"",
         "lint": "eslint ./**/*.ts --fix",
         "prettier": "prettier --write src/",
