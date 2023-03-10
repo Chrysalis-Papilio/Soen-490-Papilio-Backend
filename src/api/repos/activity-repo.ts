@@ -23,7 +23,7 @@ const getAllActivities = async (page: number, size: number) => {
                 as: 'user'
             }
         ]
-    });
+    }).catch((e) => queryResultError(e, 'getAllActivities'));
     return {
         ...result,
         totalPages: Math.ceil(result.count / size),
@@ -49,10 +49,10 @@ const getActivity = async (id: number, contact: boolean) => {
                       as: 'user'
                   }
               ]
-          })
+          }).catch((e) => queryResultError(e, 'getActivitiy'))
         : await Activity.findByPk(id, {
               attributes: { exclude: ['businessId', 'userId', 'createdAt', 'updatedAt'] }
-          });
+          }).catch((e) => queryResultError(e, 'getActivity'));
     return {
         found: !!activity,
         activity: activity
