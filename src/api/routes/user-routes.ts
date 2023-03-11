@@ -20,11 +20,15 @@ router.get('/user/get/:id/activities', validate(userSchema.getUserActivityList),
 
 router.get('/user/get/:id/favoriteActivities', validate(userSchema.getUserActivityList), userController.getUserFavoriteActivityList);
 
+router.get('/user/get/isActivityFavorite/:id/:activityId', validate(userSchema.getIsActivityFavorited), userController.checkActivityFavoritedByUser);
+
 /** PUT */
 
 router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
 
 router.put('/user/addFavoriteActivity', validate(userSchema.userAddFavoriteActivitySchema), userController.addFavoriteActivity);
+
+router.put('/user/removeFavoriteActivity', validate(userSchema.userRemoveFavoriteActivitySchema), userController.removeFavoriteActivity);
 
 router.put('/user/submitQuiz/:id', validate(userSchema.submitQuiz), userController.submitQuiz);
 
