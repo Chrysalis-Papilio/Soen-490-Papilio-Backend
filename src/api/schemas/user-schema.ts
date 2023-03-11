@@ -1,6 +1,6 @@
 import { boolean, number, object, string } from 'zod';
 import { requiredMessage, invalidMessage } from './util';
-import { activitySchema } from './activity-schema';
+import { activityId, activitySchema } from './activity-schema';
 
 /** Attributes */
 
@@ -103,9 +103,32 @@ const getUserById = object({
     }).strict('Request contains an invalid key')
 });
 
+const getActivityFavoriteCheckById = object({
+    params: object({
+        // Required
+        id: firebase_id,
+        activityId: activityId
+    }).strict('Request contains an invalid key')
+});
+
 const getUserActivityList = getUserById;
+const getIsActivityFavorited = getActivityFavoriteCheckById
 
 const userAddFavoriteActivitySchema = object({
+    body: object({
+        //  Identifier attribute
+        identifier: object({
+            firebase_id: firebase_id
+        }).strict('Identifier field contains an invalid key'),
+
+        //  Update attribute
+        update: object({
+            favoriteActivities: favoriteActivities
+        }).strict('Update field contains an invalid key')
+    })
+});
+
+const userRemoveFavoriteActivitySchema = object({
     body: object({
         //  Identifier attribute
         identifier: object({
@@ -168,4 +191,4 @@ const submitQuiz = object({
 });
 
 export { firebase_id, firstName, lastName, email, phone, countryCode };
-export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, userAddFavoriteActivitySchema, addNewUserActivity, submitQuiz };
+export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, getIsActivityFavorited, updateUserSchema, userAddFavoriteActivitySchema, userRemoveFavoriteActivitySchema, addNewUserActivity, submitQuiz };
