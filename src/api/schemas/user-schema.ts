@@ -1,6 +1,6 @@
 import { boolean, number, object, string } from 'zod';
 import { requiredMessage, invalidMessage } from './util';
-import { activitySchema } from './activity-schema';
+import { activityId, activitySchema } from './activity-schema';
 
 /** Attributes */
 
@@ -229,5 +229,36 @@ const newStreamChatUser = object({
     }).strict('Request contains an invalid key')
 });
 
+const checkJoinedActivity = object({
+    params: object({
+        id: firebase_id,
+        activityId: activityId
+    }).strict('Request URL contains an invalid key')
+});
+
+const joinActivity = checkJoinedActivity;
+
+const unjoinActivity = checkJoinedActivity;
+
 export { firebase_id, firstName, lastName, email, phone, countryCode };
-export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, userAddFavoriteActivitySchema, addNewUserActivity, submitQuiz, getChatUserToken, createChat, deleteActivityChat, addMemberToActivityChat, newStreamChatUser, removeMemberFromActivityChat };
+export {
+    userSchema,
+    createUserSchema,
+    getAllUsers,
+    getUserByEmailSchema,
+    getUserById,
+    getUserActivityList,
+    updateUserSchema,
+    userAddFavoriteActivitySchema,
+    addNewUserActivity,
+    submitQuiz,
+    getChatUserToken,
+    createChat,
+    deleteActivityChat,
+    addMemberToActivityChat,
+    newStreamChatUser,
+    removeMemberFromActivityChat,
+    checkJoinedActivity,
+    joinActivity,
+    unjoinActivity
+};

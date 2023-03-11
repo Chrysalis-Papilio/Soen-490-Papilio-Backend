@@ -60,4 +60,35 @@ const createNewStreamChatUser = async(user_id: string, user_name: string) => {
     return userRepo.createNewStreamChatUser(user_id, user_name);
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addNewUserActivity, submitQuiz, generateChatTokenForUser, createChat, deleteActivityChat, addMemberToActivityChat, createNewStreamChatUser, removeMemberFromActivityChat };
+const checkJoinedActivity = async (id: string, activityId: number) => {
+    return userRepo.checkJoinedActivity(id, activityId);
+};
+
+const joinActivity = async (id: string, activityId: number) => {
+    return userRepo.joinActivity(id, activityId);
+};
+
+const unjoinActivity = async (id: string, activityId: number) => {
+    return userRepo.unjoinActivity(id, activityId);
+};
+
+export {
+    getAllUsers,
+    createUser,
+    getUserById,
+    getUserByEmail,
+    getUserActivityList,
+    getUserFavoriteActivityList,
+    updateUserProfile,
+    addNewUserActivity,
+    submitQuiz,
+    generateChatTokenForUser,
+    createChat,
+    deleteActivityChat,
+    addMemberToActivityChat,
+    createNewStreamChatUser,
+    removeMemberFromActivityChat,
+    checkJoinedActivity,
+    joinActivity,
+    unjoinActivity
+};

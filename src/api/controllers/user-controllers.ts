@@ -267,4 +267,57 @@ const createNewStreamChatUser = async (req: Request, res: Response, next: NextFu
     }
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addFavoriteActivity, addNewUserActivity, submitQuiz, getChatUserToken, createChat, deleteActivityChat, addMemberToActivityChat, createNewStreamChatUser, removeMemberFromActivityChat };
+const checkJoinedActivity = async (req: Request, res: Response, next: NextFunction) => {
+    const id: string = req.params.id;
+    const activityId: string = req.params.activityId;
+    try {
+        const result = await userServices.checkJoinedActivity(id, Number(activityId));
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
+const joinActivity = async (req: Request, res: Response, next: NextFunction) => {
+    const id: string = req.params.id;
+    const activityId: string = req.params.activityId;
+    try {
+        const result = await userServices.joinActivity(id, Number(activityId));
+        return res.sendStatus(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
+const unjoinActivity = async (req: Request, res: Response, next: NextFunction) => {
+    const id: string = req.params.id;
+    const activityId: string = req.params.activityId;
+    try {
+        const result = await userServices.unjoinActivity(id, Number(activityId));
+        return res.sendStatus(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export {
+    getAllUsers,
+    createUser,
+    getUserById,
+    getUserByEmail,
+    getUserActivityList,
+    getUserFavoriteActivityList,
+    updateUserProfile,
+    addFavoriteActivity,
+    addNewUserActivity,
+    submitQuiz,
+    getChatUserToken,
+    createChat,
+    deleteActivityChat,
+    addMemberToActivityChat,
+    createNewStreamChatUser,
+    removeMemberFromActivityChat,
+    checkJoinedActivity,
+    joinActivity,
+    unjoinActivity
+};

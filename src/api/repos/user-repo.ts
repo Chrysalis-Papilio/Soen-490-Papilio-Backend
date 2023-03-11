@@ -1,7 +1,7 @@
-import { Activity, Quiz, User } from "../models";
-import { APIError } from "../../errors/api-error";
-import { httpStatusCode } from "../../types/httpStatusCodes";
-import { createNewObjectCaughtError } from "./error";
+import { Activity, Quiz, User, UsersJoinActivities } from '../models';
+import { APIError } from '../../errors/api-error';
+import { httpStatusCode } from '../../types/httpStatusCodes';
+import { createNewObjectCaughtError } from './error';
 import { StreamChat } from "stream-chat";
 
 /** Get all accounts from table account */
@@ -201,4 +201,66 @@ const createNewStreamChatUser = async (user_id: string, user_name: string) => {
     return httpStatusCode.CREATED;
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUser, addNewUserActivity, submitQuiz, generateChatTokenForUser, createChat, deleteActivityChat, addMemberToActivityChat, createNewStreamChatUser, removeMemberFromActivityChat };
+/** Check if the User joined the Activity */
+const checkJoinedActivity = async (id: string, activityId: number) => {
+    await User.sync();
+    await Activity.sync();
+    await UsersJoinActivities.sync();
+
+    const user = User.findOne({ where: { firebase_id: id } });
+    if (!user) {
+        throw new APIError(`Cannot find User with firebase_id ${id}`, 'joinActivity', httpStatusCode.CONFLICT);
+    }
+    const activity = Activity.findByPk(activityId);
+    if (!activity) {
+        throw new APIError(`Cannot find Activity with id ${id}`, 'joinActivity', httpStatusCode.CONFLICT);
+    }
+    const result = await UsersJoinActivities.findOne({ where: { activityId: activityId, userId: id } });
+    return {
+        joined: !!result
+    };
+};
+
+/** Join an Activity */
+const joinActivity = async (id: string, activityId: number) => {
+    if ((await checkJoinedActivity(id, activityId)).joined) {
+        return httpStatusCode.CONFLICT;
+    } else {
+        await UsersJoinActivities.create({
+            activityId: activityId,
+            userId: id
+        });
+        return httpStatusCode.CREATED;
+    }
+};
+
+/** Unjoin an Activity */
+const unjoinActivity = async (id: string, activityId: number) => {
+    if ((await checkJoinedActivity(id, activityId)).joined) {
+        await UsersJoinActivities.destroy({ where: { activityId: activityId, userId: id } });
+        return httpStatusCode.NO_CONTENT;
+    } else {
+        return httpStatusCode.CONFLICT;
+    }
+};
+
+export {
+    getAllUsers,
+    createUser,
+    getUserById,
+    getUserByEmail,
+    getUserActivityList,
+    getUserFavoriteActivityList,
+    updateUser,
+    addNewUserActivity,
+    submitQuiz,
+    generateChatTokenForUser,
+    createChat,
+    deleteActivityChat,
+    addMemberToActivityChat,
+    createNewStreamChatUser,
+    removeMemberFromActivityChat,
+    checkJoinedActivity,
+    joinActivity,
+    unjoinActivity
+};
