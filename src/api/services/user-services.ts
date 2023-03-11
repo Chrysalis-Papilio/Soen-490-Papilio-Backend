@@ -36,4 +36,29 @@ const submitQuiz = async (id: string, quiz: any) => {
     return userRepo.submitQuiz(id, quiz);
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addNewUserActivity, submitQuiz };
+const checkJoinedActivity = async (id: string, activityId: number) => {
+    return userRepo.checkJoinedActivity(id, activityId);
+};
+
+const joinActivity = async (id: string, activityId: number) => {
+    return userRepo.joinActivity(id, activityId);
+};
+
+const unjoinActivity = async (id: string, activityId: number) => {
+    return userRepo.unjoinActivity(id, activityId);
+};
+
+export {
+    getAllUsers,
+    createUser,
+    getUserById,
+    getUserByEmail,
+    getUserActivityList,
+    getUserFavoriteActivityList,
+    updateUserProfile,
+    addNewUserActivity,
+    submitQuiz,
+    checkJoinedActivity,
+    joinActivity,
+    unjoinActivity
+};

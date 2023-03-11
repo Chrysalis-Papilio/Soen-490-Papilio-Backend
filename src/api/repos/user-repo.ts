@@ -140,4 +140,26 @@ const submitQuiz = async (id: string, quiz: Quiz) => {
     return httpStatusCode.OK;
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUser, addNewUserActivity, submitQuiz };
+/** Check if the User joined the Activity */
+const checkJoined = async (id: string, activityId: number) => {};
+
+/** Join an Activity */
+const joinActivity = async (id: string, activityId: number) => {};
+
+/** Unjoin an Activity */
+const unjoinActivity = async (id: string, activityId: number) => {};
+
+export {
+    getAllUsers,
+    createUser,
+    getUserById,
+    getUserByEmail,
+    getUserActivityList,
+    getUserFavoriteActivityList,
+    updateUser,
+    addNewUserActivity,
+    submitQuiz,
+    checkJoined,
+    joinActivity,
+    unjoinActivity
+};

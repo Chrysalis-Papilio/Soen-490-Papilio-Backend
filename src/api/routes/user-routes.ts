@@ -20,6 +20,8 @@ router.get('/user/get/:id/activities', validate(userSchema.getUserActivityList),
 
 router.get('/user/get/:id/favoriteActivities', validate(userSchema.getUserActivityList), userController.getUserFavoriteActivityList);
 
+router.get('/user/activity/:id/checkJoined/:activityId', userController.checkJoinedActivity);
+
 /** PUT */
 
 router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
@@ -27,6 +29,10 @@ router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), use
 router.put('/user/addFavoriteActivity', validate(userSchema.userAddFavoriteActivitySchema), userController.addFavoriteActivity);
 
 router.put('/user/submitQuiz/:id', validate(userSchema.submitQuiz), userController.submitQuiz);
+
+router.put('/user/activity/:id/join/:activityId', userController.joinActivity);
+
+router.put('/user/activity/:id/unjoin/:activityId', userController.unjoinActivity);
 
 /** POST */
 

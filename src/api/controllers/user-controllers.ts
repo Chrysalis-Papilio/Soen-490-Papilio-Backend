@@ -180,4 +180,39 @@ const submitQuiz = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addFavoriteActivity, addNewUserActivity, submitQuiz };
+const checkJoinedActivity = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+    } catch (err) {
+        next(err);
+    }
+};
+
+const joinActivity = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+    } catch (err) {
+        next(err);
+    }
+};
+
+const unjoinActivity = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+    } catch (err) {
+        next(err);
+    }
+};
+
+export {
+    getAllUsers,
+    createUser,
+    getUserById,
+    getUserByEmail,
+    getUserActivityList,
+    getUserFavoriteActivityList,
+    updateUserProfile,
+    addFavoriteActivity,
+    addNewUserActivity,
+    submitQuiz,
+    checkJoinedActivity,
+    joinActivity,
+    unjoinActivity
+};
