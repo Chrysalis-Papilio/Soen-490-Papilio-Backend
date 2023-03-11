@@ -17,6 +17,8 @@ describe('ActivityController', () => {
         images: [],
         address: '1234 Rue Guy, Montreal, QC EXM PLE'
     };
+    const mockValidPage = 3;
+    const mockValidSize = 5;
 
     describe('GET /activity', () => {
         describe('getActivity endpoint', () => {
@@ -123,9 +125,10 @@ describe('ActivityController', () => {
 
                 activityRepoGetAllActivitiesSpy.mockRestore();
             });
+
             it('should return OK[200] and a valid list of Activities with correct page', async () => {
                 // Arrange
-                const endpoint = '/api/activity/getFeeds?size=5&page=3';
+                const endpoint = `/api/activity/getFeeds?size=${mockValidSize}&page=${mockValidPage}`;
                 const expectedStatusCode = 200;
                 const activityRepoGetAllActivitiesSpy = jest.spyOn(activityRepo, 'getAllActivities').mockResolvedValueOnce({
                     count: 100,
@@ -147,6 +150,25 @@ describe('ActivityController', () => {
                 expect(response.body.rows.length).toBeGreaterThan(0);
 
                 activityRepoGetAllActivitiesSpy.mockRestore();
+            });
+
+            it('should return BAD REQUEST [400] if page is invalid or size is invalid', async () => {
+                // Arrange
+                const invalidPage = 0; // supposed to be gte(1)
+                const invalidSize = 4; // supposed to be gte(5)
+                const endpoint1 = `/api/activity/getFeeds?page=${invalidPage}&size=${mockValidSize}`;
+                const endpoint2 = `/api/activity/getFeeds?page=${mockValidPage}&size=${invalidSize}`;
+                const expectedStatusCode = 400;
+                const activityRepoSearchActivitiesSpy = jest.spyOn(activityRepo, 'searchActivities');
+
+                // Act
+                const response1 = await request(app).get(endpoint1);
+                const response2 = await request(app).get(endpoint2);
+
+                // Assert
+                expect(activityRepoSearchActivitiesSpy).toHaveBeenCalledTimes(0);
+                expect(response1.statusCode).toEqual(expectedStatusCode);
+                expect(response2.statusCode).toEqual(expectedStatusCode);
             });
         });
     });
@@ -182,15 +204,12 @@ describe('ActivityController', () => {
 
                 activityRepoSearchActivitiesSpy.mockRestore();
             });
+
             it('should return BAD REQUEST [400] if no keyword was given', async () => {
                 // Arrange
                 const endpoint = '/api/activity/search';
                 const expectedStatusCode = 400;
-                const activityRepoSearchActivitiesSpy = jest.spyOn(activityRepo, 'searchActivities').mockResolvedValue({
-                    keyword: 'example',
-                    count: 0,
-                    rows: []
-                });
+                const activityRepoSearchActivitiesSpy = jest.spyOn(activityRepo, 'searchActivities');
 
                 // Act
                 const response = await request(app).post(endpoint);
@@ -200,6 +219,74 @@ describe('ActivityController', () => {
                 expect(response.statusCode).toEqual(expectedStatusCode);
 
                 activityRepoSearchActivitiesSpy.mockRestore();
+            });
+        });
+
+        describe('updateActivity endpoint', () => {
+            it('should return OK [200] and an updated Activity if passed validation', async () => {
+                // Arrange
+                const endpoint = `/api/activity/update/${mockActivityId}`;
+                const expectedStatusCode = 200;
+                const activityRepoUpdateActivitySpy = jest.spyOn(activityRepo, 'updateActivity').mockResolvedValue({
+                    success: true,
+                    // @ts-ignore
+                    activity: mockActivity
+                });
+
+                // Act
+                let responses = Array(8);
+                responses[0] = await request(app)
+                    .post(endpoint)
+                    .send({ update: { title: 'Another Title' } });
+                responses[1] = await request(app)
+                    .post(endpoint)
+                    .send({ update: { description: 'Another description' } });
+                responses[2] = await request(app)
+                    .post(endpoint)
+                    .send({ update: { address: '123 New Address St, Montreal, QC XAM PLE' } });
+                responses[3] = await request(app)
+                    .post(endpoint)
+                    .send({ update: { startTime: '2023-03-15 10:05:00+00' } });
+                responses[4] = await request(app)
+                    .post(endpoint)
+                    .send({ update: { endTime: '2023-03-15 10:15:00+00' } });
+                responses[5] = await request(app)
+                    .post(endpoint)
+                    .send({ update: { groupSize: 20 } });
+                responses[6] = await request(app)
+                    .post(endpoint)
+                    .send({ update: { costPerIndividual: 14.99 } });
+                responses[7] = await request(app)
+                    .post(endpoint)
+                    .send({ update: { costPerGroup: 199.99 } });
+
+                // Assert
+                expect(activityRepoUpdateActivitySpy).toHaveBeenCalledTimes(8);
+                expect(activityRepoUpdateActivitySpy).toHaveBeenCalledWith(mockActivityId, expect.anything());
+                responses.forEach((response) => {
+                    expect(response.statusCode).toEqual(expectedStatusCode);
+                    expect(response.body.success).toBeTruthy();
+                });
+
+                activityRepoUpdateActivitySpy.mockRestore();
+            });
+
+            it('should return BAD REQUEST [400] if no/invalid request body were given', async () => {
+                // Arrange
+                const endpoint = `/api/activity/update/${mockActivityId}`;
+                const expectedStatusCode = 400;
+
+                // Act
+                const response1 = await request(app).post(endpoint).send({ updates: {} });
+                const response2 = await request(app).post(endpoint).send({ update: {} });
+                const response3 = await request(app)
+                    .post(endpoint)
+                    .send({ update: { id: {} } });
+
+                // Assert
+                expect(response1.statusCode).toEqual(expectedStatusCode);
+                expect(response2.statusCode).toEqual(expectedStatusCode);
+                expect(response3.statusCode).toEqual(expectedStatusCode);
             });
         });
     });
