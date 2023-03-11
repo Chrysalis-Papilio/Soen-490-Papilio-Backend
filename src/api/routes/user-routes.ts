@@ -20,7 +20,7 @@ router.get('/user/get/:id/activities', validate(userSchema.getUserActivityList),
 
 router.get('/user/get/:id/favoriteActivities', validate(userSchema.getUserActivityList), userController.getUserFavoriteActivityList);
 
-router.get('/user/activity/:id/checkJoined/:activityId', userController.checkJoinedActivity);
+router.get('/user/activity/:id/checkJoined/:activityId', validate(userSchema.checkJoinedActivity), userController.checkJoinedActivity);
 
 /** PUT */
 
@@ -36,10 +36,10 @@ router.post('/user/createUser', validate(userSchema.createUserSchema), userContr
 
 router.post('/user/addActivity/:id', [upload.array('images', 5), validate(userSchema.addNewUserActivity)], userController.addNewUserActivity);
 
-router.post('/user/activity/:id/join/:activityId', userController.joinActivity);
+router.post('/user/activity/:id/join/:activityId', validate(userSchema.joinActivity), userController.joinActivity);
 
 /** DELETE */
 
-router.delete('/user/activity/:id/unjoin/:activityId', userController.unjoinActivity);
+router.delete('/user/activity/:id/unjoin/:activityId', validate(userSchema.unjoinActivity), userController.unjoinActivity);
 
 export = router;
