@@ -1,4 +1,4 @@
-import { Activity, Quiz, User } from '../models';
+import { Activity, Quiz, User, UsersJoinActivities } from '../models';
 import { APIError } from '../../errors/api-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
 import { createNewObjectCaughtError } from './error';
@@ -142,17 +142,45 @@ const submitQuiz = async (id: string, quiz: Quiz) => {
 
 /** Check if the User joined the Activity */
 const checkJoinedActivity = async (id: string, activityId: number) => {
-    return {id, activityId};
+    await User.sync();
+    await Activity.sync();
+    await UsersJoinActivities.sync();
+
+    const user = User.findOne({ where: { firebase_id: id } });
+    if (!user) {
+        throw new APIError(`Cannot find User with firebase_id ${id}`, 'joinActivity', httpStatusCode.CONFLICT);
+    }
+    const activity = Activity.findByPk(activityId);
+    if (!activity) {
+        throw new APIError(`Cannot find Activity with id ${id}`, 'joinActivity', httpStatusCode.CONFLICT);
+    }
+    const result = await UsersJoinActivities.findOne({ where: { activityId: activityId, userId: id } });
+    return {
+        joined: !!result
+    };
 };
 
 /** Join an Activity */
 const joinActivity = async (id: string, activityId: number) => {
-    return {id, activityId};
+    if ((await checkJoinedActivity(id, activityId)).joined) {
+        return httpStatusCode.CONFLICT;
+    } else {
+        await UsersJoinActivities.create({
+            activityId: activityId,
+            userId: id
+        });
+        return httpStatusCode.CREATED;
+    }
 };
 
 /** Unjoin an Activity */
 const unjoinActivity = async (id: string, activityId: number) => {
-    return {id, activityId};
+    if ((await checkJoinedActivity(id, activityId)).joined) {
+        await UsersJoinActivities.destroy({ where: { activityId: activityId, userId: id } });
+        return httpStatusCode.NO_CONTENT;
+    } else {
+        return httpStatusCode.CONFLICT;
+    }
 };
 
 export {

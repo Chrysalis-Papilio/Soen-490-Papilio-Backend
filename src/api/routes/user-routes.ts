@@ -30,14 +30,16 @@ router.put('/user/addFavoriteActivity', validate(userSchema.userAddFavoriteActiv
 
 router.put('/user/submitQuiz/:id', validate(userSchema.submitQuiz), userController.submitQuiz);
 
-router.put('/user/activity/:id/join/:activityId', userController.joinActivity);
-
-router.put('/user/activity/:id/unjoin/:activityId', userController.unjoinActivity);
-
 /** POST */
 
 router.post('/user/createUser', validate(userSchema.createUserSchema), userController.createUser);
 
 router.post('/user/addActivity/:id', [upload.array('images', 5), validate(userSchema.addNewUserActivity)], userController.addNewUserActivity);
+
+router.post('/user/activity/:id/join/:activityId', userController.joinActivity);
+
+/** DELETE */
+
+router.delete('/user/activity/:id/unjoin/:activityId', userController.unjoinActivity);
 
 export = router;

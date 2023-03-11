@@ -196,7 +196,7 @@ const joinActivity = async (req: Request, res: Response, next: NextFunction) => 
     const activityId: string = req.params.activityId;
     try {
         const result = await userServices.joinActivity(id, Number(activityId));
-        return res.status(200).json(result);
+        return res.sendStatus(result);
     } catch (err) {
         next(err);
     }
@@ -207,7 +207,7 @@ const unjoinActivity = async (req: Request, res: Response, next: NextFunction) =
     const activityId: string = req.params.activityId;
     try {
         const result = await userServices.unjoinActivity(id, Number(activityId));
-        return res.status(200).json(result);
+        return res.sendStatus(result);
     } catch (err) {
         next(err);
     }
