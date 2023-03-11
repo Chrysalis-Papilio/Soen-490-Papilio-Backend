@@ -268,10 +268,10 @@ const createNewStreamChatUser = async (req: Request, res: Response, next: NextFu
 };
 
 const checkJoinedActivity = async (req: Request, res: Response, next: NextFunction) => {
-    const id: string = req.params.id;
-    const activityId: string = req.params.activityId;
+    const user_id: string = req.params.user_id;
+    const activity_id: string = req.params.activity_id;
     try {
-        const result = await userServices.checkJoinedActivity(id, Number(activityId));
+        const result = await userServices.checkJoinedActivity(user_id, Number(activity_id));
         return res.status(200).json(result);
     } catch (err) {
         next(err);
@@ -279,10 +279,12 @@ const checkJoinedActivity = async (req: Request, res: Response, next: NextFuncti
 };
 
 const joinActivity = async (req: Request, res: Response, next: NextFunction) => {
-    const id: string = req.params.id;
-    const activityId: string = req.params.activityId;
+    const user_id: string = req.params.user_id;
+    const user_name: string = req.body.user_name;
+    const activity_id: string = req.params.activity_id;
     try {
-        const result = await userServices.joinActivity(id, Number(activityId));
+        const result = await userServices.joinActivity(user_id, Number(activity_id));
+        await userServices.addMemberToActivityChat(user_id, user_name, activity_id);
         return res.sendStatus(result);
     } catch (err) {
         next(err);
@@ -290,10 +292,11 @@ const joinActivity = async (req: Request, res: Response, next: NextFunction) => 
 };
 
 const unjoinActivity = async (req: Request, res: Response, next: NextFunction) => {
-    const id: string = req.params.id;
-    const activityId: string = req.params.activityId;
+    const user_id: string = req.params.user_id;
+    const activity_id: string = req.params.activity_id;
     try {
-        const result = await userServices.unjoinActivity(id, Number(activityId));
+        const result = await userServices.unjoinActivity(user_id, Number(activity_id));
+        await userServices.removeMemberFromActivityChat(user_id, activity_id);
         return res.sendStatus(result);
     } catch (err) {
         next(err);

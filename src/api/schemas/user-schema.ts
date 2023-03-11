@@ -64,11 +64,6 @@ const channelName = string({
     invalid_type_error: invalidMessage('Channel Name', 'string')
 }).min(2, 'Channel Name too short!');
 
-const channel_id = string({
-    required_error: requiredMessage('Channel id'),
-    invalid_type_error: invalidMessage('Channel id', 'string')
-}).min(1, 'Channel id too short!');
-
 const user_name = string({
     required_error: requiredMessage('User Name'),
     invalid_type_error: invalidMessage('User Name', 'string')
@@ -192,7 +187,7 @@ const getChatUserToken = object({
 const createChat = object({
    body: object({
        channel_name: channelName, // name of the channel (should be the name of the activity or something like that)
-       channel_id: channel_id, // channel id is supposed to be the activity id since each activity has its own channel
+       channel_id: activityId,
        created_by_id: firebase_id // firebase_id of the user that created the activity
    }).strict('Request contains an invalid key')
 });
@@ -200,7 +195,7 @@ const createChat = object({
 const deleteActivityChat = object({
     params: object({
         // Required
-        channel_id: channel_id
+        activity_id: activityId
     }).strict('Request contains an invalid key')
 });
 
@@ -208,7 +203,7 @@ const addMemberToActivityChat = object({
     body: object({
         // Required
         user_id: firebase_id,
-        channel_id: channel_id,
+        channel_id: activityId,
         user_name: user_name
     }).strict('Request contains an invalid key')
 });
@@ -217,7 +212,7 @@ const removeMemberFromActivityChat = object({
     body: object({
         // Required
         user_id: firebase_id,
-        channel_id: channel_id
+        channel_id: activityId
     }).strict('Request contains an invalid key')
 });
 
@@ -231,14 +226,27 @@ const newStreamChatUser = object({
 
 const checkJoinedActivity = object({
     params: object({
-        id: firebase_id,
-        activityId: activityId
+        user_id: firebase_id,
+        activity_id: activityId
     }).strict('Request URL contains an invalid key')
 });
 
-const joinActivity = checkJoinedActivity;
+const joinActivity = object({
+    params: object({
+        user_id: firebase_id,
+        activity_id: activityId
+    }).strict('Request URL contains an invalid key'),
+    body: object({
+        user_name: user_name
+    }).strict('Request body contains an invalid key')
+});
 
-const unjoinActivity = checkJoinedActivity;
+const unjoinActivity = object({
+    params: object({
+        user_id: firebase_id,
+        activity_id: activityId
+    }).strict('Request URL contains an invalid key')
+});
 
 export { firebase_id, firstName, lastName, email, phone, countryCode };
 export {

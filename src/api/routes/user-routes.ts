@@ -22,7 +22,7 @@ router.get('/user/get/:id/favoriteActivities', validate(userSchema.getUserActivi
 
 router.get('/user/get-chat-user-token/:id', validate(userSchema.getChatUserToken), userController.getChatUserToken );
 
-router.get('/user/activity/:id/checkJoined/:activityId', validate(userSchema.checkJoinedActivity), userController.checkJoinedActivity);
+router.get('/user/activity/:user_id/checkJoined/:activity_id', validate(userSchema.checkJoinedActivity), userController.checkJoinedActivity);
 
 /** PUT */
 
@@ -46,12 +46,12 @@ router.post('/user/create-chat-by-admin-user', validate(userSchema.createChat), 
 
 router.post('/user/create-stream-chat-user', validate(userSchema.newStreamChatUser), userController.createNewStreamChatUser);
 
-router.post('/user/activity/:id/join/:activityId', validate(userSchema.joinActivity), userController.joinActivity);
+router.post('/user/activity/:user_id/join/:activity_id', validate(userSchema.joinActivity), userController.joinActivity);
 
 /** DELETE */
 
-router.delete('/user/delete-activity-chat/:channel_id', validate(userSchema.deleteActivityChat), userController.deleteActivityChat);
+router.delete('/user/delete-activity-chat/:activity_id', validate(userSchema.deleteActivityChat), userController.deleteActivityChat);
 
-router.delete('/user/activity/:id/unjoin/:activityId', validate(userSchema.unjoinActivity), userController.unjoinActivity);
+router.delete('/user/activity/:user_id/unjoin/:activity_id', validate(userSchema.unjoinActivity), userController.unjoinActivity);
 
 export = router;
