@@ -157,6 +157,9 @@ const addNewUserActivity = async (req: Request, res: Response, next: NextFunctio
         /** Call to service layer */
         const result = await userServices.addNewUserActivity(id, activity);
 
+        /** Once the activity is created, we can create a chat for it */
+        await userServices.createChat(id.toString(), result.activity.id.toString(), result.activity.title);
+
         /** Return a response to client */
         return res.status(201).json(result);
     } catch (err) {
