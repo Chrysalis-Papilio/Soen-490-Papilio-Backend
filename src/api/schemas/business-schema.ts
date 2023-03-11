@@ -97,6 +97,8 @@ const removeEmployee = getEmployee;
 
 const removeActivity = getActivity;
 
+const removeBusiness = getBusinessById;
+
 const updateBusiness = object({
     params: object({
         businessId: businessId
@@ -153,6 +155,7 @@ export {
     addNewActivity,
     addNewBusinessActivity,
     removeEmployee,
+    removeBusiness,
     removeActivity,
     updateEmployee,
     updateActivity,

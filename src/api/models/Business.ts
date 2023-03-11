@@ -6,6 +6,7 @@ import {
     HasManyCreateAssociationMixin,
     HasManyGetAssociationsMixin,
     HasManyRemoveAssociationMixin,
+    HasManyRemoveAssociationsMixin,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -27,12 +28,14 @@ class Business extends Model<InferAttributes<Business, { omit: 'employees' | 'ac
 
     declare getEmployees: HasManyGetAssociationsMixin<Employee>;
     declare removeEmployee: HasManyRemoveAssociationMixin<Employee, number>;
+    declare removeEmployees: HasManyRemoveAssociationsMixin<Employee, number>;
     declare countEmployees: HasManyCountAssociationsMixin;
     declare createEmployee: HasManyCreateAssociationMixin<Employee>;
 
     declare createActivity: HasManyCreateAssociationMixin<Activity>;
     declare countActivities: HasManyCountAssociationsMixin;
     declare removeActivity: HasManyRemoveAssociationMixin<Activity, number>;
+    declare removeActivities: HasManyRemoveAssociationsMixin<Activity, number>;
     declare getActivities: HasManyGetAssociationsMixin<Activity>;
 
     declare static associations: {

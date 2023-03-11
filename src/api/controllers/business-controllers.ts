@@ -164,6 +164,17 @@ const removeActivity = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
+const removeBusiness = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { businessId } = req.params;
+        const result = await businessServices.removeBusiness(businessId);
+
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
 const updateEmployee = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
@@ -203,6 +214,7 @@ export {
     addNewActivity,
     removeEmployee,
     removeActivity,
+    removeBusiness,
     updateBusiness,
     updateEmployee,
     updateActivity
