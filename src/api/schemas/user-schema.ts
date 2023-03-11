@@ -1,6 +1,6 @@
 import { boolean, number, object, string } from 'zod';
 import { requiredMessage, invalidMessage } from './util';
-import { activitySchema } from './activity-schema';
+import { activityId, activitySchema } from './activity-schema';
 
 /** Attributes */
 
@@ -42,11 +42,6 @@ const bio = string({
 const favoriteActivities = number({
     required_error: requiredMessage('favoriteActivities'),
     invalid_type_error: invalidMessage('favoriteActivities', 'number')
-});
-
-const favoriteActivitiesString = string({
-    required_error: requiredMessage('favoriteActivities'),
-    invalid_type_error: invalidMessage('favoriteActivities', 'string')
 });
 
 const indoor = boolean({
@@ -112,7 +107,7 @@ const getActivityFavoriteCheckById = object({
     params: object({
         // Required
         id: firebase_id,
-        activityId: favoriteActivitiesString
+        activityId: activityId
     }).strict('Request contains an invalid key')
 });
 

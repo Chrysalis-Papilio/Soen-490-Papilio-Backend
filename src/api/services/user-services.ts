@@ -16,7 +16,7 @@ const getUserActivityList = async (id: string) => {
     return userRepo.getUserActivityList(id);
 };
 
-const checkActivityFavoritedByUser = async (id: string, activityId: string) => {
+const checkActivityFavoritedByUser = async (id: string, activityId: number) => {
     return userRepo.checkActivityFavoritedByUser(id, activityId);
 };
 

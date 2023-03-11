@@ -84,9 +84,11 @@ const getUserFavoriteActivityList = async (req: Request, res: Response, next: Ne
 const checkActivityFavoritedByUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
-        const { id } = req.params;
-        const { activityId } = req.params
-        const result = await userServices.checkActivityFavoritedByUser(id, activityId);
+
+        const id: string = req.params.id;
+        const activityId: string = req.params.activityId
+
+        const result = await userServices.checkActivityFavoritedByUser(id, Number(activityId));
 
         /** Return a response to client */
         return res.status(200).json(result);
