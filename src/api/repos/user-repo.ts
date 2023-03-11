@@ -141,13 +141,19 @@ const submitQuiz = async (id: string, quiz: Quiz) => {
 };
 
 /** Check if the User joined the Activity */
-const checkJoined = async (id: string, activityId: number) => {};
+const checkJoinedActivity = async (id: string, activityId: number) => {
+    return {id, activityId};
+};
 
 /** Join an Activity */
-const joinActivity = async (id: string, activityId: number) => {};
+const joinActivity = async (id: string, activityId: number) => {
+    return {id, activityId};
+};
 
 /** Unjoin an Activity */
-const unjoinActivity = async (id: string, activityId: number) => {};
+const unjoinActivity = async (id: string, activityId: number) => {
+    return {id, activityId};
+};
 
 export {
     getAllUsers,
@@ -159,7 +165,7 @@ export {
     updateUser,
     addNewUserActivity,
     submitQuiz,
-    checkJoined,
+    checkJoinedActivity,
     joinActivity,
     unjoinActivity
 };
