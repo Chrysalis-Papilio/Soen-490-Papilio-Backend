@@ -30,6 +30,8 @@ router.get('/user/get/isActivityFavorite/:id/:activityId', validate(userSchema.g
 
 router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
 
+router.put('/user/updateUserProfilePicture/:id', [upload.single('image'), validate(userSchema.updateUserProfileSchema)], userController.updateUserProfilePicture);
+
 router.put('/user/addFavoriteActivity', validate(userSchema.userAddFavoriteActivitySchema), userController.addFavoriteActivity);
 
 router.put('/user/removeFavoriteActivity', validate(userSchema.userRemoveFavoriteActivitySchema), userController.removeFavoriteActivity);

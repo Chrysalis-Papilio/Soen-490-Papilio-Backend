@@ -28,6 +28,7 @@ class User extends Model<InferAttributes<User, { omit: 'userReviews' | 'activiti
     declare email: string;
     declare bio: string;
     declare favoriteActivities: Array<number>;
+    declare image: string | null;
 
     declare userReviews?: NonAttribute<ActivityReview[]>;
     declare activities?: NonAttribute<Activity[]>;
@@ -116,6 +117,9 @@ User.init(
         favoriteActivities: {
             type: DataTypes.ARRAY(DataTypes.INTEGER),
             defaultValue: []
+        },
+        image: {
+            type: DataTypes.STRING
         }
     },
     { sequelize }
