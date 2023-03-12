@@ -151,6 +151,12 @@ const updateUserSchema = object({
     })
 });
 
+const updateUserProfileSchema = object({
+    params: object({
+        id: firebase_id
+    }).strict('Identifier field contains an invalid key')
+});
+
 const addNewUserActivity = object({
     params: object({
         id: firebase_id
@@ -168,4 +174,16 @@ const submitQuiz = object({
 });
 
 export { firebase_id, firstName, lastName, email, phone, countryCode };
-export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, updateUserSchema, userAddFavoriteActivitySchema, addNewUserActivity, submitQuiz };
+export {
+    userSchema,
+    createUserSchema,
+    getAllUsers,
+    getUserByEmailSchema,
+    getUserById,
+    getUserActivityList,
+    updateUserSchema,
+    updateUserProfileSchema,
+    userAddFavoriteActivitySchema,
+    addNewUserActivity,
+    submitQuiz
+};

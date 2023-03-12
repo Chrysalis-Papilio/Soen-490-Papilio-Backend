@@ -94,6 +94,31 @@ const updateUserProfile = async (req: Request, res: Response, next: NextFunction
     }
 };
 
+const updateUserProfilePicture = async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    try {
+        /** Check if middleware uploaded and retrieved the images' URLs */
+        let imageUrl;
+        if (req.file) {
+            imageUrl = await uploadImageFirebase(req.file, 'profile-pics');
+        } else {
+            res.sendStatus(400);
+        }
+
+        // Prepare
+        const update = { image: imageUrl };
+        const identifier = { firebase_id: id };
+
+        /** To service */
+        const result = await userServices.updateUserProfile(identifier, update);
+
+        /** Response */
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
 const addFavoriteActivity = async (req: Request, res: Response, next: NextFunction) => {
     /** Get the user firebase id (identifier) and the id of the activity we want to favorite (update) */
     const { identifier } = req.body;
@@ -180,4 +205,16 @@ const submitQuiz = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUserProfile, addFavoriteActivity, addNewUserActivity, submitQuiz };
+export {
+    getAllUsers,
+    createUser,
+    getUserById,
+    getUserByEmail,
+    getUserActivityList,
+    getUserFavoriteActivityList,
+    updateUserProfile,
+    updateUserProfilePicture,
+    addFavoriteActivity,
+    addNewUserActivity,
+    submitQuiz
+};

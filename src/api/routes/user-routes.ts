@@ -24,6 +24,8 @@ router.get('/user/get/:id/favoriteActivities', validate(userSchema.getUserActivi
 
 router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
 
+router.put('/user/updateUserProfilePicture/:id', [upload.single('image'), validate(userSchema.updateUserProfileSchema)], userController.updateUserProfilePicture);
+
 router.put('/user/addFavoriteActivity', validate(userSchema.userAddFavoriteActivitySchema), userController.addFavoriteActivity);
 
 router.put('/user/submitQuiz/:id', validate(userSchema.submitQuiz), userController.submitQuiz);
