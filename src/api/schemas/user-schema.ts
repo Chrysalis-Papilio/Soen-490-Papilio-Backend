@@ -281,6 +281,8 @@ export {
     getUserActivityList,
     updateUserSchema,
     userAddFavoriteActivitySchema,
+    getIsActivityFavorited,
+    userRemoveFavoriteActivitySchema,
     addNewUserActivity,
     submitQuiz,
     getChatUserToken,

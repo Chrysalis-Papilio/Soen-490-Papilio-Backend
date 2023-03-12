@@ -372,6 +372,8 @@ export {
     getUserFavoriteActivityList,
     updateUserProfile,
     addFavoriteActivity,
+    checkActivityFavoritedByUser,
+    removeFavoriteActivity,
     addNewUserActivity,
     submitQuiz,
     getChatUserToken,

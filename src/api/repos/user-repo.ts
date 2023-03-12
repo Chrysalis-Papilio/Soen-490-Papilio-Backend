@@ -263,6 +263,7 @@ export {
     getUserByEmail,
     getUserActivityList,
     getUserFavoriteActivityList,
+    checkActivityFavoritedByUser,
     updateUser,
     addNewUserActivity,
     submitQuiz,
