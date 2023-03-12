@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import * as admin from 'firebase-admin';
 import { v4 as uuidv4 } from 'uuid';
 
 // Initialize Firebase
@@ -23,4 +24,10 @@ export const uploadImageFirebase = async (file: Express.Multer.File) => {
     };
     const snapshot = await uploadBytes(imageUploadRef, file.buffer, metadata);
     return await getDownloadURL(snapshot.ref);
+};
+
+export const deleteEmployee = async (employeeFirebaseId: string) => {
+    try {
+        await admin.auth().deleteUser(employeeFirebaseId);
+    } catch (e) {}
 };
