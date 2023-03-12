@@ -84,6 +84,15 @@ const addNewActivity = object({
     })
 });
 
+const addNewBusinessActivity = object({
+    params: object({
+        businessId: businessId
+    }).strict('Request URL contains an invalid key'),
+    body: object({
+        activity: activitySchema.strict('Activity field contains an invalid key')
+    })
+});
+
 const removeEmployee = getEmployee;
 
 const removeActivity = getActivity;
@@ -142,6 +151,7 @@ export {
     createBusiness,
     addNewEmployee,
     addNewActivity,
+    addNewBusinessActivity,
     removeEmployee,
     removeActivity,
     updateEmployee,

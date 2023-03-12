@@ -153,15 +153,19 @@ const submitQuiz = async (id: string, quiz: Quiz) => {
     return httpStatusCode.OK;
 };
 
+// Helper function to get the StreamChat singleton object
+const getStreamChatClient = () => {
+    // @ts-ignore - Typescript does not recognize the function signature for some reason even though it is there
+    return StreamChat.getInstance(process.env.STREAM_CHAT_API_KEY, process.env.STREAM_CHAT_API_SECRET);
+};
+
 const generateChatTokenForUser = async (userId: string) => {
-    // @ts-ignore
-    const client = StreamChat.getInstance(process.env.STREAM_CHAT_API_KEY, process.env.STREAM_CHAT_API_SECRET);
+    const client = getStreamChatClient();
     return client.createToken(userId);
 };
 
 const createChat = async (userId: string, channelId: string, channelName: string) => {
-    // @ts-ignore
-    const client = StreamChat.getInstance(process.env.STREAM_CHAT_API_KEY, process.env.STREAM_CHAT_API_SECRET);
+    const client = getStreamChatClient();
 
     const channel = client.channel('messaging', channelId, {
         created_by_id: userId,
@@ -178,16 +182,14 @@ const createChat = async (userId: string, channelId: string, channelName: string
 };
 
 const deleteActivityChat = async (channelId: string) => {
-    // @ts-ignore
-    const client = StreamChat.getInstance(process.env.STREAM_CHAT_API_KEY, process.env.STREAM_CHAT_API_SECRET);
+    const client = getStreamChatClient();
     const channel = client.channel('messaging', channelId);
     await channel.delete().catch((err) => createNewObjectCaughtError(err, 'deleteActivityChat', 'There has been an error in deleting a chat'));
     return httpStatusCode.DELETED;
 };
 
 const addMemberToActivityChat = async (user_id: string, user_name: string, channel_id: string) => {
-    // @ts-ignore
-    const client = StreamChat.getInstance(process.env.STREAM_CHAT_API_KEY, process.env.STREAM_CHAT_API_SECRET);
+    const client = getStreamChatClient();
     const channel = client.channel('messaging', channel_id);
     await channel.addMembers([user_id], { text: user_name + ' joined the channel.', user_id: user_id })
       .catch((err) => createNewObjectCaughtError(err, 'addMemberToActivityChat', 'There has been an error in adding a member to a chat'));
@@ -195,8 +197,7 @@ const addMemberToActivityChat = async (user_id: string, user_name: string, chann
 };
 
 const removeMemberFromActivityChat = async (user_id: string,channel_id: string) => {
-    // @ts-ignore
-    const client = StreamChat.getInstance(process.env.STREAM_CHAT_API_KEY, process.env.STREAM_CHAT_API_SECRET);
+    const client = getStreamChatClient();
     const channel = client.channel('messaging', channel_id);
     await channel.removeMembers([user_id])
       .catch((err) => createNewObjectCaughtError(err, 'removeMemberFromActivityChat', 'There has been an error in removing a member from the chat'));
@@ -204,8 +205,7 @@ const removeMemberFromActivityChat = async (user_id: string,channel_id: string) 
 };
 
 const createNewStreamChatUser = async (user_id: string, user_name: string) => {
-    // @ts-ignore
-    const client = StreamChat.getInstance(process.env.STREAM_CHAT_API_KEY, process.env.STREAM_CHAT_API_SECRET);
+    const client = getStreamChatClient();
     await client.upsertUser({
         id: user_id,
         name: user_name

@@ -37,11 +37,11 @@ describe('UserController', () => {
     };
     const user = {
         firebase_id: 'uf4938jvkuelb238210gaswsd',
-        firstName: 'Than',
-        lastName: 'Ta',
+        firstName: 'John',
+        lastName: 'Doe',
         phone: '5140006868',
         countryCode: '1',
-        email: 'thandonotputmyemailhere@gmail.com',
+        email: 'mikediditididnotdoit@gmail.com',
         bio: 'My bio'
     };
     /////////////////////////
