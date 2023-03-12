@@ -86,7 +86,7 @@ const checkActivityFavoritedByUser = async (req: Request, res: Response, next: N
         /** Call to service layer */
 
         const id: string = req.params.id;
-        const activityId: string = req.params.activityId
+        const activityId: string = req.params.activityId;
 
         const result = await userServices.checkActivityFavoritedByUser(id, Number(activityId));
 
@@ -132,7 +132,7 @@ const addFavoriteActivity = async (req: Request, res: Response, next: NextFuncti
                 if (index == -1) {
                     favoriteActivitiesOld.push(update.favoriteActivities);
                 } /** If the current activity was already favorited in the past, then simply throw an error because this route should not be called then*/ else {
-                    throw new APIError('This activity is already favorited.', 'addFavoriteActivity', httpStatusCode.BAD_REQUEST, true)
+                    throw new APIError('This activity is already favorited.', 'addFavoriteActivity', httpStatusCode.BAD_REQUEST, true);
                 }
             } /** If the user had not favorited any activity before this, then we create a new array and add our current activity on it, then send this array to the service layer to update the user model */ else {
                 favoriteActivitiesOld = [update.favoriteActivities];
@@ -174,12 +174,12 @@ const removeFavoriteActivity = async (req: Request, res: Response, next: NextFun
 
                 /** If the current activity was not already favorited, then add it to the user's list of favorites*/
                 if (index == -1) {
-                    throw new APIError('This activity was never favorited by this user.', 'removeFavoriteActivity', httpStatusCode.BAD_REQUEST, true)
+                    throw new APIError('This activity was never favorited by this user.', 'removeFavoriteActivity', httpStatusCode.BAD_REQUEST, true);
                 } /** If the current activity was already favorited in the past, then simply un-favorite it*/ else {
                     favoriteActivitiesOld.splice(index, 1);
                 }
             } /** If the user had not favorited any activity before this, then we create a new array and add our current activity on it, then send this array to the service layer to update the user model */ else {
-                throw new APIError('This activity was never favorited by this user.', 'removeFavoriteActivity', httpStatusCode.BAD_REQUEST, true)
+                throw new APIError('This activity was never favorited by this user.', 'removeFavoriteActivity', httpStatusCode.BAD_REQUEST, true);
             }
 
             /** Assigning our new array to the update variable so it can be sent to the service layer and update the user's list of favorite activities**/
@@ -244,8 +244,8 @@ const submitQuiz = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getChatUserToken = async (req: Request, res: Response, next: NextFunction) => {
-  const userId = req.params.id;
-  try {
+    const userId = req.params.id;
+    try {
         /** Call to service layer */
         const result = await userServices.generateChatTokenForUser(userId);
 
@@ -257,10 +257,10 @@ const getChatUserToken = async (req: Request, res: Response, next: NextFunction)
 };
 
 const createChat = async (req: Request, res: Response, next: NextFunction) => {
-  const userId = req.body.created_by_id;
-  const channelName = req.body.channel_name;
-  const channelId = req.body.channel_id;
-  try {
+    const userId = req.body.created_by_id;
+    const channelName = req.body.channel_name;
+    const channelId = req.body.channel_id;
+    try {
         /** Call to service layer */
         const code = await userServices.createChat(userId, channelId, channelName);
 
@@ -272,8 +272,8 @@ const createChat = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const deleteActivityChat = async (req: Request, res: Response, next: NextFunction) => {
-  const channelId = req.params.channel_id;
-  try {
+    const channelId = req.params.channel_id;
+    try {
         /** Call to service layer */
         const code = await userServices.deleteActivityChat(channelId);
 
@@ -285,10 +285,10 @@ const deleteActivityChat = async (req: Request, res: Response, next: NextFunctio
 };
 
 const addMemberToActivityChat = async (req: Request, res: Response, next: NextFunction) => {
-  const user_id = req.body.user_id;
-  const channel_id = req.body.channel_id;
-  const user_name = req.body.user_name;
-  try {
+    const user_id = req.body.user_id;
+    const channel_id = req.body.channel_id;
+    const user_name = req.body.user_name;
+    try {
         /** Call to service layer */
         const code = await userServices.addMemberToActivityChat(user_id, user_name, channel_id);
 
@@ -300,9 +300,9 @@ const addMemberToActivityChat = async (req: Request, res: Response, next: NextFu
 };
 
 const removeMemberFromActivityChat = async (req: Request, res: Response, next: NextFunction) => {
-  const user_id = req.body.user_id;
-  const channel_id = req.body.channel_id;
-  try {
+    const user_id = req.body.user_id;
+    const channel_id = req.body.channel_id;
+    try {
         /** Call to service layer */
         const code = await userServices.removeMemberFromActivityChat(user_id, channel_id);
 
@@ -314,9 +314,9 @@ const removeMemberFromActivityChat = async (req: Request, res: Response, next: N
 };
 
 const createNewStreamChatUser = async (req: Request, res: Response, next: NextFunction) => {
-  const user_id = req.body.id;
-  const user_name = req.body.name;
-  try {
+    const user_id = req.body.id;
+    const user_name = req.body.name;
+    try {
         /** Call to service layer */
         const code = await userServices.createNewStreamChatUser(user_id, user_name);
 

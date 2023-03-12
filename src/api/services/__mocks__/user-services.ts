@@ -38,23 +38,23 @@ const submitQuiz = async (id: string, quiz: any) => {
     return userRepo.submitQuiz(id, quiz);
 };
 
-const generateChatTokenForUser = async(userId: string) => {
+const generateChatTokenForUser = async (userId: string) => {
     return userRepo.generateChatTokenForUser(userId);
 };
 
-const deleteActivityChat = async(channelId: string) => {
+const deleteActivityChat = async (channelId: string) => {
     return userRepo.deleteActivityChat(channelId);
 };
 
-const addMemberToActivityChat = async(user_id: string, user_name: string, channel_id: string) => {
+const addMemberToActivityChat = async (user_id: string, user_name: string, channel_id: string) => {
     return userRepo.addMemberToActivityChat(user_id, user_name, channel_id);
 };
 
-const removeMemberFromActivityChat = async(user_id: string, channel_id: string) => {
+const removeMemberFromActivityChat = async (user_id: string, channel_id: string) => {
     return userRepo.removeMemberFromActivityChat(user_id, channel_id);
 };
 
-const createNewStreamChatUser = async(user_id: string, user_name: string) => {
+const createNewStreamChatUser = async (user_id: string, user_name: string) => {
     return userRepo.createNewStreamChatUser(user_id, user_name);
 };
 
@@ -71,7 +71,7 @@ const unjoinActivity = async (id: string, activityId: number) => {
 };
 
 // @ts-ignore
-let createChat = async(userId: string, channelId: string, channelName: string) => jest.fn( () => console.log("called mock createChat"));
+let createChat = async (userId: string, channelId: string, channelName: string) => jest.fn(() => console.log('called mock createChat'));
 
 export {
     getAllUsers,

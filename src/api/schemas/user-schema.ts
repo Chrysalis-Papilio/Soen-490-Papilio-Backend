@@ -122,7 +122,7 @@ const getActivityFavoriteCheckById = object({
 });
 
 const getUserActivityList = getUserById;
-const getIsActivityFavorited = getActivityFavoriteCheckById
+const getIsActivityFavorited = getActivityFavoriteCheckById;
 
 const userAddFavoriteActivitySchema = object({
     body: object({
@@ -208,11 +208,11 @@ const getChatUserToken = object({
 });
 
 const createChat = object({
-   body: object({
-       channel_name: channelName, // name of the channel (should be the name of the activity or something like that)
-       channel_id: activityId,
-       created_by_id: firebase_id // firebase_id of the user that created the activity
-   }).strict('Request contains an invalid key')
+    body: object({
+        channel_name: channelName, // name of the channel (should be the name of the activity or something like that)
+        channel_id: activityId,
+        created_by_id: firebase_id // firebase_id of the user that created the activity
+    }).strict('Request contains an invalid key')
 });
 
 const deleteActivityChat = object({

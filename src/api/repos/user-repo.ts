@@ -2,7 +2,7 @@ import { Activity, Quiz, User, UsersJoinActivities } from '../models';
 import { APIError } from '../../errors/api-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
 import { createNewObjectCaughtError } from './error';
-import { StreamChat } from "stream-chat";
+import { StreamChat } from 'stream-chat';
 
 /** Get all accounts from table account */
 const getAllUsers = async () => {
@@ -171,12 +171,10 @@ const createChat = async (userId: string, channelId: string, channelName: string
         created_by_id: userId,
         name: channelName
     });
-    await channel.create()
-      .catch((err) => createNewObjectCaughtError(err, 'createChat', 'There has been an error in creating a new chat'));
+    await channel.create().catch((err) => createNewObjectCaughtError(err, 'createChat', 'There has been an error in creating a new chat'));
 
     // Add the user that created this channel as a member otherwise the channel will not appear in his list on the mobile app
-    await channel.addMembers([userId])
-      .catch((err) => createNewObjectCaughtError(err, 'createChat', 'There has been an error in adding the user as a member into the newly created chat'));
+    await channel.addMembers([userId]).catch((err) => createNewObjectCaughtError(err, 'createChat', 'There has been an error in adding the user as a member into the newly created chat'));
 
     return httpStatusCode.CREATED;
 };
@@ -191,25 +189,27 @@ const deleteActivityChat = async (channelId: string) => {
 const addMemberToActivityChat = async (user_id: string, user_name: string, channel_id: string) => {
     const client = getStreamChatClient();
     const channel = client.channel('messaging', channel_id);
-    await channel.addMembers([user_id], { text: user_name + ' joined the channel.', user_id: user_id })
-      .catch((err) => createNewObjectCaughtError(err, 'addMemberToActivityChat', 'There has been an error in adding a member to a chat'));
+    await channel
+        .addMembers([user_id], { text: user_name + ' joined the channel.', user_id: user_id })
+        .catch((err) => createNewObjectCaughtError(err, 'addMemberToActivityChat', 'There has been an error in adding a member to a chat'));
     return httpStatusCode.OK;
 };
 
-const removeMemberFromActivityChat = async (user_id: string,channel_id: string) => {
+const removeMemberFromActivityChat = async (user_id: string, channel_id: string) => {
     const client = getStreamChatClient();
     const channel = client.channel('messaging', channel_id);
-    await channel.removeMembers([user_id])
-      .catch((err) => createNewObjectCaughtError(err, 'removeMemberFromActivityChat', 'There has been an error in removing a member from the chat'));
+    await channel.removeMembers([user_id]).catch((err) => createNewObjectCaughtError(err, 'removeMemberFromActivityChat', 'There has been an error in removing a member from the chat'));
     return httpStatusCode.OK;
 };
 
 const createNewStreamChatUser = async (user_id: string, user_name: string) => {
     const client = getStreamChatClient();
-    await client.upsertUser({
-        id: user_id,
-        name: user_name
-     }).catch((err) => createNewObjectCaughtError(err, 'createNewStreamChatUser', 'There has been an error in creating a new Stream Chat user'));
+    await client
+        .upsertUser({
+            id: user_id,
+            name: user_name
+        })
+        .catch((err) => createNewObjectCaughtError(err, 'createNewStreamChatUser', 'There has been an error in creating a new Stream Chat user'));
     return httpStatusCode.CREATED;
 };
 
