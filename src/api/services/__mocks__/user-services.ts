@@ -1,4 +1,6 @@
-import { userRepo } from '../repos';
+import { userRepo } from '../../repos';
+
+// This file serves to mock all functions from the user-services file
 
 const getAllUsers = async () => {
     return userRepo.getAllUsers();
@@ -14,10 +16,6 @@ const getUserByEmail = async (email: string) => {
 
 const getUserActivityList = async (id: string) => {
     return userRepo.getUserActivityList(id);
-};
-
-const checkActivityFavoritedByUser = async (id: string, activityId: number) => {
-    return userRepo.checkActivityFavoritedByUser(id, activityId);
 };
 
 const getUserFavoriteActivityList = async (id: string) => {
@@ -42,10 +40,6 @@ const submitQuiz = async (id: string, quiz: any) => {
 
 const generateChatTokenForUser = async (userId: string) => {
     return userRepo.generateChatTokenForUser(userId);
-};
-
-const createChat = async (userId: string, channelId: string, channelName: string) => {
-    return userRepo.createChat(userId, channelId, channelName);
 };
 
 const deleteActivityChat = async (channelId: string) => {
@@ -76,6 +70,9 @@ const unjoinActivity = async (id: string, activityId: number) => {
     return userRepo.unjoinActivity(id, activityId);
 };
 
+// @ts-ignore
+let createChat = async (userId: string, channelId: string, channelName: string) => jest.fn(() => console.log('called mock createChat'));
+
 export {
     getAllUsers,
     createUser,
@@ -83,7 +80,6 @@ export {
     getUserByEmail,
     getUserActivityList,
     getUserFavoriteActivityList,
-    checkActivityFavoritedByUser,
     updateUserProfile,
     addNewUserActivity,
     submitQuiz,
