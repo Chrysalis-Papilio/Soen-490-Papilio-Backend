@@ -21,6 +21,7 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
         const statusCode = await userServices.createUser(user);
+        await userServices.createNewStreamChatUser(user.firebase_id, user.firstName + " " + user.lastName);
 
         /** Return a response to client. */
         return res.sendStatus(statusCode);
