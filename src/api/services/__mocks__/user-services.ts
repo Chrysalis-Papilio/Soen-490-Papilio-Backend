@@ -54,9 +54,8 @@ const removeMemberFromActivityChat = async (user_id: string, channel_id: string)
     return userRepo.removeMemberFromActivityChat(user_id, channel_id);
 };
 
-const createNewStreamChatUser = async (user_id: string, user_name: string) => {
-    return userRepo.createNewStreamChatUser(user_id, user_name);
-};
+// @ts-ignore
+const createNewStreamChatUser = async (user_id: string, user_name: string) => jest.fn(() => console.log('called mock createNewStreamChatUser'));
 
 const checkJoinedActivity = async (id: string, activityId: number) => {
     return userRepo.checkJoinedActivity(id, activityId);
