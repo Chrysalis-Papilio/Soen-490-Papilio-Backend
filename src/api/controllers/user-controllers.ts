@@ -86,7 +86,7 @@ const checkActivityFavoritedByUser = async (req: Request, res: Response, next: N
         /** Call to service layer */
 
         const id: string = req.params.id;
-        const activityId: string = req.params.activityId
+        const activityId: string = req.params.activityId;
 
         const result = await userServices.checkActivityFavoritedByUser(id, Number(activityId));
 
@@ -132,7 +132,7 @@ const addFavoriteActivity = async (req: Request, res: Response, next: NextFuncti
                 if (index == -1) {
                     favoriteActivitiesOld.push(update.favoriteActivities);
                 } /** If the current activity was already favorited in the past, then simply throw an error because this route should not be called then*/ else {
-                    throw new APIError('This activity is already favorited.', 'addFavoriteActivity', httpStatusCode.BAD_REQUEST, true)
+                    throw new APIError('This activity is already favorited.', 'addFavoriteActivity', httpStatusCode.BAD_REQUEST, true);
                 }
             } /** If the user had not favorited any activity before this, then we create a new array and add our current activity on it, then send this array to the service layer to update the user model */ else {
                 favoriteActivitiesOld = [update.favoriteActivities];
@@ -174,12 +174,12 @@ const removeFavoriteActivity = async (req: Request, res: Response, next: NextFun
 
                 /** If the current activity was not already favorited, then add it to the user's list of favorites*/
                 if (index == -1) {
-                    throw new APIError('This activity was never favorited by this user.', 'removeFavoriteActivity', httpStatusCode.BAD_REQUEST, true)
+                    throw new APIError('This activity was never favorited by this user.', 'removeFavoriteActivity', httpStatusCode.BAD_REQUEST, true);
                 } /** If the current activity was already favorited in the past, then simply un-favorite it*/ else {
                     favoriteActivitiesOld.splice(index, 1);
                 }
             } /** If the user had not favorited any activity before this, then we create a new array and add our current activity on it, then send this array to the service layer to update the user model */ else {
-                throw new APIError('This activity was never favorited by this user.', 'removeFavoriteActivity', httpStatusCode.BAD_REQUEST, true)
+                throw new APIError('This activity was never favorited by this user.', 'removeFavoriteActivity', httpStatusCode.BAD_REQUEST, true);
             }
 
             /** Assigning our new array to the update variable so it can be sent to the service layer and update the user's list of favorite activities**/
@@ -217,6 +217,9 @@ const addNewUserActivity = async (req: Request, res: Response, next: NextFunctio
         /** Call to service layer */
         const result = await userServices.addNewUserActivity(id, activity);
 
+        /** Once the activity is created, we can create a chat for it */
+        await userServices.createChat(id.toString(), result.activity.id.toString(), result.activity.title);
+
         /** Return a response to client */
         return res.status(201).json(result);
     } catch (err) {
@@ -240,4 +243,146 @@ const submitQuiz = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, checkActivityFavoritedByUser,updateUserProfile, addFavoriteActivity, removeFavoriteActivity, addNewUserActivity, submitQuiz };
+const getChatUserToken = async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.params.id;
+    try {
+        /** Call to service layer */
+        const result = await userServices.generateChatTokenForUser(userId);
+
+        /** Return a response to client */
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err); //  Send any error to error-handler
+    }
+};
+
+const createChat = async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.body.created_by_id;
+    const channelName = req.body.channel_name;
+    const channelId = req.body.channel_id;
+    try {
+        /** Call to service layer */
+        const code = await userServices.createChat(userId, channelId, channelName);
+
+        /** Return a response to client */
+        return res.sendStatus(code);
+    } catch (err) {
+        next(err); //  Send any error to error-handler
+    }
+};
+
+const deleteActivityChat = async (req: Request, res: Response, next: NextFunction) => {
+    const channelId = req.params.channel_id;
+    try {
+        /** Call to service layer */
+        const code = await userServices.deleteActivityChat(channelId);
+
+        /** Return a response to client */
+        return res.sendStatus(code);
+    } catch (err) {
+        next(err); //  Send any error to error-handler
+    }
+};
+
+const addMemberToActivityChat = async (req: Request, res: Response, next: NextFunction) => {
+    const user_id = req.body.user_id;
+    const channel_id = req.body.channel_id;
+    const user_name = req.body.user_name;
+    try {
+        /** Call to service layer */
+        const code = await userServices.addMemberToActivityChat(user_id, user_name, channel_id);
+
+        /** Return a response to client */
+        return res.sendStatus(code);
+    } catch (err) {
+        next(err); //  Send any error to error-handler
+    }
+};
+
+const removeMemberFromActivityChat = async (req: Request, res: Response, next: NextFunction) => {
+    const user_id = req.body.user_id;
+    const channel_id = req.body.channel_id;
+    try {
+        /** Call to service layer */
+        const code = await userServices.removeMemberFromActivityChat(user_id, channel_id);
+
+        /** Return a response to client */
+        return res.sendStatus(code);
+    } catch (err) {
+        next(err); //  Send any error to error-handler
+    }
+};
+
+const createNewStreamChatUser = async (req: Request, res: Response, next: NextFunction) => {
+    const user_id = req.body.id;
+    const user_name = req.body.name;
+    try {
+        /** Call to service layer */
+        const code = await userServices.createNewStreamChatUser(user_id, user_name);
+
+        /** Return a response to client */
+        return res.sendStatus(code);
+    } catch (err) {
+        next(err); //  Send any error to error-handler
+    }
+};
+
+const checkJoinedActivity = async (req: Request, res: Response, next: NextFunction) => {
+    const user_id: string = req.params.user_id;
+    const activity_id: string = req.params.activity_id;
+    try {
+        const result = await userServices.checkJoinedActivity(user_id, Number(activity_id));
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
+const joinActivity = async (req: Request, res: Response, next: NextFunction) => {
+    const user_id: string = req.params.user_id;
+    const user_name: string = req.body.user_name;
+    const activity_id: string = req.params.activity_id;
+    try {
+        const result = await userServices.joinActivity(user_id, Number(activity_id));
+        await userServices.addMemberToActivityChat(user_id, user_name, activity_id);
+        return res.sendStatus(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
+const unjoinActivity = async (req: Request, res: Response, next: NextFunction) => {
+    const user_id: string = req.params.user_id;
+    const activity_id: string = req.params.activity_id;
+    try {
+        const result = await userServices.unjoinActivity(user_id, Number(activity_id));
+        await userServices.removeMemberFromActivityChat(user_id, activity_id);
+        return res.sendStatus(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export {
+    getAllUsers,
+    createUser,
+    getUserById,
+    getUserByEmail,
+    getUserActivityList,
+    getUserFavoriteActivityList,
+    updateUserProfile,
+    addFavoriteActivity,
+    checkActivityFavoritedByUser,
+    removeFavoriteActivity,
+    addNewUserActivity,
+    submitQuiz,
+    getChatUserToken,
+    createChat,
+    deleteActivityChat,
+    addMemberToActivityChat,
+    createNewStreamChatUser,
+    removeMemberFromActivityChat,
+    checkJoinedActivity,
+    joinActivity,
+    unjoinActivity
+};

@@ -59,6 +59,16 @@ const genres = number({
     invalid_type_error: invalidMessage('Genre List', 'number[]')
 }).array();
 
+const channelName = string({
+    required_error: requiredMessage('Channel Name'),
+    invalid_type_error: invalidMessage('Channel Name', 'string')
+}).min(2, 'Channel Name too short!');
+
+const user_name = string({
+    required_error: requiredMessage('User Name'),
+    invalid_type_error: invalidMessage('User Name', 'string')
+}).min(2, 'User Name too short!');
+
 /** Schemas */
 
 const userSchema = object({
@@ -112,7 +122,7 @@ const getActivityFavoriteCheckById = object({
 });
 
 const getUserActivityList = getUserById;
-const getIsActivityFavorited = getActivityFavoriteCheckById
+const getIsActivityFavorited = getActivityFavoriteCheckById;
 
 const userAddFavoriteActivitySchema = object({
     body: object({
@@ -190,5 +200,98 @@ const submitQuiz = object({
     body: quizSchema.strict('Quiz field contains an invalid key')
 });
 
+const getChatUserToken = object({
+    params: object({
+        // Required
+        id: firebase_id
+    }).strict('Request contains an invalid key')
+});
+
+const createChat = object({
+    body: object({
+        channel_name: channelName, // name of the channel (should be the name of the activity or something like that)
+        channel_id: activityId,
+        created_by_id: firebase_id // firebase_id of the user that created the activity
+    }).strict('Request contains an invalid key')
+});
+
+const deleteActivityChat = object({
+    params: object({
+        // Required
+        activity_id: activityId
+    }).strict('Request contains an invalid key')
+});
+
+const addMemberToActivityChat = object({
+    body: object({
+        // Required
+        user_id: firebase_id,
+        channel_id: activityId,
+        user_name: user_name
+    }).strict('Request contains an invalid key')
+});
+
+const removeMemberFromActivityChat = object({
+    body: object({
+        // Required
+        user_id: firebase_id,
+        channel_id: activityId
+    }).strict('Request contains an invalid key')
+});
+
+const newStreamChatUser = object({
+    body: object({
+        // Required
+        id: firebase_id,
+        name: user_name
+    }).strict('Request contains an invalid key')
+});
+
+const checkJoinedActivity = object({
+    params: object({
+        user_id: firebase_id,
+        activity_id: activityId
+    }).strict('Request URL contains an invalid key')
+});
+
+const joinActivity = object({
+    params: object({
+        user_id: firebase_id,
+        activity_id: activityId
+    }).strict('Request URL contains an invalid key'),
+    body: object({
+        user_name: user_name
+    }).strict('Request body contains an invalid key')
+});
+
+const unjoinActivity = object({
+    params: object({
+        user_id: firebase_id,
+        activity_id: activityId
+    }).strict('Request URL contains an invalid key')
+});
+
 export { firebase_id, firstName, lastName, email, phone, countryCode };
-export { userSchema, createUserSchema, getAllUsers, getUserByEmailSchema, getUserById, getUserActivityList, getIsActivityFavorited, updateUserSchema, userAddFavoriteActivitySchema, userRemoveFavoriteActivitySchema, addNewUserActivity, submitQuiz };
+export {
+    userSchema,
+    createUserSchema,
+    getAllUsers,
+    getUserByEmailSchema,
+    getUserById,
+    getUserActivityList,
+    updateUserSchema,
+    userAddFavoriteActivitySchema,
+    getIsActivityFavorited,
+    userRemoveFavoriteActivitySchema,
+    addNewUserActivity,
+    submitQuiz,
+    getChatUserToken,
+    createChat,
+    deleteActivityChat,
+    addMemberToActivityChat,
+    newStreamChatUser,
+    removeMemberFromActivityChat,
+    checkJoinedActivity,
+    joinActivity,
+    unjoinActivity
+};
