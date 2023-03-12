@@ -67,6 +67,18 @@ const getUserFavoriteActivityList = async (id: string) => {
     };
 };
 
+const checkActivityFavoritedByUser = async (id: string, activityId: number) => {
+    await User.sync();
+    await Activity.sync();
+    const user = (await getUserById(id)).user;
+    if (!user) {
+        throw new APIError(`Cannot find User with firebase_id ${id}`, 'checkActivityFavoritedByUser', httpStatusCode.CONFLICT);
+    }
+    return {
+        isActivityFound: user.favoriteActivities.includes(activityId)
+    };
+};
+
 /**  Create a simple user with verified input */
 const createUser = async (user: User) => {
     await User.sync();

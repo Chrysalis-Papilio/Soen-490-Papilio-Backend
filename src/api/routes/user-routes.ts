@@ -24,11 +24,15 @@ router.get('/user/get-chat-user-token/:id', validate(userSchema.getChatUserToken
 
 router.get('/user/activity/:user_id/checkJoined/:activity_id', validate(userSchema.checkJoinedActivity), userController.checkJoinedActivity);
 
+router.get('/user/get/isActivityFavorite/:id/:activityId', validate(userSchema.getIsActivityFavorited), userController.checkActivityFavoritedByUser);
+
 /** PUT */
 
 router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
 
 router.put('/user/addFavoriteActivity', validate(userSchema.userAddFavoriteActivitySchema), userController.addFavoriteActivity);
+
+router.put('/user/removeFavoriteActivity', validate(userSchema.userRemoveFavoriteActivitySchema), userController.removeFavoriteActivity);
 
 router.put('/user/submitQuiz/:id', validate(userSchema.submitQuiz), userController.submitQuiz);
 

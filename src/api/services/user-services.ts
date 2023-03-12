@@ -16,6 +16,10 @@ const getUserActivityList = async (id: string) => {
     return userRepo.getUserActivityList(id);
 };
 
+const checkActivityFavoritedByUser = async (id: string, activityId: number) => {
+    return userRepo.checkActivityFavoritedByUser(id, activityId);
+};
+
 const getUserFavoriteActivityList = async (id: string) => {
     return userRepo.getUserFavoriteActivityList(id);
 };
@@ -79,6 +83,7 @@ export {
     getUserByEmail,
     getUserActivityList,
     getUserFavoriteActivityList,
+    checkActivityFavoritedByUser,
     updateUserProfile,
     addNewUserActivity,
     submitQuiz,
