@@ -1,7 +1,7 @@
 import { Activity, Quiz, User, UsersJoinActivities } from '../models';
 import { APIError } from '../../errors/api-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
-import { createNewObjectCaughtError } from './error';
+import { createNewObjectCaughtError, queryResultError } from './error';
 import { StreamChat } from 'stream-chat';
 
 /** Get all accounts from table account */
@@ -256,6 +256,27 @@ const unjoinActivity = async (id: string, activityId: number) => {
     }
 };
 
+const getJoinedActivities = async (id: string) => {
+    await User.sync();
+    await Activity.sync();
+
+    const user = await User.findOne({ where: { firebase_id: id } });
+    if (!user) {
+        throw new APIError(`Cannot find User with firebase_id ${id}`, 'getJoinedActivities', httpStatusCode.CONFLICT);
+    }
+    const activities = await UsersJoinActivities.findAll({
+        where: { userId: id },
+        include: {
+            model: Activity,
+            as: 'activities'
+        }
+    }).catch((err) => queryResultError(err, 'getJoinedActivity'));
+    return {
+        count: activities.length,
+        row: activities
+    };
+};
+
 export {
     getAllUsers,
     createUser,
@@ -275,5 +296,6 @@ export {
     removeMemberFromActivityChat,
     checkJoinedActivity,
     joinActivity,
-    unjoinActivity
+    unjoinActivity,
+    getJoinedActivities
 };
