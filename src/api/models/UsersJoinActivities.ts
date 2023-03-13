@@ -42,7 +42,7 @@ User.hasMany(UsersJoinActivities, {
     sourceKey: 'firebase_id'
 });
 UsersJoinActivities.belongsTo(User, {
-    as: 'users',
+    as: 'user',
     foreignKey: 'userId',
     targetKey: 'firebase_id'
 });
@@ -53,7 +53,7 @@ Activity.hasMany(UsersJoinActivities, {
     sourceKey: 'id'
 });
 UsersJoinActivities.belongsTo(Activity, {
-    as: 'activities',
+    as: 'activity',
     foreignKey: 'activityId',
     targetKey: 'id'
 });
