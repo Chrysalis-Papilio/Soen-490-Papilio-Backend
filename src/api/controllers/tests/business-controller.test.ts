@@ -639,18 +639,18 @@ describe('BusinessController', () => {
                 businessRepoSpy.mockRestore();
             });
             it('should return NOTFOUND[404] if passed parameters are missing core fields.', async () => {
-               //  Arrange
-               const endpoint = `/api/business//removeEmployee/${testActivity.activityId}`;   //  Missing businessID
-               const expectedStatusCode = 404;
-               const businessRepoSpy = jest.spyOn(businessRepo, 'removeEmployee').mockResolvedValueOnce({
-                   success: true
-               });
-               //  Act
-               const res = await request(app).del(endpoint);
-               //  Assert
-               expect(res.statusCode).toEqual(expectedStatusCode);
-               expect(businessRepoSpy).not.toHaveBeenCalled();
-               businessRepoSpy.mockRestore();
+                //  Arrange
+                const endpoint = `/api/business//removeEmployee/${testActivity.activityId}`; //  Missing businessID
+                const expectedStatusCode = 404;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'removeEmployee').mockResolvedValueOnce({
+                    success: true
+                });
+                //  Act
+                const res = await request(app).del(endpoint);
+                //  Assert
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                expect(businessRepoSpy).not.toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
             });
         }); //  removeEmployee enpoint
 
@@ -692,7 +692,7 @@ describe('BusinessController', () => {
             });
             it('should return BADREQUEST[400] if passed parameters are missing core fields.', async () => {
                 //  Arrange
-                const endpoint = `/api/business/${testBusiness.businessId}/removeActivity/${testEmployee.firebase_id}`;   //  Passing employee instead of activity
+                const endpoint = `/api/business/${testBusiness.businessId}/removeActivity/${testEmployee.firebase_id}`; //  Passing employee instead of activity
                 const expectedStatusCode = 400;
                 const businessRepoSpy = jest.spyOn(businessRepo, 'removeActivity').mockResolvedValueOnce({
                     success: true
@@ -770,18 +770,20 @@ describe('BusinessController', () => {
                     business: testBusiness
                 });
                 //  Act
-                const res = await request(app).put(endpoint).send({
-                    identifier: {
-                        businessId: testBusiness.businessId
-                    },
-                    update: {
-                        name: testBusiness.name
-                    }
-                });
+                const res = await request(app)
+                    .put(endpoint)
+                    .send({
+                        identifier: {
+                            businessId: testBusiness.businessId
+                        },
+                        update: {
+                            name: testBusiness.name
+                        }
+                    });
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);
                 expect(res.body.success).toEqual(true);
-                expect(res.body.business.name).not.toEqual(testBusiness.name+'x');
+                expect(res.body.business.name).not.toEqual(testBusiness.name + 'x');
                 expect(businessRepoSpy).toHaveBeenCalled();
                 businessRepoSpy.mockRestore();
             });
@@ -795,18 +797,20 @@ describe('BusinessController', () => {
                     business: testBusiness
                 });
                 //  Act
-                const res = await request(app).put(endpoint).send({
-                    identifier: {
-                        businessId: testBusiness.businessId
-                    },
-                    update: {
-                        name: testBusiness.name
-                    }
-                });;
+                const res = await request(app)
+                    .put(endpoint)
+                    .send({
+                        identifier: {
+                            businessId: testBusiness.businessId
+                        },
+                        update: {
+                            name: testBusiness.name
+                        }
+                    });
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);
                 expect(res.body.success).toEqual(false);
-                expect(res.body.business.name).not.toEqual(testBusiness.name+'x');
+                expect(res.body.business.name).not.toEqual(testBusiness.name + 'x');
                 expect(businessRepoSpy).toHaveBeenCalled();
                 businessRepoSpy.mockRestore();
             });
@@ -820,14 +824,16 @@ describe('BusinessController', () => {
                     business: testBusiness
                 });
                 //  Act
-                const res = await request(app).put(endpoint).send({
-                    identifier: {
-                        businessId: testBusiness.businessId
-                    },
-                    update: {
-                        name: testBusiness  //  Missing name
-                    }
-                });;
+                const res = await request(app)
+                    .put(endpoint)
+                    .send({
+                        identifier: {
+                            businessId: testBusiness.businessId
+                        },
+                        update: {
+                            name: testBusiness //  Missing name
+                        }
+                    });
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);
                 expect(businessRepoSpy).not.toHaveBeenCalled();
@@ -847,14 +853,16 @@ describe('BusinessController', () => {
                 const endpoint = `/api/business/${testBusiness.businessId}/updateEmployee/${testEmployee.firebase_id}`;
                 const expectedStatusCode = 200;
                 const businessRepoSpy = jest.spyOn(businessRepo, 'updateEmployee').mockResolvedValueOnce({
-                    success: true,
+                    success: true
                 });
                 //  Act
-                const res = await request(app).put(endpoint).send({
-                    update: {
-                        role: testEmployee.role+'x'
-                    }
-                });
+                const res = await request(app)
+                    .put(endpoint)
+                    .send({
+                        update: {
+                            role: testEmployee.role + 'x'
+                        }
+                    });
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);
                 expect(res.body.success).toEqual(true);
@@ -866,14 +874,16 @@ describe('BusinessController', () => {
                 const endpoint = `/api/business/${testBusiness.businessId}/updateEmployee/${testEmployee.firebase_id}`;
                 const expectedStatusCode = 200;
                 const businessRepoSpy = jest.spyOn(businessRepo, 'updateEmployee').mockResolvedValueOnce({
-                    success: false,
+                    success: false
                 });
                 //  Act
-                const res = await request(app).put(endpoint).send({
-                    update: {
-                        role: testEmployee.role+'x'
-                    }
-                });
+                const res = await request(app)
+                    .put(endpoint)
+                    .send({
+                        update: {
+                            role: testEmployee.role + 'x'
+                        }
+                    });
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);
                 expect(res.body.success).toEqual(false);
@@ -885,7 +895,7 @@ describe('BusinessController', () => {
                 const endpoint = `/api/business/${testBusiness.businessId}/updateEmployee/${testEmployee.firebase_id}`;
                 const expectedStatusCode = 400;
                 const businessRepoSpy = jest.spyOn(businessRepo, 'updateEmployee').mockResolvedValueOnce({
-                    success: true,
+                    success: true
                 });
                 //  Act
                 const res = await request(app).put(endpoint).send({
