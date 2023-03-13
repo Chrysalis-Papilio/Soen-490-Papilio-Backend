@@ -853,7 +853,8 @@ describe('BusinessController', () => {
                         update: {
                             role: testEmployee.role + 'x'
                         }
-                    });
+                    })
+                    .set('Content-Type', 'application/json');
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);
                 expect(res.body.success).toEqual(true);
