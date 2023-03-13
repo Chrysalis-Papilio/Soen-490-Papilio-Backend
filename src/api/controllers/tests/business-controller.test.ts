@@ -773,9 +773,6 @@ describe('BusinessController', () => {
                 const res = await request(app)
                     .put(endpoint)
                     .send({
-                        identifier: {
-                            businessId: testBusiness.businessId
-                        },
                         update: {
                             name: testBusiness.name
                         }
@@ -800,9 +797,6 @@ describe('BusinessController', () => {
                 const res = await request(app)
                     .put(endpoint)
                     .send({
-                        identifier: {
-                            businessId: testBusiness.businessId
-                        },
                         update: {
                             name: testBusiness.name
                         }
@@ -827,9 +821,6 @@ describe('BusinessController', () => {
                 const res = await request(app)
                     .put(endpoint)
                     .send({
-                        identifier: {
-                            businessId: testBusiness.businessId
-                        },
                         update: {
                             name: testBusiness //  Missing name
                         }
