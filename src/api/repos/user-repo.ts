@@ -171,10 +171,10 @@ const createChat = async (userId: string, channelId: string, channelName: string
         created_by_id: userId,
         name: channelName
     });
-    await channel.create().catch((err) => createNewObjectCaughtError(err, 'createChat', 'There has been an error in creating a new chat'));
+    await channel.create().catch((err: any) => createNewObjectCaughtError(err, 'createChat', 'There has been an error in creating a new chat'));
 
     // Add the user that created this channel as a member otherwise the channel will not appear in his list on the mobile app
-    await channel.addMembers([userId]).catch((err) => createNewObjectCaughtError(err, 'createChat', 'There has been an error in adding the user as a member into the newly created chat'));
+    await channel.addMembers([userId]).catch((err: any) => createNewObjectCaughtError(err, 'createChat', 'There has been an error in adding the user as a member into the newly created chat'));
 
     return httpStatusCode.CREATED;
 };
@@ -182,7 +182,7 @@ const createChat = async (userId: string, channelId: string, channelName: string
 const deleteActivityChat = async (channelId: string) => {
     const client = getStreamChatClient();
     const channel = client.channel('messaging', channelId);
-    await channel.delete().catch((err) => createNewObjectCaughtError(err, 'deleteActivityChat', 'There has been an error in deleting a chat'));
+    await channel.delete().catch((err: any) => createNewObjectCaughtError(err, 'deleteActivityChat', 'There has been an error in deleting a chat'));
     return httpStatusCode.DELETED;
 };
 
@@ -198,7 +198,7 @@ const addMemberToActivityChat = async (user_id: string, user_name: string, chann
 const removeMemberFromActivityChat = async (user_id: string, channel_id: string) => {
     const client = getStreamChatClient();
     const channel = client.channel('messaging', channel_id);
-    await channel.removeMembers([user_id]).catch((err) => createNewObjectCaughtError(err, 'removeMemberFromActivityChat', 'There has been an error in removing a member from the chat'));
+    await channel.removeMembers([user_id]).catch((err: any) => createNewObjectCaughtError(err, 'removeMemberFromActivityChat', 'There has been an error in removing a member from the chat'));
     return httpStatusCode.OK;
 };
 
