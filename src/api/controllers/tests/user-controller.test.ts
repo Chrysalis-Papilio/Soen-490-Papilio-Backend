@@ -3,7 +3,9 @@ import app, { server } from '../../../app';
 import { APIError } from '../../../errors/api-error';
 import { httpStatusCode } from '../../../types/httpStatusCodes';
 import { userRepo } from '../../repos';
+
 jest.mock('sequelize');
+jest.mock('../../services/user-services');
 
 /**
  * Get
@@ -35,11 +37,11 @@ describe('UserController', () => {
     };
     const user = {
         firebase_id: 'uf4938jvkuelb238210gaswsd',
-        firstName: 'Anastassy',
-        lastName: 'Cap',
+        firstName: 'John',
+        lastName: 'Doe',
         phone: '5140006868',
         countryCode: '1',
-        email: 'anacap123@gmail.com',
+        email: 'mikediditididnotdoit@gmail.com',
         bio: 'My bio'
     };
     /////////////////////////
@@ -636,11 +638,17 @@ describe('UserController', () => {
                     activity: activity
                 });
 
+                // @ts-ignore
+                activity.id = jest.fn(); // add the 'id' attribute since it is required by the 'createChat' function
+
                 //  Act
                 const res = await request(app).post(endpoint).send({
                     user: user,
                     activity: activity
                 });
+
+                // @ts-ignore
+                delete activity.id;
 
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);

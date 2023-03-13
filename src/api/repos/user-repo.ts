@@ -1,7 +1,8 @@
-import { Activity, Quiz, User } from '../models';
+import { Activity, Quiz, User, UsersJoinActivities } from '../models';
 import { APIError } from '../../errors/api-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
 import { createNewObjectCaughtError } from './error';
+import { StreamChat } from 'stream-chat';
 
 /** Get all accounts from table account */
 const getAllUsers = async () => {
@@ -66,6 +67,18 @@ const getUserFavoriteActivityList = async (id: string) => {
     };
 };
 
+const checkActivityFavoritedByUser = async (id: string, activityId: number) => {
+    await User.sync();
+    await Activity.sync();
+    const user = (await getUserById(id)).user;
+    if (!user) {
+        throw new APIError(`Cannot find User with firebase_id ${id}`, 'checkActivityFavoritedByUser', httpStatusCode.CONFLICT);
+    }
+    return {
+        isActivityFound: user.favoriteActivities.includes(activityId)
+    };
+};
+
 /**  Create a simple user with verified input */
 const createUser = async (user: User) => {
     await User.sync();
@@ -93,8 +106,8 @@ const createUser = async (user: User) => {
 /** Update User */
 const updateUser = async (identifier: any, update: any) => {
     await User.sync();
-    const result = await User.update(update, { returning: ['firebase_id', 'firstName', 'lastName', 'countryCode', 'phone', 'email', 'bio', 'favoriteActivities'], where: identifier }).catch((err) =>
-        createNewObjectCaughtError(err, 'updateUser', 'There has been an error in updating User.')
+    const result = await User.update(update, { returning: ['firebase_id', 'firstName', 'lastName', 'countryCode', 'phone', 'email', 'bio', 'favoriteActivities', 'image'], where: identifier }).catch(
+        (err) => createNewObjectCaughtError(err, 'updateUser', 'There has been an error in updating User.')
     );
     if (!result[0])
         //  Failure to update
@@ -140,4 +153,127 @@ const submitQuiz = async (id: string, quiz: Quiz) => {
     return httpStatusCode.OK;
 };
 
-export { getAllUsers, createUser, getUserById, getUserByEmail, getUserActivityList, getUserFavoriteActivityList, updateUser, addNewUserActivity, submitQuiz };
+// Helper function to get the StreamChat singleton object
+const getStreamChatClient = () => {
+    // @ts-ignore - Typescript does not recognize the function signature for some reason even though it is there
+    return StreamChat.getInstance(process.env.STREAM_CHAT_API_KEY, process.env.STREAM_CHAT_API_SECRET);
+};
+
+const generateChatTokenForUser = async (userId: string) => {
+    const client = getStreamChatClient();
+    return client.createToken(userId);
+};
+
+const createChat = async (userId: string, channelId: string, channelName: string) => {
+    const client = getStreamChatClient();
+
+    const channel = client.channel('messaging', channelId, {
+        created_by_id: userId,
+        name: channelName
+    });
+    await channel.create().catch((err) => createNewObjectCaughtError(err, 'createChat', 'There has been an error in creating a new chat'));
+
+    // Add the user that created this channel as a member otherwise the channel will not appear in his list on the mobile app
+    await channel.addMembers([userId]).catch((err) => createNewObjectCaughtError(err, 'createChat', 'There has been an error in adding the user as a member into the newly created chat'));
+
+    return httpStatusCode.CREATED;
+};
+
+const deleteActivityChat = async (channelId: string) => {
+    const client = getStreamChatClient();
+    const channel = client.channel('messaging', channelId);
+    await channel.delete().catch((err) => createNewObjectCaughtError(err, 'deleteActivityChat', 'There has been an error in deleting a chat'));
+    return httpStatusCode.DELETED;
+};
+
+const addMemberToActivityChat = async (user_id: string, user_name: string, channel_id: string) => {
+    const client = getStreamChatClient();
+    const channel = client.channel('messaging', channel_id);
+    await channel
+        .addMembers([user_id], { text: user_name + ' joined the channel.', user_id: user_id })
+        .catch((err) => createNewObjectCaughtError(err, 'addMemberToActivityChat', 'There has been an error in adding a member to a chat'));
+    return httpStatusCode.OK;
+};
+
+const removeMemberFromActivityChat = async (user_id: string, channel_id: string) => {
+    const client = getStreamChatClient();
+    const channel = client.channel('messaging', channel_id);
+    await channel.removeMembers([user_id]).catch((err) => createNewObjectCaughtError(err, 'removeMemberFromActivityChat', 'There has been an error in removing a member from the chat'));
+    return httpStatusCode.OK;
+};
+
+const createNewStreamChatUser = async (user_id: string, user_name: string) => {
+    const client = getStreamChatClient();
+    await client
+        .upsertUser({
+            id: user_id,
+            name: user_name
+        })
+        .catch((err) => createNewObjectCaughtError(err, 'createNewStreamChatUser', 'There has been an error in creating a new Stream Chat user'));
+    return httpStatusCode.CREATED;
+};
+
+/** Check if the User joined the Activity */
+const checkJoinedActivity = async (id: string, activityId: number) => {
+    await User.sync();
+    await Activity.sync();
+    await UsersJoinActivities.sync();
+
+    const user = User.findOne({ where: { firebase_id: id } });
+    if (!user) {
+        throw new APIError(`Cannot find User with firebase_id ${id}`, 'joinActivity', httpStatusCode.CONFLICT);
+    }
+    const activity = Activity.findByPk(activityId);
+    if (!activity) {
+        throw new APIError(`Cannot find Activity with id ${id}`, 'joinActivity', httpStatusCode.CONFLICT);
+    }
+    const result = await UsersJoinActivities.findOne({ where: { activityId: activityId, userId: id } });
+    return {
+        joined: !!result
+    };
+};
+
+/** Join an Activity */
+const joinActivity = async (id: string, activityId: number) => {
+    if ((await checkJoinedActivity(id, activityId)).joined) {
+        return httpStatusCode.CONFLICT;
+    } else {
+        await UsersJoinActivities.create({
+            activityId: activityId,
+            userId: id
+        });
+        return httpStatusCode.CREATED;
+    }
+};
+
+/** Unjoin an Activity */
+const unjoinActivity = async (id: string, activityId: number) => {
+    if ((await checkJoinedActivity(id, activityId)).joined) {
+        await UsersJoinActivities.destroy({ where: { activityId: activityId, userId: id } });
+        return httpStatusCode.NO_CONTENT;
+    } else {
+        return httpStatusCode.CONFLICT;
+    }
+};
+
+export {
+    getAllUsers,
+    createUser,
+    getUserById,
+    getUserByEmail,
+    getUserActivityList,
+    getUserFavoriteActivityList,
+    checkActivityFavoritedByUser,
+    updateUser,
+    addNewUserActivity,
+    submitQuiz,
+    generateChatTokenForUser,
+    createChat,
+    deleteActivityChat,
+    addMemberToActivityChat,
+    createNewStreamChatUser,
+    removeMemberFromActivityChat,
+    checkJoinedActivity,
+    joinActivity,
+    unjoinActivity
+};

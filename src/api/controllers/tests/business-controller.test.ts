@@ -705,6 +705,41 @@ describe('BusinessController', () => {
                 businessRepoSpy.mockRestore();
             });
         }); //  removeActivity enpoint
+
+        describe('removeBusiness endpoint', () => {
+            afterEach(() => {
+                server.close();
+            });
+            it('returns OK[200] when business exist and business is deleted', async () => {
+                //  Arrange
+                const endpoint = `/api/business/${testBusiness.businessId}`;
+                const expectedStatusCode = 200;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'removeBusiness').mockResolvedValueOnce({
+                    success: true
+                });
+                //  Act
+                const res = await request(app).delete(endpoint);
+                //  Assert
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                businessRepoSpy.mockRestore();
+            });
+
+            it('should return CONFLCIT[409] if business does not exists', async () => {
+                //  Arrange
+                const badBusinessId = 'bad-business-id';
+                const endpoint = `/api/business/${badBusinessId}`;
+                const expectedStatusCode = 409;
+                const businessRepoSpy = jest
+                    .spyOn(businessRepo, 'removeBusiness')
+                    .mockRejectedValueOnce(new APIError(`Business ID ${testBusiness.businessId} doesn't exists`, 'removeBusiness', httpStatusCode.CONFLICT, true));
+
+                //  Act
+                const res = await request(app).delete(endpoint);
+                //  Assert
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                businessRepoSpy.mockRestore();
+            });
+        });
     }); // DESCRIBE DELETE
 
     //////////////////////////

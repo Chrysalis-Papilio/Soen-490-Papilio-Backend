@@ -5,11 +5,11 @@ import { Activity, Business, Employee } from '../models';
 import { createNewObjectCaughtError } from './error';
 
 /** Get Business using businessId */
-const getBusinessById = async (businessId: string) => {
+const getBusinessById = async (businessId: string, exclude = ['id']) => {
     await Business.sync();
     const business = await Business.findOne({
         where: { businessId: businessId },
-        attributes: { exclude: ['id'] }
+        attributes: { exclude }
     }).catch((err) => {
         console.log(err);
         throw new BaseError('ORM Sequelize Error.', 'There has been an error in fetching the Business.', 'getBusinessById', httpStatusCode.INTERNAL_SERVER, true);
@@ -109,6 +109,7 @@ const addNewEmployee = async (id: string, employee: Employee) => {
     if (!business) {
         throw new APIError(`Cannot find Business with businessId '${id}'`, 'addNewEmployee', httpStatusCode.CONFLICT);
     }
+
     const newEmployee = await business.createEmployee(employee).catch((err) => createNewObjectCaughtError(err, 'addNewEmployee', 'There has been an error in creating a new Employee'));
     return {
         success: !!newEmployee,
@@ -178,6 +179,25 @@ const removeEmployee = async (id: string, employeeId: string) => {
     };
 };
 
+const removeBusiness = async (id: string) => {
+    await Business.sync();
+    await Employee.sync();
+    await Activity.sync();
+
+    const business = (await getBusinessById(id, [])).business;
+    if (!business) {
+        throw new APIError(`Cannot find Business with businessId ${id}`, 'removeBusiness', httpStatusCode.CONFLICT);
+    }
+
+    await business.removeEmployees();
+    await business.removeActivities();
+    await business.destroy();
+
+    return {
+        success: !(await getBusinessById(id)).business
+    };
+};
+
 /** Update Business */
 const updateBusiness = async (identifier: any, update: any) => {
     await Business.sync();
@@ -226,6 +246,7 @@ export {
     addNewActivity,
     removeEmployee,
     removeActivity,
+    removeBusiness,
     updateBusiness,
     updateEmployee,
     updateActivity

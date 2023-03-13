@@ -9,8 +9,21 @@ const getAllActivities = async (page: number, size: number) => {
     await Activity.sync();
     const result = await Activity.findAndCountAll({
         limit: size,
-        offset: (page - 1) * size
-    });
+        offset: (page - 1) * size,
+        attributes: { exclude: ['businessId', 'userId', 'createdAt', 'updatedAt'] },
+        include: [
+            {
+                model: Business,
+                attributes: ['businessId', 'email'],
+                as: 'business'
+            },
+            {
+                model: User,
+                attributes: ['id', 'email'],
+                as: 'user'
+            }
+        ]
+    }).catch((e) => queryResultError(e, 'getAllActivities'));
     return {
         ...result,
         totalPages: Math.ceil(result.count / size),
@@ -23,7 +36,7 @@ const getActivity = async (id: number, contact: boolean) => {
     await Activity.sync();
     const activity = contact
         ? await Activity.findByPk(id, {
-              attributes: { exclude: ['businessId', 'userId', 'createdAt', 'updatedAt'] },
+              attributes: { exclude: ['businessId', 'userId'] },
               include: [
                   {
                       model: Business,
@@ -36,10 +49,10 @@ const getActivity = async (id: number, contact: boolean) => {
                       as: 'user'
                   }
               ]
-          })
+          }).catch((e) => queryResultError(e, 'getActivitiy'))
         : await Activity.findByPk(id, {
               attributes: { exclude: ['businessId', 'userId', 'createdAt', 'updatedAt'] }
-          });
+          }).catch((e) => queryResultError(e, 'getActivity'));
     return {
         found: !!activity,
         activity: activity
