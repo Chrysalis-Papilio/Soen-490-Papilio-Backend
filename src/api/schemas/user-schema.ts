@@ -277,6 +277,8 @@ const unjoinActivity = object({
     }).strict('Request URL contains an invalid key')
 });
 
+const checkJoinedActivities = getUserById;
+
 export { firebase_id, firstName, lastName, email, phone, countryCode };
 export {
     userSchema,
@@ -300,5 +302,6 @@ export {
     removeMemberFromActivityChat,
     checkJoinedActivity,
     joinActivity,
-    unjoinActivity
+    unjoinActivity,
+    checkJoinedActivities
 };

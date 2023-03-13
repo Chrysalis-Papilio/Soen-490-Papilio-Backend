@@ -21,7 +21,7 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
         const statusCode = await userServices.createUser(user);
-        if (statusCode == httpStatusCode.CREATED) await userServices.createNewStreamChatUser(user.firebase_id, user.firstName + " " + user.lastName);
+        if (statusCode == httpStatusCode.CREATED) await userServices.createNewStreamChatUser(user.firebase_id, user.firstName + ' ' + user.lastName);
 
         /** Return a response to client. */
         return res.sendStatus(statusCode);
@@ -389,6 +389,16 @@ const unjoinActivity = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
+const getJoinedActivities = async (req: Request, res: Response, next: NextFunction) => {
+    const id: string = req.params.id;
+    try {
+        const result = await userServices.getJoinedActivities(id);
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
 export {
     getAllUsers,
     createUser,
@@ -411,5 +421,6 @@ export {
     removeMemberFromActivityChat,
     checkJoinedActivity,
     joinActivity,
-    unjoinActivity
+    unjoinActivity,
+    getJoinedActivities
 };
