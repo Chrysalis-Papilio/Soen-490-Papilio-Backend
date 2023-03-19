@@ -41,16 +41,14 @@ describe('GenreController', () => {
                 //  Arrange
                 const endpoint = `/api/genre/all`;
                 const expectedStatusCode = 200;
-                const genreRepoSpy = jest.spyOn(genreRepo, 'getAllGenres').mockResolvedValueOnce(
-                    {
-                        id: 1,
-                        name: "Soccer",
-                        url: null,
-                        category: "sport",
-                        createdAt: "2023-01-18T03:50:10.550Z",
-                        updatedAt: "2023-01-18T03:50:10.550Z"
-                    } as any
-                );
+                const genreRepoSpy = jest.spyOn(genreRepo, 'getAllGenres').mockResolvedValueOnce({
+                    id: 1,
+                    name: 'Soccer',
+                    url: null,
+                    category: 'sport',
+                    createdAt: '2023-01-18T03:50:10.550Z',
+                    updatedAt: '2023-01-18T03:50:10.550Z'
+                } as any);
 
                 //  Act
                 const response = await request(app).get(endpoint);
@@ -65,9 +63,7 @@ describe('GenreController', () => {
                 //  Arrange
                 const endpoint = `/api/genre/all`;
                 const expectedStatusCode = 200;
-                const genreRepoSpy = jest.spyOn(genreRepo, 'getAllGenres').mockResolvedValueOnce(
-                    {} as any
-                );
+                const genreRepoSpy = jest.spyOn(genreRepo, 'getAllGenres').mockResolvedValueOnce({} as any);
 
                 //  Act
                 const response = await request(app).get(endpoint);
@@ -114,8 +110,8 @@ describe('GenreController', () => {
                     .post(endpoint)
                     .send({
                         genre: {
-                            name: "Crafts",
-                            category: "art"
+                            name: 'Crafts',
+                            category: 'art'
                         }
                     })
                     .set('Content-Type', 'application/json');
@@ -130,7 +126,7 @@ describe('GenreController', () => {
                 const endpoint = '/api/genre/add';
                 const expectedStatusCode = 201;
                 const genreRepoSpy = jest.spyOn(genreRepo, 'addGenre').mockResolvedValueOnce({
-                    success: true,
+                    success: true
                 });
 
                 //  Act
@@ -138,8 +134,8 @@ describe('GenreController', () => {
                     .post(endpoint)
                     .send({
                         genre: {
-                            name: "TestCrafts",
-                            category: "art"
+                            name: 'TestCrafts',
+                            category: 'art'
                         }
                     })
                     .set('Content-Type', 'application/json');
@@ -155,7 +151,7 @@ describe('GenreController', () => {
                 const endpoint = '/api/genre/add';
                 const expectedStatusCode = 400;
                 const genreRepoSpy = jest.spyOn(genreRepo, 'addGenre').mockResolvedValueOnce({
-                    success: false,
+                    success: false
                 });
 
                 //  Act
@@ -163,8 +159,8 @@ describe('GenreController', () => {
                     .post(endpoint)
                     .send({
                         genre: {
-                            //name: "TestCrafts", missing name 
-                            category: "art"
+                            //name: "TestCrafts", missing name
+                            category: 'art'
                         }
                     })
                     .set('Content-Type', 'application/json');

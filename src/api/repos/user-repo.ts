@@ -97,7 +97,7 @@ const createUser = async (user: User) => {
             countryCode: user.countryCode ? user.countryCode : undefined,
             bio: `Hello! I'm ${user.firstName}!`,
             favoriteActivities: user.favoriteActivities ? user.favoriteActivities : []
-        }).catch((err : any) => createNewObjectCaughtError(err, 'createUser', 'There has been an error in creating the User.'));
+        }).catch((err: any) => createNewObjectCaughtError(err, 'createUser', 'There has been an error in creating the User.'));
         return httpStatusCode.CREATED;
     }
     return httpStatusCode.OK;
@@ -107,7 +107,7 @@ const createUser = async (user: User) => {
 const updateUser = async (identifier: any, update: any) => {
     await User.sync();
     const result = await User.update(update, { returning: ['firebase_id', 'firstName', 'lastName', 'countryCode', 'phone', 'email', 'bio', 'favoriteActivities', 'image'], where: identifier }).catch(
-        (err : any) => createNewObjectCaughtError(err, 'updateUser', 'There has been an error in updating User.')
+        (err: any) => createNewObjectCaughtError(err, 'updateUser', 'There has been an error in updating User.')
     );
     if (!result[0])
         //  Failure to update
@@ -129,7 +129,7 @@ const addNewUserActivity = async (id: string, activity: Activity) => {
     }
     const newActivity = await user
         .createActivity(activity, { returning: true })
-        .catch((err : any) => createNewObjectCaughtError(err, 'addNewUserActivity', 'There has been an error in creating a new user Activity'));
+        .catch((err: any) => createNewObjectCaughtError(err, 'addNewUserActivity', 'There has been an error in creating a new user Activity'));
     return {
         success: !!newActivity,
         activity: newActivity
@@ -146,11 +146,11 @@ const submitQuiz = async (id: string, quiz: Quiz) => {
     }
     const oldQuiz = await user.getQuiz();
     if (!oldQuiz) {
-        await user.createQuiz(quiz).catch((err : any) => createNewObjectCaughtError(err, 'submitQuiz', 'Could not submit new quiz...'));
+        await user.createQuiz(quiz).catch((err: any) => createNewObjectCaughtError(err, 'submitQuiz', 'Could not submit new quiz...'));
         return httpStatusCode.CREATED;
     }
     //@ts-ignore
-    await oldQuiz.update(quiz).catch((err : any) => createNewObjectCaughtError(err, 'submitQuiz', 'Could not update old quiz...'));
+    await oldQuiz.update(quiz).catch((err: any) => createNewObjectCaughtError(err, 'submitQuiz', 'Could not update old quiz...'));
     return httpStatusCode.OK;
 };
 
@@ -271,7 +271,7 @@ const getJoinedActivities = async (id: string) => {
             model: Activity,
             as: 'activity'
         }
-    }).catch((err : any) => queryResultError(err, 'getJoinedActivity'));
+    }).catch((err: any) => queryResultError(err, 'getJoinedActivity'));
     return {
         count: activities.length,
         row: activities
