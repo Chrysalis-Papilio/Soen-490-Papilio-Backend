@@ -90,7 +90,7 @@ describe('BusinessController', () => {
                 const expectedStatusCode = 200;
                 const businessRepoSpy = jest.spyOn(businessRepo, 'getBusinessById').mockResolvedValueOnce({
                     found: true,
-                    // @ts-expect-error
+                    //@ts-expect-error
                     business: testBusiness
                 });
 
@@ -243,7 +243,7 @@ describe('BusinessController', () => {
                 const businessRepoSpy = jest.spyOn(businessRepo, 'getActivityList').mockResolvedValueOnce({
                     businessId: testBusiness.businessId,
                     count: 2,
-                    // @ts-expect-error
+                    //@ts-expect-error
                     activities: [testActivity, secondActivity]
                 });
 
@@ -324,7 +324,7 @@ describe('BusinessController', () => {
                 const endpoint = `/api/business/${testBusiness.businessId}/employee/${testEmployee.firebase_id}`;
                 const expectedStatusCode = 200;
                 const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployee').mockResolvedValueOnce({
-                    // @ts-expect-error
+                    //@ts-expect-error
                     employee: testEmployee
                 });
 
@@ -361,7 +361,7 @@ describe('BusinessController', () => {
                 const endpoint = `/api/business/${testBusiness.businessId}/employee/${testEmployee.firebase_id}`;
                 const expectedStatusCode = 200;
                 const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployee').mockResolvedValueOnce({
-                    // @ts-expect-error
+                    //@ts-expect-error
                     employee: {}
                 });
 
@@ -380,7 +380,7 @@ describe('BusinessController', () => {
                 const endpoint = `/api/business//employee/${testEmployee.firebase_id}`;
                 const expectedStatusCode = 404;
                 const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployee').mockResolvedValueOnce({
-                    // @ts-expect-error
+                    //@ts-expect-error
                     employee: {}
                 });
 
@@ -397,7 +397,7 @@ describe('BusinessController', () => {
                 const endpoint = `/api/business/${emptyResultValue}/employee/${testEmployee.firebase_id}`;
                 const expectedStatusCode = 200;
                 const businessRepoSpy = jest.spyOn(businessRepo, 'getEmployee').mockResolvedValueOnce({
-                    // @ts-expect-error
+                    //@ts-expect-error
                     employee: {}
                 });
 
@@ -464,12 +464,12 @@ describe('BusinessController', () => {
                 const expectedStatusCode = 200;
                 const businessRepoSpy = jest.spyOn(businessRepo, 'createBusinessWithEmployeeAddress').mockResolvedValueOnce({
                     found: true,
-                    // @ts-expect-error
+                    //@ts-expect-error
                     business: testBusiness
                 });
                 const businessRepoSpy2 = jest.spyOn(businessRepo, 'getBusinessById').mockResolvedValueOnce({
                     found: true,
-                    // @ts-expect-error
+                    //@ts-expect-error
                     business: testBusiness
                 });
 
