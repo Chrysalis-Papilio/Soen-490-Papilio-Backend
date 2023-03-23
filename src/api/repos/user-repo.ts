@@ -223,13 +223,18 @@ const checkJoinedActivity = async (id: string, activityId: number) => {
     if (!user) {
         throw new APIError(`Cannot find User with firebase_id ${id}`, 'joinActivity', httpStatusCode.CONFLICT);
     }
-    const activity = await Activity.findByPk(activityId);
+    const activity = await Activity.findByPk(activityId, {
+        attributes: ['userId']
+    });
     if (!activity) {
         throw new APIError(`Cannot find Activity with id ${id}`, 'joinActivity', httpStatusCode.CONFLICT);
     }
+    // @ts-ignore
+    const owned = activity.userId == id;
     const result = await UsersJoinActivities.findOne({ where: { activityId: activityId, userId: id } });
     return {
-        joined: !!result
+        joined: !!result,
+        owned: owned
     };
 };
 
