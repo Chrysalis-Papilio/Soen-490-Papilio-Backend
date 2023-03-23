@@ -219,11 +219,11 @@ const checkJoinedActivity = async (id: string, activityId: number) => {
     await Activity.sync();
     await UsersJoinActivities.sync();
 
-    const user = User.findOne({ where: { firebase_id: id } });
+    const user = await User.findOne({ where: { firebase_id: id } });
     if (!user) {
         throw new APIError(`Cannot find User with firebase_id ${id}`, 'joinActivity', httpStatusCode.CONFLICT);
     }
-    const activity = Activity.findByPk(activityId);
+    const activity = await Activity.findByPk(activityId);
     if (!activity) {
         throw new APIError(`Cannot find Activity with id ${id}`, 'joinActivity', httpStatusCode.CONFLICT);
     }
