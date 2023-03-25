@@ -19,7 +19,7 @@ const getAllActivities = async (page: number, size: number) => {
             },
             {
                 model: User,
-                attributes: ['id', 'email'],
+                attributes: ['firebase_id', 'email'],
                 as: 'user'
             }
         ]
@@ -45,7 +45,7 @@ const getActivity = async (id: number, contact: boolean) => {
                   },
                   {
                       model: User,
-                      attributes: ['id', 'email'], // customizable
+                      attributes: ['firebase_id', 'email'], // customizable
                       as: 'user'
                   }
               ]
