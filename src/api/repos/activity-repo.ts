@@ -60,7 +60,7 @@ const getActivity = async (id: number, contact: boolean) => {
 };
 
 /** Update details of the Activity */
-const updateActivity = async (id: number, update: any) => {
+const updateActivity = async (id: number, update: any, returning = true) => {
     await Activity.sync();
     const result = await Activity.update(update, {
         where: { id },
@@ -69,10 +69,12 @@ const updateActivity = async (id: number, update: any) => {
         console.log(err);
         throw new BaseError('ORM Sequelize Error', 'There has been an error in updating the Activity', 'updateActivity', httpStatusCode.INTERNAL_SERVER, true);
     });
-    return {
-        success: !!result,
-        activity: result[1][0]
-    };
+    if (returning)
+        return {
+            success: !!result,
+            activity: result[1][0]
+        };
+    else return { success: !!result };
 };
 
 /** Search for Activities using the provided 'keyword' */
