@@ -3,6 +3,7 @@ import { BaseError } from '../../errors/base-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
 import sequelize from '../../config/sequelize';
 import { queryResultError } from './error';
+import { APIError } from '../../errors/api-error';
 
 /** Get all available Activities with pagination */
 const getAllActivities = async (page: number, size: number) => {
@@ -69,12 +70,13 @@ const updateActivity = async (id: number, update: any, returning = true) => {
         console.log(err);
         throw new BaseError('ORM Sequelize Error', 'There has been an error in updating the Activity', 'updateActivity', httpStatusCode.INTERNAL_SERVER, true);
     });
+    if (result[0] == 0) throw new APIError(`Cannot find Activity with id ${id}`, 'updateActivity', httpStatusCode.CONFLICT);
     if (returning)
         return {
-            success: !!result,
+            success: true,
             activity: result[1][0]
         };
-    else return { success: !!result };
+    else return { success: true };
 };
 
 /** Search for Activities using the provided 'keyword' */
