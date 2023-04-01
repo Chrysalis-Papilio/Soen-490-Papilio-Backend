@@ -34,6 +34,7 @@ class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews'
     declare startTime: Date | null;
     declare endTime: Date | null;
     declare address: string;
+    declare closed: boolean;
 
     declare activityReviews?: NonAttribute<ActivityReview[]>;
 
@@ -101,6 +102,10 @@ Activity.init(
         address: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        closed: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         }
     },
     {

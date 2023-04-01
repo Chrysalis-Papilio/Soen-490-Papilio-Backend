@@ -48,6 +48,26 @@ const updateActivity = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
+const closeActivity = async (req: Request, res: Response, next: NextFunction) => {
+    const { activityId } = req.params;
+    try {
+        const result = await activityServices.closeActivity(Number(activityId));
+        return res.status(200).json(result);
+    } catch (e) {
+        next(e);
+    }
+};
+
+const openActivity = async (req: Request, res: Response, next: NextFunction) => {
+    const { activityId } = req.params;
+    try {
+        const result = await activityServices.openActivity(Number(activityId));
+        return res.status(200).json(result);
+    } catch (e) {
+        next(e);
+    }
+};
+
 const searchActivities = async (req: Request, res: Response, next: NextFunction) => {
     const { keyword } = req.body;
     try {
@@ -61,4 +81,4 @@ const searchActivities = async (req: Request, res: Response, next: NextFunction)
     }
 };
 
-export { getAllActivities, getActivity, searchActivities, updateActivity };
+export { getAllActivities, getActivity, searchActivities, updateActivity, closeActivity, openActivity };

@@ -15,4 +15,8 @@ router.post('/activity/update/:activityId', validate(activitySchema.updateActivi
 
 router.post('/activity/search', validate(activitySchema.searchActivities), activityController.searchActivities);
 
+router.post('/activity/close/:activityId', validate(activitySchema.closeActivity), activityController.closeActivity);
+
+router.post('/activity/open/:activityId', validate(activitySchema.closeActivity), activityController.openActivity);
+
 export default router;
