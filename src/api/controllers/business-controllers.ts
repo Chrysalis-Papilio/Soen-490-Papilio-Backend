@@ -1,5 +1,6 @@
 import { businessServices } from '../services';
-import { deleteEmployee, uploadImageFirebase } from '../../config/storage';
+import { uploadImageFirebase } from '../../config/storage';
+import { deleteEmployee } from '../../config/firebaseAdmin';
 import { Request, Response, NextFunction } from 'express';
 
 const getBusinessById = async (req: Request, res: Response, next: NextFunction) => {
