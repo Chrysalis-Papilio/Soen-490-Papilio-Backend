@@ -277,7 +277,8 @@ const getJoinedActivities = async (id: string) => {
         where: { userId: id },
         include: {
             model: Activity,
-            as: 'activity'
+            as: 'activity',
+            include: activityFetchIncludeAttribute
         }
     }).catch((err) => queryResultError(err, 'getJoinedActivity'));
     return {
