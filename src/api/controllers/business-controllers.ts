@@ -1,5 +1,6 @@
 import { businessServices } from '../services';
 import { uploadImageFirebase } from '../../config/storage';
+import { deleteEmployee } from '../../config/firebaseAdmin';
 import { Request, Response, NextFunction } from 'express';
 
 const getBusinessById = async (req: Request, res: Response, next: NextFunction) => {
@@ -95,15 +96,20 @@ const updateBusiness = async (req: Request, res: Response, next: NextFunction) =
 };
 
 const addNewEmployee = async (req: Request, res: Response, next: NextFunction) => {
+    const { employee } = req.body;
     try {
         /** Call to service layer */
         const { businessId } = req.params;
-        const { employee } = req.body;
         const result = await businessServices.addNewEmployee(businessId, employee);
 
         /** Return a response to client */
         return res.status(200).json(result);
     } catch (err) {
+        try {
+            await deleteEmployee(employee.firebase_id);
+        } catch (e) {
+            return next(e);
+        }
         next(err);
     }
 };
