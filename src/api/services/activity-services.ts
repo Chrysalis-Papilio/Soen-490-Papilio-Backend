@@ -4,8 +4,8 @@ const getAllActivities = async (page: number, size: number) => {
     return activityRepo.getAllActivities(page, size);
 };
 
-const getActivity = async (id: number, contact: boolean = false) => {
-    return activityRepo.getActivity(id, contact);
+const getActivity = async (id: number) => {
+    return activityRepo.getActivity(id);
 };
 
 const updateActivity = async (id: number, update: any) => {
