@@ -3,6 +3,7 @@ import { APIError } from '../../errors/api-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
 import { createNewObjectCaughtError, queryResultError } from './error';
 import { StreamChat } from 'stream-chat';
+import { activityFetchIncludeAttribute } from './activity-repo';
 
 /** Get all accounts from table account */
 const getAllUsers = async () => {
@@ -48,7 +49,9 @@ const getUserActivityList = async (id: string) => {
     }
     return {
         count: (await user.countActivities()) || 0,
-        activities: await user.getActivities()
+        activities: await user.getActivities({
+            include: activityFetchIncludeAttribute
+        })
     };
 };
 
@@ -62,7 +65,8 @@ const getUserFavoriteActivityList = async (id: string) => {
     return {
         count: user.favoriteActivities.length || 0,
         activities: await Activity.findAll({
-            where: { id: user.favoriteActivities }
+            where: { id: user.favoriteActivities },
+            include: activityFetchIncludeAttribute
         })
     };
 };
@@ -128,7 +132,7 @@ const addNewUserActivity = async (id: string, activity: Activity) => {
         throw new APIError(`Cannot find User with firebase_id ${id}`, 'addNewUserActivity', httpStatusCode.CONFLICT);
     }
     const newActivity = await user
-        .createActivity(activity, { returning: true })
+        .createActivity(activity, { returning: true, include: activityFetchIncludeAttribute })
         .catch((err) => createNewObjectCaughtError(err, 'addNewUserActivity', 'There has been an error in creating a new user Activity'));
     return {
         success: !!newActivity,
@@ -273,12 +277,15 @@ const getJoinedActivities = async (id: string) => {
         where: { userId: id },
         include: {
             model: Activity,
-            as: 'activity'
+            as: 'activity',
+            include: activityFetchIncludeAttribute
         }
     }).catch((err) => queryResultError(err, 'getJoinedActivity'));
     return {
+        userId: id,
         count: activities.length,
-        row: activities
+        // @ts-expect-error
+        row: activities.map((activity) => activity.activity)
     };
 };
 

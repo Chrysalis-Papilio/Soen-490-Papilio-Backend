@@ -5,6 +5,19 @@ import sequelize from '../../config/sequelize';
 import { queryResultError } from './error';
 import { APIError } from '../../errors/api-error';
 
+export const activityFetchIncludeAttribute = [
+    {
+        model: Business,
+        attributes: ['businessId', 'email'], // customizable
+        as: 'business'
+    },
+    {
+        model: User,
+        attributes: ['firebase_id', 'email'], // customizable
+        as: 'user'
+    }
+];
+
 /** Get all available Activities with pagination */
 const getAllActivities = async (page: number, size: number) => {
     await Activity.sync();
@@ -12,18 +25,7 @@ const getAllActivities = async (page: number, size: number) => {
         limit: size,
         offset: (page - 1) * size,
         attributes: { exclude: ['businessId', 'userId', 'createdAt', 'updatedAt'] },
-        include: [
-            {
-                model: Business,
-                attributes: ['businessId', 'email'],
-                as: 'business'
-            },
-            {
-                model: User,
-                attributes: ['firebase_id', 'email'],
-                as: 'user'
-            }
-        ]
+        include: activityFetchIncludeAttribute
     }).catch((e) => queryResultError(e, 'getAllActivities'));
     return {
         ...result,
@@ -33,27 +35,12 @@ const getAllActivities = async (page: number, size: number) => {
 };
 
 /** Get details of a particular Activity using 'id' */
-const getActivity = async (id: number, contact: boolean) => {
+const getActivity = async (id: number) => {
     await Activity.sync();
-    const activity = contact
-        ? await Activity.findByPk(id, {
-              attributes: { exclude: ['businessId', 'userId'] },
-              include: [
-                  {
-                      model: Business,
-                      attributes: ['businessId', 'email'], // customizable
-                      as: 'business'
-                  },
-                  {
-                      model: User,
-                      attributes: ['firebase_id', 'email'], // customizable
-                      as: 'user'
-                  }
-              ]
-          }).catch((e) => queryResultError(e, 'getActivitiy'))
-        : await Activity.findByPk(id, {
-              attributes: { exclude: ['businessId', 'userId', 'createdAt', 'updatedAt'] }
-          }).catch((e) => queryResultError(e, 'getActivity'));
+    const activity = await Activity.findByPk(id, {
+        attributes: { exclude: ['businessId', 'userId'] },
+        include: activityFetchIncludeAttribute
+    }).catch((e) => queryResultError(e, 'getActivitiy'));
     return {
         found: !!activity,
         activity: activity
