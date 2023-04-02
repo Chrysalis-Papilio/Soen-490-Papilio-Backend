@@ -105,7 +105,11 @@ const addNewEmployee = async (req: Request, res: Response, next: NextFunction) =
         /** Return a response to client */
         return res.status(200).json(result);
     } catch (err) {
-        deleteEmployee(employee.firebase_id);
+        try {
+            await deleteEmployee(employee.firebase_id);
+        } catch (e) {
+            return next(e);
+        }
         next(err);
     }
 };
