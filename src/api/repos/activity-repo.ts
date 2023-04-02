@@ -3,6 +3,7 @@ import { BaseError } from '../../errors/base-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
 import sequelize from '../../config/sequelize';
 import { queryResultError } from './error';
+import { APIError } from '../../errors/api-error';
 
 /** Get all available Activities with pagination */
 const getAllActivities = async (page: number, size: number) => {
@@ -19,7 +20,7 @@ const getAllActivities = async (page: number, size: number) => {
             },
             {
                 model: User,
-                attributes: ['id', 'email'],
+                attributes: ['firebase_id', 'email'],
                 as: 'user'
             }
         ]
@@ -45,7 +46,7 @@ const getActivity = async (id: number, contact: boolean) => {
                   },
                   {
                       model: User,
-                      attributes: ['id', 'email'], // customizable
+                      attributes: ['firebase_id', 'email'], // customizable
                       as: 'user'
                   }
               ]
@@ -60,7 +61,7 @@ const getActivity = async (id: number, contact: boolean) => {
 };
 
 /** Update details of the Activity */
-const updateActivity = async (id: number, update: any) => {
+const updateActivity = async (id: number, update: any, returning = true) => {
     await Activity.sync();
     const result = await Activity.update(update, {
         where: { id },
@@ -69,10 +70,13 @@ const updateActivity = async (id: number, update: any) => {
         console.log(err);
         throw new BaseError('ORM Sequelize Error', 'There has been an error in updating the Activity', 'updateActivity', httpStatusCode.INTERNAL_SERVER, true);
     });
-    return {
-        success: !!result,
-        activity: result[1][0]
-    };
+    if (result[0] == 0) throw new APIError(`Cannot find Activity with id ${id}`, 'updateActivity', httpStatusCode.CONFLICT);
+    if (returning)
+        return {
+            success: true,
+            activity: result[1][0]
+        };
+    else return { success: true };
 };
 
 /** Search for Activities using the provided 'keyword' */

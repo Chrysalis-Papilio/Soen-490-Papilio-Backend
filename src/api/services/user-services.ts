@@ -76,6 +76,10 @@ const unjoinActivity = async (id: string, activityId: number) => {
     return userRepo.unjoinActivity(id, activityId);
 };
 
+const getJoinedActivities = async (id: string) => {
+    return userRepo.getJoinedActivities(id);
+};
+
 export {
     getAllUsers,
     createUser,
@@ -95,5 +99,6 @@ export {
     removeMemberFromActivityChat,
     checkJoinedActivity,
     joinActivity,
-    unjoinActivity
+    unjoinActivity,
+    getJoinedActivities
 };

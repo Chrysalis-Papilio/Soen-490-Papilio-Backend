@@ -34,6 +34,8 @@ router.delete('/business/:businessId/removeEmployee/:employeeId', validate(busin
 
 router.delete('/business/:businessId/removeActivity/:activityId', validate(businessSchema.removeActivity), businessController.removeActivity);
 
+router.delete('/business/:businessId', validate(businessSchema.removeBusiness), businessController.removeBusiness);
+
 /** PUT */
 
 router.put('/business/update/:businessId', validate(businessSchema.updateBusiness), businessController.updateBusiness);

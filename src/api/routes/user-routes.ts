@@ -26,9 +26,13 @@ router.get('/user/activity/:user_id/checkJoined/:activity_id', validate(userSche
 
 router.get('/user/get/isActivityFavorite/:id/:activityId', validate(userSchema.getIsActivityFavorited), userController.checkActivityFavoritedByUser);
 
+router.get('/user/get/joinedActivities/:id', userController.getJoinedActivities);
+
 /** PUT */
 
 router.put('/user/updateUserProfile', validate(userSchema.updateUserSchema), userController.updateUserProfile);
+
+router.put('/user/updateUserProfilePicture/:id', [upload.single('image'), validate(userSchema.updateUserProfileSchema)], userController.updateUserProfilePicture);
 
 router.put('/user/addFavoriteActivity', validate(userSchema.userAddFavoriteActivitySchema), userController.addFavoriteActivity);
 

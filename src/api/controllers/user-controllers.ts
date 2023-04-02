@@ -21,6 +21,7 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /** Call to service layer */
         const statusCode = await userServices.createUser(user);
+        if (statusCode == httpStatusCode.CREATED) await userServices.createNewStreamChatUser(user.firebase_id, user.firstName + ' ' + user.lastName);
 
         /** Return a response to client. */
         return res.sendStatus(statusCode);
@@ -104,6 +105,31 @@ const updateUserProfile = async (req: Request, res: Response, next: NextFunction
         const result = await userServices.updateUserProfile(identifier, update);
 
         /** Return result */
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
+const updateUserProfilePicture = async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    try {
+        /** Check if middleware uploaded and retrieved the images' URLs */
+        let imageUrl;
+        if (req.file) {
+            imageUrl = await uploadImageFirebase(req.file, 'profile-pics');
+        } else {
+            res.sendStatus(400);
+        }
+
+        // Prepare
+        const update = { image: imageUrl };
+        const identifier = { firebase_id: id };
+
+        /** To service */
+        const result = await userServices.updateUserProfile(identifier, update);
+
+        /** Response */
         return res.status(200).json(result);
     } catch (err) {
         next(err);
@@ -363,6 +389,16 @@ const unjoinActivity = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
+const getJoinedActivities = async (req: Request, res: Response, next: NextFunction) => {
+    const id: string = req.params.id;
+    try {
+        const result = await userServices.getJoinedActivities(id);
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
 export {
     getAllUsers,
     createUser,
@@ -371,6 +407,7 @@ export {
     getUserActivityList,
     getUserFavoriteActivityList,
     updateUserProfile,
+    updateUserProfilePicture,
     addFavoriteActivity,
     checkActivityFavoritedByUser,
     removeFavoriteActivity,
@@ -384,5 +421,6 @@ export {
     removeMemberFromActivityChat,
     checkJoinedActivity,
     joinActivity,
-    unjoinActivity
+    unjoinActivity,
+    getJoinedActivities
 };

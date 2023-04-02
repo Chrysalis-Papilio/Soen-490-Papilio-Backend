@@ -16,4 +16,12 @@ const searchActivities = async (keyword: string) => {
     return activityRepo.searchActivities(keyword);
 };
 
-export { getAllActivities, getActivity, searchActivities, updateActivity };
+const closeActivity = async (id: number) => {
+    return activityRepo.updateActivity(id, { closed: true }, false);
+};
+
+const openActivity = async (id: number) => {
+    return activityRepo.updateActivity(id, { closed: false }, false);
+};
+
+export { getAllActivities, getActivity, searchActivities, updateActivity, closeActivity, openActivity };

@@ -45,6 +45,10 @@ const removeActivity = async (businessId: string, activityId: number) => {
     return businessRepo.removeActivity(businessId, activityId);
 };
 
+const removeBusiness = async (businessId: string) => {
+    return businessRepo.removeBusiness(businessId);
+};
+
 const updateEmployee = async (businessId: string, employeeId: string, update: any) => {
     return businessRepo.updateEmployee(businessId, employeeId, update);
 };
@@ -64,6 +68,7 @@ export {
     addNewActivity,
     removeEmployee,
     removeActivity,
+    removeBusiness,
     updateBusiness,
     updateEmployee,
     updateActivity

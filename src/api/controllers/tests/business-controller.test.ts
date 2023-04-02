@@ -42,6 +42,7 @@ describe('BusinessController', () => {
 
     /** testing acitvity object */
     const testActivity = {
+        activityId: 5,
         title: 'title',
         description: 'description',
         address: 'address',
@@ -608,9 +609,49 @@ describe('BusinessController', () => {
             afterEach(() => {
                 server.close();
             });
-            it('should return OK[200] if employee & business exists', async () => {});
-            it('should return CONFLCIT[409] if employee or business does not exists', async () => {});
-            it('should return BADREQUEST[400] if passed parameters are missing core fields.', async () => {});
+            it('should return OK[200] if employee & business exists', async () => {
+                //  Arrange
+                const endpoint = `/api/business/${testBusiness.businessId}/removeEmployee/${testEmployee.firebase_id}`;
+                const expectedStatusCode = 200;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'removeEmployee').mockResolvedValueOnce({
+                    success: true
+                });
+                //  Act
+                const res = await request(app).del(endpoint);
+                //  Assert
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                expect(res.body.success).toEqual(true);
+                expect(businessRepoSpy).toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
+            });
+            it('should return CONFLICT[409] if employee or business does not exists', async () => {
+                //  Arrange
+                const endpoint = `/api/business/${testBusiness.businessId}/removeEmployee/${testEmployee.firebase_id}`;
+                const expectedStatusCode = 409;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'removeEmployee').mockImplementation(() => {
+                    throw new APIError(`Cannot find User with firebase_id ${businessRepo.getBusinessById}`, 'removeEmployee', httpStatusCode.CONFLICT);
+                });
+                //  Act
+                const res = await request(app).del(endpoint);
+                //  Assert
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                expect(businessRepoSpy).toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
+            });
+            it('should return NOTFOUND[404] if passed parameters are missing core fields.', async () => {
+                //  Arrange
+                const endpoint = `/api/business//removeEmployee/${testActivity.activityId}`; //  Missing businessID
+                const expectedStatusCode = 404;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'removeEmployee').mockResolvedValueOnce({
+                    success: true
+                });
+                //  Act
+                const res = await request(app).del(endpoint);
+                //  Assert
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                expect(businessRepoSpy).not.toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
+            });
         }); //  removeEmployee enpoint
 
         ///////////////////////////////
@@ -620,10 +661,85 @@ describe('BusinessController', () => {
             afterEach(() => {
                 server.close();
             });
-            it('should return OK[200] if acitivty & business exists', async () => {});
-            it('should return CONFLCIT[409] if activity or business does not exists', async () => {});
-            it('should return BADREQUEST[400] if passed parameters are missing core fields.', async () => {});
+            it('should return OK[200] if acitivty & business exists', async () => {
+                //  Arrange
+                const endpoint = `/api/business/${testBusiness.businessId}/removeActivity/${testActivity.activityId}`;
+                const expectedStatusCode = 200;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'removeActivity').mockResolvedValueOnce({
+                    success: true
+                });
+                //  Act
+                const res = await request(app).del(endpoint);
+                //  Assert
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                expect(res.body.success).toEqual(true);
+                expect(businessRepoSpy).toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
+            });
+            it('should return CONFLCIT[409] if activity or business does not exists', async () => {
+                //  Arrange
+                const endpoint = `/api/business/${testBusiness.businessId}/removeActivity/${testActivity.activityId}`;
+                const expectedStatusCode = 409;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'removeActivity').mockImplementation(() => {
+                    throw new APIError(`Cannot find User with firebase_id ${businessRepo.getBusinessById}`, 'removeActivity', httpStatusCode.CONFLICT);
+                });
+                //  Act
+                const res = await request(app).del(endpoint);
+                //  Assert
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                expect(businessRepoSpy).toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
+            });
+            it('should return BADREQUEST[400] if passed parameters are missing core fields.', async () => {
+                //  Arrange
+                const endpoint = `/api/business/${testBusiness.businessId}/removeActivity/${testEmployee.firebase_id}`; //  Passing employee instead of activity
+                const expectedStatusCode = 400;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'removeActivity').mockResolvedValueOnce({
+                    success: true
+                });
+                //  Act
+                const res = await request(app).del(endpoint);
+                //  Assert
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                expect(businessRepoSpy).not.toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
+            });
         }); //  removeActivity enpoint
+
+        describe('removeBusiness endpoint', () => {
+            afterEach(() => {
+                server.close();
+            });
+            it('returns OK[200] when business exist and business is deleted', async () => {
+                //  Arrange
+                const endpoint = `/api/business/${testBusiness.businessId}`;
+                const expectedStatusCode = 200;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'removeBusiness').mockResolvedValueOnce({
+                    success: true
+                });
+                //  Act
+                const res = await request(app).delete(endpoint);
+                //  Assert
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                businessRepoSpy.mockRestore();
+            });
+
+            it('should return CONFLCIT[409] if business does not exists', async () => {
+                //  Arrange
+                const badBusinessId = 'bad-business-id';
+                const endpoint = `/api/business/${badBusinessId}`;
+                const expectedStatusCode = 409;
+                const businessRepoSpy = jest
+                    .spyOn(businessRepo, 'removeBusiness')
+                    .mockRejectedValueOnce(new APIError(`Business ID ${testBusiness.businessId} doesn't exists`, 'removeBusiness', httpStatusCode.CONFLICT, true));
+
+                //  Act
+                const res = await request(app).delete(endpoint);
+                //  Assert
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                businessRepoSpy.mockRestore();
+            });
+        });
     }); // DESCRIBE DELETE
 
     //////////////////////////
@@ -644,10 +760,76 @@ describe('BusinessController', () => {
             afterEach(() => {
                 server.close();
             });
-            it('should return OK[200] if activity exists', async () => {});
-            it('should return OK[200] if activity does not exists', async () => {});
-            it('should return OK[200] if business does not exists', async () => {});
-            it('should return BADREQUEST[400] if passed parameters are missing core fields.', async () => {});
+            it('should return OK[200] if business exists', async () => {
+                //  Arrange
+                const endpoint = `/api/business/update/${testBusiness.businessId}`;
+                const expectedStatusCode = 200;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'updateBusiness').mockResolvedValueOnce({
+                    success: true,
+                    //@ts-expect-error
+                    business: testBusiness
+                });
+                //  Act
+                const res = await request(app)
+                    .put(endpoint)
+                    .send({
+                        update: {
+                            name: testBusiness.name
+                        }
+                    });
+                //  Assert
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                expect(res.body.success).toEqual(true);
+                expect(res.body.business.name).not.toEqual(testBusiness.name + 'x');
+                expect(businessRepoSpy).toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
+            });
+            it('should return OK[200] if business does not exists', async () => {
+                //  Arrange
+                const endpoint = `/api/business/update/${testBusiness.businessId}`;
+                const expectedStatusCode = 200;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'updateBusiness').mockResolvedValueOnce({
+                    success: false,
+                    //@ts-expect-error
+                    business: testBusiness
+                });
+                //  Act
+                const res = await request(app)
+                    .put(endpoint)
+                    .send({
+                        update: {
+                            name: testBusiness.name
+                        }
+                    });
+                //  Assert
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                expect(res.body.success).toEqual(false);
+                expect(res.body.business.name).not.toEqual(testBusiness.name + 'x');
+                expect(businessRepoSpy).toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
+            });
+            it('should return BADREQUEST[400] if passed parameters are missing core fields.', async () => {
+                //  Arrange
+                const endpoint = `/api/business/update/${testBusiness.businessId}`;
+                const expectedStatusCode = 400;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'updateBusiness').mockResolvedValueOnce({
+                    success: true,
+                    //@ts-expect-error
+                    business: testBusiness
+                });
+                //  Act
+                const res = await request(app)
+                    .put(endpoint)
+                    .send({
+                        update: {
+                            name: testBusiness //  Missing name
+                        }
+                    });
+                //  Assert
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                expect(businessRepoSpy).not.toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
+            });
         }); //  updateBusiness endpoint
 
         ///////////////////////////////
@@ -657,9 +839,64 @@ describe('BusinessController', () => {
             afterEach(() => {
                 server.close();
             });
-            it('should return OK[200] if employee exists', async () => {});
-            it('should return OK[200] if employee does not exists', async () => {});
-            it('should return BADREQUEST[400] if passed parameters are missing core fields.', async () => {});
+            it('should return OK[200] if employee exists', async () => {
+                //  Arrange
+                const endpoint = `/api/business/${testBusiness.businessId}/updateEmployee/${testEmployee.firebase_id}`;
+                const expectedStatusCode = 200;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'updateEmployee').mockResolvedValueOnce({
+                    success: true
+                });
+                //  Act
+                const res = await request(app)
+                    .put(endpoint)
+                    .send({
+                        update: {
+                            role: testEmployee.role + 'x'
+                        }
+                    });
+                //  Assert
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                expect(res.body.success).toEqual(true);
+                expect(businessRepoSpy).toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
+            });
+            it('should return OK[200] if employee does not exists', async () => {
+                //  Arrange
+                const endpoint = `/api/business/${testBusiness.businessId}/updateEmployee/${testEmployee.firebase_id}`;
+                const expectedStatusCode = 200;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'updateEmployee').mockResolvedValueOnce({
+                    success: false
+                });
+                //  Act
+                const res = await request(app)
+                    .put(endpoint)
+                    .send({
+                        update: {
+                            role: testEmployee.role + 'x'
+                        }
+                    });
+                //  Assert
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                expect(res.body.success).toEqual(false);
+                expect(businessRepoSpy).toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
+            });
+            it('should return BADREQUEST[400] if passed parameters are missing core fields.', async () => {
+                //  Arrange
+                const endpoint = `/api/business/${testBusiness.businessId}/updateEmployee/${testEmployee.firebase_id}`;
+                const expectedStatusCode = 400;
+                const businessRepoSpy = jest.spyOn(businessRepo, 'updateEmployee').mockResolvedValueOnce({
+                    success: true
+                });
+                //  Act
+                const res = await request(app).put(endpoint).send({
+                    //  Missing Update param
+                });
+                //  Assert
+                expect(res.statusCode).toEqual(expectedStatusCode);
+                expect(businessRepoSpy).not.toHaveBeenCalled();
+                businessRepoSpy.mockRestore();
+            });
         }); //  updateEmployee endpoint
     }); // DESCRIBE PUT
 }); //  DESCRIBE BUSINESSCONTROLLER

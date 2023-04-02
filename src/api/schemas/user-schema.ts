@@ -184,6 +184,12 @@ const updateUserSchema = object({
     })
 });
 
+const updateUserProfileSchema = object({
+    params: object({
+        id: firebase_id
+    }).strict('Identifier field contains an invalid key')
+});
+
 const addNewUserActivity = object({
     params: object({
         id: firebase_id
@@ -271,6 +277,8 @@ const unjoinActivity = object({
     }).strict('Request URL contains an invalid key')
 });
 
+const checkJoinedActivities = getUserById;
+
 export { firebase_id, firstName, lastName, email, phone, countryCode };
 export {
     userSchema,
@@ -280,6 +288,7 @@ export {
     getUserById,
     getUserActivityList,
     updateUserSchema,
+    updateUserProfileSchema,
     userAddFavoriteActivitySchema,
     getIsActivityFavorited,
     userRemoveFavoriteActivitySchema,
@@ -293,5 +302,6 @@ export {
     removeMemberFromActivityChat,
     checkJoinedActivity,
     joinActivity,
-    unjoinActivity
+    unjoinActivity,
+    checkJoinedActivities
 };

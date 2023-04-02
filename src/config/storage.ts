@@ -15,9 +15,9 @@ const app = initializeApp({
 });
 const storage = getStorage();
 
-export const uploadImageFirebase = async (file: Express.Multer.File) => {
+export const uploadImageFirebase = async (file: Express.Multer.File, folder = 'images') => {
     const filename = uuidv4() + '_' + file.originalname;
-    const imageUploadRef = ref(storage, 'images/' + filename);
+    const imageUploadRef = ref(storage, `${folder}/${filename}`);
     const metadata = {
         contentType: file.mimetype
     };

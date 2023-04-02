@@ -97,6 +97,8 @@ const removeEmployee = getEmployee;
 
 const removeActivity = getActivity;
 
+const removeBusiness = getBusinessById;
+
 const updateBusiness = object({
     params: object({
         businessId: businessId
@@ -116,11 +118,13 @@ const updateEmployee = object({
         employeeId: employeeId
     }).strict('Request URL contains an invalid key'),
     body: object({
-        // Optional
-        firstName: firstName.optional(),
-        lastName: lastName.optional(),
-        role: role.optional()
-    })
+        update: object({
+            // Optional
+            firstName: firstName.optional(),
+            lastName: lastName.optional(),
+            role: role.optional()
+        })
+    }).strict('Request body contains an invalid key')
 });
 
 const updateActivity = object({
@@ -153,6 +157,7 @@ export {
     addNewActivity,
     addNewBusinessActivity,
     removeEmployee,
+    removeBusiness,
     removeActivity,
     updateEmployee,
     updateActivity,
