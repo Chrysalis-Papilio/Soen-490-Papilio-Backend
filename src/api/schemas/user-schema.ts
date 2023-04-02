@@ -264,7 +264,10 @@ const joinActivity = object({
     params: object({
         user_id: firebase_id,
         activity_id: activityId
-    }).strict('Request URL contains an invalid key')
+    }).strict('Request URL contains an invalid key'),
+    body: object({
+        user_name: user_name
+    }).strict('Request body contains an invalid key')
 });
 
 const unjoinActivity = object({
