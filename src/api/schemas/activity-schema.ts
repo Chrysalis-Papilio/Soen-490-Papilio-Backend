@@ -107,6 +107,8 @@ const updateActivity = object({
     }).strict('Body contains invalid key')
 });
 
+const updateActivityImages = getActivity;
+
 const searchActivities = object({
     body: object({
         // Required
@@ -120,4 +122,4 @@ const searchActivities = object({
 const closeActivity = getActivity;
 
 export { activityId, title, description, costPerIndividual, costPerGroup, groupSize, startTime, endTime, address };
-export { activitySchema, getActivity, getFeeds, searchActivities, updateActivity, closeActivity };
+export { activitySchema, getActivity, getFeeds, searchActivities, updateActivity, closeActivity, updateActivityImages };

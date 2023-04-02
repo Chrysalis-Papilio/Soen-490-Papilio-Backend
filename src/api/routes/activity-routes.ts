@@ -14,7 +14,7 @@ router.get('/activity/getFeeds', validate(activitySchema.getFeeds), activityCont
 
 router.post('/activity/update/:activityId', validate(activitySchema.updateActivity), activityController.updateActivity);
 
-router.post('/activity/updateImages/:activityId', [upload.array('images', 5)], activityController.updateActivityImages);
+router.post('/activity/updateImages/:activityId', [upload.array('images', 5), validate(activitySchema.updateActivityImages)], activityController.updateActivityImages);
 
 router.post('/activity/search', validate(activitySchema.searchActivities), activityController.searchActivities);
 
