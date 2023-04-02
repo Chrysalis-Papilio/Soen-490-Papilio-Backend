@@ -37,7 +37,7 @@ describe('ActivityController', () => {
 
                 // Assert
                 expect(activityRepoGetActivitySpy).toHaveBeenCalledTimes(1);
-                expect(activityRepoGetActivitySpy).toHaveBeenCalledWith(mockActivityId, false);
+                expect(activityRepoGetActivitySpy).toHaveBeenCalledWith(mockActivityId);
                 expect(response.statusCode).toEqual(expectedStatusCode);
                 expect(response.body.found).toBeTruthy();
                 expect(response.body.activity).toEqual(mockActivity);
@@ -60,40 +60,10 @@ describe('ActivityController', () => {
 
                 // Assert
                 expect(activityRepoGetActivitySpy).toHaveBeenCalledTimes(1);
-                expect(activityRepoGetActivitySpy).toHaveBeenCalledWith(notFoundActivityId, false);
+                expect(activityRepoGetActivitySpy).toHaveBeenCalledWith(notFoundActivityId);
                 expect(response.statusCode).toEqual(expectedStatusCode);
                 expect(response.body.found).toBeFalsy();
                 expect(response.body.activity).toBeNull();
-
-                activityRepoGetActivitySpy.mockRestore();
-            });
-
-            it('should return OK[200] and a valid response with contact info if Activity found', async () => {
-                // Arrange
-                const endpoint = `/api/activity/get/${mockActivityId}?contact=1`;
-                const expectedStatusCode = 200;
-                const activityRepoGetActivitySpy = jest.spyOn(activityRepo, 'getActivity').mockResolvedValueOnce({
-                    found: true,
-                    activity: {
-                        ...mockActivity,
-                        // @ts-ignore 'activity' adding other attributes, doesn't matter
-                        user: null,
-                        business: {
-                            businessId: 'something',
-                            email: 'contact@something.com'
-                        }
-                    }
-                });
-
-                // Act
-                const response = await request(app).get(endpoint);
-
-                // Assert
-                expect(activityRepoGetActivitySpy).toHaveBeenCalledTimes(1);
-                expect(activityRepoGetActivitySpy).toHaveBeenCalledWith(mockActivityId, true); // 'true' mandatory
-                expect(response.statusCode).toEqual(expectedStatusCode);
-                expect(response.body.found).toBeTruthy();
-                expect(response.body.activity.business).toBeDefined();
 
                 activityRepoGetActivitySpy.mockRestore();
             });
