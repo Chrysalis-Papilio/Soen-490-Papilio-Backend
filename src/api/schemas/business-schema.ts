@@ -25,6 +25,13 @@ const email = string({
     invalid_type_error: invalidMessage('Email', 'string')
 }).email();
 
+const adTier = number({
+    required_error: requiredMessage('Ad Tier'),
+    invalid_type_error: invalidMessage('Ad Tier', 'integer')
+})
+    .gte(1)
+    .lte(3);
+
 /** Schemas */
 
 const getBusinessById = object({
@@ -150,16 +157,13 @@ const registerAdTier = object({
         businessId: businessId
     }).strict('Request URL contains an invalid key'),
     body: object({
-        adTier: number({
-            required_error: requiredMessage('Ad Tier'),
-            invalid_type_error: invalidMessage('Ad Tier', 'integer')
-        })
+        adTier: adTier
     }).strict('Request body contains an invalid key')
 });
 
 const deregisterAdTier = getBusinessById;
 
-export { businessId, name, address, email };
+export { businessId, name, address, email, adTier };
 export {
     getBusinessById,
     getEmployee,
