@@ -135,7 +135,7 @@ describe('UserController', () => {
 
                 const userRepoSpy = jest.spyOn(userRepo, 'getUserById').mockResolvedValueOnce({
                     found: true,
-                    // @ts-expect-error
+                    //@ts-expect-error
                     user: user
                 });
 
@@ -231,7 +231,7 @@ describe('UserController', () => {
 
                 const userRepoSpy = jest.spyOn(userRepo, 'getUserByEmail').mockResolvedValueOnce({
                     found: true,
-                    //  @ts-expect-error
+                    //@ts-expect-error
                     user: user
                 });
 
@@ -315,7 +315,7 @@ describe('UserController', () => {
 
                 const userRepoSpy = jest.spyOn(userRepo, 'getUserActivityList').mockResolvedValueOnce({
                     count: 5,
-                    // @ts-expect-error
+                    //@ts-expect-error
                     activities: activity
                 });
 
@@ -378,7 +378,7 @@ describe('UserController', () => {
 
                 const userRepoSpy = jest.spyOn(userRepo, 'updateUser').mockResolvedValueOnce({
                     success: true,
-                    //  @ts-expect-error
+                    //@ts-expect-error
                     update: user
                 });
 
