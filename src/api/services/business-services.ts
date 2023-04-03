@@ -45,12 +45,20 @@ const removeActivity = async (businessId: string, activityId: number) => {
     return businessRepo.removeActivity(businessId, activityId);
 };
 
+const removeBusiness = async (businessId: string) => {
+    return businessRepo.removeBusiness(businessId);
+};
+
 const updateEmployee = async (businessId: string, employeeId: string, update: any) => {
     return businessRepo.updateEmployee(businessId, employeeId, update);
 };
 
 const updateActivity = async (businessId: string, activityId: number, update: any) => {
     return businessRepo.updateActivity(businessId, activityId, update);
+};
+
+const registerAdTier = async (businessId: string, adTier: number) => {
+    return businessRepo.updateBusiness({ businessId: businessId }, { adTier: adTier });
 };
 
 export {
@@ -64,7 +72,9 @@ export {
     addNewActivity,
     removeEmployee,
     removeActivity,
+    removeBusiness,
     updateBusiness,
     updateEmployee,
-    updateActivity
+    updateActivity,
+    registerAdTier
 };

@@ -15,7 +15,7 @@ const fileFilter = (_: Request, file: Express.Multer.File, callback: multer.File
 
 const limits = {
     files: 5, // 5 files max
-    fileSize: 1048576 // 10 megabytes max
+    fileSize: 10485760 // MAXIMUM: 10 megabytes = 10,485,760 bytes
 };
 
 export const upload = multer({

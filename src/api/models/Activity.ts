@@ -34,6 +34,7 @@ class Activity extends Model<InferAttributes<Activity, { omit: 'activityReviews'
     declare startTime: Date | null;
     declare endTime: Date | null;
     declare address: string;
+    declare closed: boolean;
 
     declare activityReviews?: NonAttribute<ActivityReview[]>;
 
@@ -101,6 +102,10 @@ Activity.init(
         address: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        closed: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         }
     },
     {
@@ -141,6 +146,11 @@ Activity.hasMany(ActivityReview, {
     as: 'activityReviews',
     foreignKey: 'activityId',
     sourceKey: 'id'
+});
+ActivityReview.belongsTo(Activity, {
+    as: 'activity',
+    foreignKey: 'activityId',
+    targetKey: 'id'
 });
 
 Activity.belongsToMany(Genre, { through: Activity_Genres });

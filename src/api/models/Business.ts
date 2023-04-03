@@ -6,6 +6,7 @@ import {
     HasManyCreateAssociationMixin,
     HasManyGetAssociationsMixin,
     HasManyRemoveAssociationMixin,
+    HasManyRemoveAssociationsMixin,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -21,18 +22,21 @@ class Business extends Model<InferAttributes<Business, { omit: 'employees' | 'ac
     declare name: string;
     declare address: string;
     declare email: string;
+    declare adTier: number;
 
     declare employees?: NonAttribute<Employee[]>;
     declare activities?: NonAttribute<Activity[]>;
 
     declare getEmployees: HasManyGetAssociationsMixin<Employee>;
     declare removeEmployee: HasManyRemoveAssociationMixin<Employee, number>;
+    declare removeEmployees: HasManyRemoveAssociationsMixin<Employee, number>;
     declare countEmployees: HasManyCountAssociationsMixin;
     declare createEmployee: HasManyCreateAssociationMixin<Employee>;
 
     declare createActivity: HasManyCreateAssociationMixin<Activity>;
     declare countActivities: HasManyCountAssociationsMixin;
     declare removeActivity: HasManyRemoveAssociationMixin<Activity, number>;
+    declare removeActivities: HasManyRemoveAssociationsMixin<Activity, number>;
     declare getActivities: HasManyGetAssociationsMixin<Activity>;
 
     declare static associations: {
@@ -65,8 +69,11 @@ Business.init(
             type: DataTypes.STRING,
             unique: true,
             allowNull: false
+        },
+        adTier: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
         }
-        // TODO: More attributes for Business
     },
     {
         sequelize
@@ -78,11 +85,21 @@ Business.hasMany(Employee, {
     foreignKey: 'businessId',
     sourceKey: 'businessId'
 });
+Employee.belongsTo(Business, {
+    as: 'business',
+    foreignKey: 'businessId',
+    targetKey: 'businessId'
+});
 
 Business.hasMany(Activity, {
     as: 'activities',
     foreignKey: 'businessId',
     sourceKey: 'businessId'
+});
+Activity.belongsTo(Business, {
+    as: 'business',
+    foreignKey: 'businessId',
+    targetKey: 'businessId'
 });
 
 export { Business };

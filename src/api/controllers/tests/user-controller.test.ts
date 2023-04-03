@@ -3,7 +3,9 @@ import app, { server } from '../../../app';
 import { APIError } from '../../../errors/api-error';
 import { httpStatusCode } from '../../../types/httpStatusCodes';
 import { userRepo } from '../../repos';
+
 jest.mock('sequelize');
+jest.mock('../../services/user-services');
 
 /**
  * Get
@@ -19,6 +21,9 @@ jest.mock('sequelize');
  */
 
 describe('UserController', () => {
+    afterAll(() => {
+        server.close();
+    });
     let emptyResultValue: any = null;
     const activity = {
         title: 'title',
@@ -32,11 +37,11 @@ describe('UserController', () => {
     };
     const user = {
         firebase_id: 'uf4938jvkuelb238210gaswsd',
-        firstName: 'Anastassy',
-        lastName: 'Cap',
+        firstName: 'John',
+        lastName: 'Doe',
         phone: '5140006868',
         countryCode: '1',
-        email: 'anacap123@gmail.com',
+        email: 'mikediditididnotdoit@gmail.com',
         bio: 'My bio'
     };
     /////////////////////////
@@ -64,7 +69,6 @@ describe('UserController', () => {
 
                 //  Act
                 const res = await request(app).get(endpoint);
-
 
                 //  Assert
                 expect(res.statusCode).toBe(expectedStatusCode);
@@ -131,7 +135,7 @@ describe('UserController', () => {
 
                 const userRepoSpy = jest.spyOn(userRepo, 'getUserById').mockResolvedValueOnce({
                     found: true,
-                    // @ts-expect-error
+                    //@ts-expect-error
                     user: user
                 });
 
@@ -227,7 +231,7 @@ describe('UserController', () => {
 
                 const userRepoSpy = jest.spyOn(userRepo, 'getUserByEmail').mockResolvedValueOnce({
                     found: true,
-                    //  @ts-expect-error
+                    //@ts-expect-error
                     user: user
                 });
 
@@ -298,6 +302,12 @@ describe('UserController', () => {
         //    GETUSERACTIVITYLIST ENDPOINT    //
         ////////////////////////////////////////
         describe('getUserActivityList endpoint', () => {
+            afterEach(() => {
+                server.close();
+            });
+            afterAll(() => {
+                server.close();
+            });
             it('should return OK[200] count if user exists.', async () => {
                 //  Arrange
                 const endpoint = `/api/user/get/${user.firebase_id}/activities`;
@@ -305,7 +315,7 @@ describe('UserController', () => {
 
                 const userRepoSpy = jest.spyOn(userRepo, 'getUserActivityList').mockResolvedValueOnce({
                     count: 5,
-                    // @ts-expect-error
+                    //@ts-expect-error
                     activities: activity
                 });
 
@@ -368,7 +378,7 @@ describe('UserController', () => {
 
                 const userRepoSpy = jest.spyOn(userRepo, 'updateUser').mockResolvedValueOnce({
                     success: true,
-                    //  @ts-expect-error
+                    //@ts-expect-error
                     update: user
                 });
 
@@ -628,11 +638,17 @@ describe('UserController', () => {
                     activity: activity
                 });
 
+                // @ts-ignore
+                activity.id = jest.fn(); // add the 'id' attribute since it is required by the 'createChat' function
+
                 //  Act
                 const res = await request(app).post(endpoint).send({
                     user: user,
                     activity: activity
                 });
+
+                // @ts-ignore
+                delete activity.id;
 
                 //  Assert
                 expect(res.statusCode).toEqual(expectedStatusCode);
@@ -666,8 +682,8 @@ describe('UserController', () => {
             });
             it('should return BADREQUEST[404] if id parameter is missing.', async () => {
                 //  Arrange
-                const badId = ''
-                const endpoint = `/api/user/addActivity/${badId}`;  //  Missing id parameter
+                const badId = '';
+                const endpoint = `/api/user/addActivity/${badId}`; //  Missing id parameter
                 const expectedStatusCode = 404;
                 const userRepoSpy = jest.spyOn(userRepo, 'addNewUserActivity').mockResolvedValueOnce(emptyResultValue);
 
@@ -685,8 +701,6 @@ describe('UserController', () => {
 
                 userRepoSpy.mockRestore();
             });
-            
         });
     });
 });
-

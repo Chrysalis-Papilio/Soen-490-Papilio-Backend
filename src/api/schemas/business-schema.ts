@@ -1,4 +1,4 @@
-import { object, string } from 'zod';
+import { number, object, string } from 'zod';
 import { activitySchema, activityId, description, title, startTime, endTime, costPerIndividual, costPerGroup, groupSize } from './activity-schema';
 import { employeeSchema, employeeId, firstName, lastName, role } from './employee-schema';
 import { invalidMessage, requiredMessage } from './util';
@@ -24,6 +24,13 @@ const email = string({
     required_error: requiredMessage('Email'),
     invalid_type_error: invalidMessage('Email', 'string')
 }).email();
+
+const adTier = number({
+    required_error: requiredMessage('Ad Tier'),
+    invalid_type_error: invalidMessage('Ad Tier', 'integer')
+})
+    .gte(1)
+    .lte(3);
 
 /** Schemas */
 
@@ -84,9 +91,20 @@ const addNewActivity = object({
     })
 });
 
+const addNewBusinessActivity = object({
+    params: object({
+        businessId: businessId
+    }).strict('Request URL contains an invalid key'),
+    body: object({
+        activity: activitySchema.strict('Activity field contains an invalid key')
+    })
+});
+
 const removeEmployee = getEmployee;
 
 const removeActivity = getActivity;
+
+const removeBusiness = getBusinessById;
 
 const updateBusiness = object({
     params: object({
@@ -107,11 +125,13 @@ const updateEmployee = object({
         employeeId: employeeId
     }).strict('Request URL contains an invalid key'),
     body: object({
-        // Optional
-        firstName: firstName.optional(),
-        lastName: lastName.optional(),
-        role: role.optional()
-    })
+        update: object({
+            // Optional
+            firstName: firstName.optional(),
+            lastName: lastName.optional(),
+            role: role.optional()
+        })
+    }).strict('Request body contains an invalid key')
 });
 
 const updateActivity = object({
@@ -132,7 +152,18 @@ const updateActivity = object({
     })
 });
 
-export { businessId, name, address, email };
+const registerAdTier = object({
+    params: object({
+        businessId: businessId
+    }).strict('Request URL contains an invalid key'),
+    body: object({
+        adTier: adTier
+    }).strict('Request body contains an invalid key')
+});
+
+const deregisterAdTier = getBusinessById;
+
+export { businessId, name, address, email, adTier };
 export {
     getBusinessById,
     getEmployee,
@@ -142,9 +173,13 @@ export {
     createBusiness,
     addNewEmployee,
     addNewActivity,
+    addNewBusinessActivity,
     removeEmployee,
+    removeBusiness,
     removeActivity,
     updateEmployee,
     updateActivity,
-    updateBusiness
+    updateBusiness,
+    registerAdTier,
+    deregisterAdTier
 };

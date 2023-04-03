@@ -1,4 +1,6 @@
-import { userRepo } from '../repos';
+import { userRepo } from '../../repos';
+
+// This file serves to mock all functions from the user-services file
 
 const getAllUsers = async () => {
     return userRepo.getAllUsers();
@@ -14,10 +16,6 @@ const getUserByEmail = async (email: string) => {
 
 const getUserActivityList = async (id: string) => {
     return userRepo.getUserActivityList(id);
-};
-
-const checkActivityFavoritedByUser = async (id: string, activityId: number) => {
-    return userRepo.checkActivityFavoritedByUser(id, activityId);
 };
 
 const getUserFavoriteActivityList = async (id: string) => {
@@ -44,10 +42,6 @@ const generateChatTokenForUser = async (userId: string) => {
     return userRepo.generateChatTokenForUser(userId);
 };
 
-const createChat = async (userId: string, channelId: string, channelName: string) => {
-    return userRepo.createChat(userId, channelId, channelName);
-};
-
 const deleteActivityChat = async (channelId: string) => {
     return userRepo.deleteActivityChat(channelId);
 };
@@ -60,9 +54,8 @@ const removeMemberFromActivityChat = async (user_id: string, channel_id: string)
     return userRepo.removeMemberFromActivityChat(user_id, channel_id);
 };
 
-const createNewStreamChatUser = async (user_id: string, user_name: string) => {
-    return userRepo.createNewStreamChatUser(user_id, user_name);
-};
+// @ts-ignore
+const createNewStreamChatUser = async (user_id: string, user_name: string) => jest.fn(() => console.log('called mock createNewStreamChatUser'));
 
 const checkJoinedActivity = async (id: string, activityId: number) => {
     return userRepo.checkJoinedActivity(id, activityId);
@@ -76,9 +69,8 @@ const unjoinActivity = async (id: string, activityId: number) => {
     return userRepo.unjoinActivity(id, activityId);
 };
 
-const getJoinedActivities = async (id: string) => {
-    return userRepo.getJoinedActivities(id);
-};
+// @ts-ignore
+let createChat = async (userId: string, channelId: string, channelName: string) => jest.fn(() => console.log('called mock createChat'));
 
 export {
     getAllUsers,
@@ -87,7 +79,6 @@ export {
     getUserByEmail,
     getUserActivityList,
     getUserFavoriteActivityList,
-    checkActivityFavoritedByUser,
     updateUserProfile,
     addNewUserActivity,
     submitQuiz,
@@ -99,6 +90,5 @@ export {
     removeMemberFromActivityChat,
     checkJoinedActivity,
     joinActivity,
-    unjoinActivity,
-    getJoinedActivities
+    unjoinActivity
 };
