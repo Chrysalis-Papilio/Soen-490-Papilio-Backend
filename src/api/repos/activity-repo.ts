@@ -3,6 +3,20 @@ import { BaseError } from '../../errors/base-error';
 import { httpStatusCode } from '../../types/httpStatusCodes';
 import sequelize from '../../config/sequelize';
 import { queryResultError } from './error';
+import { APIError } from '../../errors/api-error';
+
+export const activityFetchIncludeAttribute = [
+    {
+        model: Business,
+        attributes: ['businessId', 'email'], // customizable
+        as: 'business'
+    },
+    {
+        model: User,
+        attributes: ['firebase_id', 'email'], // customizable
+        as: 'user'
+    }
+];
 
 /** Get all available Activities with pagination */
 const getAllActivities = async (page: number, size: number) => {
@@ -11,18 +25,7 @@ const getAllActivities = async (page: number, size: number) => {
         limit: size,
         offset: (page - 1) * size,
         attributes: { exclude: ['businessId', 'userId', 'createdAt', 'updatedAt'] },
-        include: [
-            {
-                model: Business,
-                attributes: ['businessId', 'email'],
-                as: 'business'
-            },
-            {
-                model: User,
-                attributes: ['id', 'email'],
-                as: 'user'
-            }
-        ]
+        include: activityFetchIncludeAttribute
     }).catch((e) => queryResultError(e, 'getAllActivities'));
     return {
         ...result,
@@ -32,27 +35,12 @@ const getAllActivities = async (page: number, size: number) => {
 };
 
 /** Get details of a particular Activity using 'id' */
-const getActivity = async (id: number, contact: boolean) => {
+const getActivity = async (id: number) => {
     await Activity.sync();
-    const activity = contact
-        ? await Activity.findByPk(id, {
-              attributes: { exclude: ['businessId', 'userId'] },
-              include: [
-                  {
-                      model: Business,
-                      attributes: ['businessId', 'email'], // customizable
-                      as: 'business'
-                  },
-                  {
-                      model: User,
-                      attributes: ['id', 'email'], // customizable
-                      as: 'user'
-                  }
-              ]
-          }).catch((e) => queryResultError(e, 'getActivitiy'))
-        : await Activity.findByPk(id, {
-              attributes: { exclude: ['businessId', 'userId', 'createdAt', 'updatedAt'] }
-          }).catch((e) => queryResultError(e, 'getActivity'));
+    const activity = await Activity.findByPk(id, {
+        attributes: { exclude: ['businessId', 'userId'] },
+        include: activityFetchIncludeAttribute
+    }).catch((e) => queryResultError(e, 'getActivitiy'));
     return {
         found: !!activity,
         activity: activity
@@ -60,7 +48,7 @@ const getActivity = async (id: number, contact: boolean) => {
 };
 
 /** Update details of the Activity */
-const updateActivity = async (id: number, update: any) => {
+const updateActivity = async (id: number, update: any, returning = true) => {
     await Activity.sync();
     const result = await Activity.update(update, {
         where: { id },
@@ -69,10 +57,13 @@ const updateActivity = async (id: number, update: any) => {
         console.log(err);
         throw new BaseError('ORM Sequelize Error', 'There has been an error in updating the Activity', 'updateActivity', httpStatusCode.INTERNAL_SERVER, true);
     });
-    return {
-        success: !!result,
-        activity: result[1][0]
-    };
+    if (result[0] == 0) throw new APIError(`Cannot find Activity with id ${id}`, 'updateActivity', httpStatusCode.CONFLICT);
+    if (returning)
+        return {
+            success: true,
+            activity: result[1][0]
+        };
+    else return { success: true };
 };
 
 /** Search for Activities using the provided 'keyword' */
