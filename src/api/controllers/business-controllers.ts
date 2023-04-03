@@ -209,6 +209,33 @@ const updateActivity = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
+const registerAdTier = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        /** Call to service layer */
+        const { businessId } = req.params;
+        const { adTier } = req.body;
+        const result = await businessServices.registerAdTier(businessId, Number(adTier));
+
+        /** Response */
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
+const deregisterAdTier = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        /** Call to service layer */
+        const { businessId } = req.params;
+        const result = await businessServices.registerAdTier(businessId, 0);
+
+        /** Response */
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+
 export {
     getBusinessById,
     getEmployee,
@@ -223,5 +250,7 @@ export {
     removeBusiness,
     updateBusiness,
     updateEmployee,
-    updateActivity
+    updateActivity,
+    registerAdTier,
+    deregisterAdTier
 };

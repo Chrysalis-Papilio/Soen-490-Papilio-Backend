@@ -80,7 +80,8 @@ const createSimpleBusiness = async (business: any) => {
         businessId: business.businessId,
         name: business.name,
         address: business.address,
-        email: business.email
+        email: business.email,
+        adTier: 0
     }).catch((err) => createNewObjectCaughtError(err, 'createSimpleBusiness'));
 };
 
@@ -92,7 +93,8 @@ const createBusinessWithEmployeeAddress = async (business: Business, employee: E
         businessId: business.businessId,
         name: business.name,
         address: business.address,
-        email: business.email
+        email: business.email,
+        adTier: 0
     }).catch((err) => createNewObjectCaughtError(err, 'createBusinessWithEmployeeAddress', 'There has been an error in creating the Business.'));
     await newBusiness.createEmployee(employee).catch(async (err) => {
         createNewObjectCaughtError(err, 'createBusinessWithEmployeeAddress', 'There has been an error in creating the Employee.');
@@ -202,7 +204,7 @@ const removeBusiness = async (id: string) => {
 const updateBusiness = async (identifier: any, update: any) => {
     await Business.sync();
     const result = await Business.update(update, {
-        returning: ['businessId', 'name', 'address', 'email'],
+        returning: ['businessId', 'name', 'address', 'email', 'adTier'],
         where: identifier
     }).catch((err) => {
         console.log(err);

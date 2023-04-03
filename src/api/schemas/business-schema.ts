@@ -1,4 +1,4 @@
-import { object, string } from 'zod';
+import { number, object, string } from 'zod';
 import { activitySchema, activityId, description, title, startTime, endTime, costPerIndividual, costPerGroup, groupSize } from './activity-schema';
 import { employeeSchema, employeeId, firstName, lastName, role } from './employee-schema';
 import { invalidMessage, requiredMessage } from './util';
@@ -145,6 +145,18 @@ const updateActivity = object({
     })
 });
 
+const registerAdTier = object({
+    params: object({
+        businessId: businessId
+    }).strict('Request URL contains an invalid key'),
+    body: object({
+        adTier: number({
+            required_error: requiredMessage('Ad Tier'),
+            invalid_type_error: invalidMessage('Ad Tier', 'integer')
+        })
+    }).strict('Request body contains an invalid key')
+});
+
 export { businessId, name, address, email };
 export {
     getBusinessById,
@@ -161,5 +173,6 @@ export {
     removeActivity,
     updateEmployee,
     updateActivity,
-    updateBusiness
+    updateBusiness,
+    registerAdTier
 };

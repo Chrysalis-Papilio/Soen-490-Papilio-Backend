@@ -57,6 +57,10 @@ const updateActivity = async (businessId: string, activityId: number, update: an
     return businessRepo.updateActivity(businessId, activityId, update);
 };
 
+const registerAdTier = async (businessId: string, adTier: number) => {
+    return businessRepo.updateBusiness({ businessId: businessId }, { adTier: adTier });
+};
+
 export {
     getBusinessById,
     getEmployee,
@@ -71,5 +75,6 @@ export {
     removeBusiness,
     updateBusiness,
     updateEmployee,
-    updateActivity
+    updateActivity,
+    registerAdTier
 };
