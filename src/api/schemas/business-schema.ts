@@ -157,6 +157,8 @@ const registerAdTier = object({
     }).strict('Request body contains an invalid key')
 });
 
+const deregisterAdTier = getBusinessById;
+
 export { businessId, name, address, email };
 export {
     getBusinessById,
@@ -174,5 +176,6 @@ export {
     updateEmployee,
     updateActivity,
     updateBusiness,
-    registerAdTier
+    registerAdTier,
+    deregisterAdTier
 };

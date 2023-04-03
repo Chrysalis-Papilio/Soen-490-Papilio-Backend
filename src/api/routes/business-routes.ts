@@ -46,6 +46,6 @@ router.put('/business/:businessId/updateActivity/:activityId', validate(business
 
 router.put('/business/:businessId/registerAdTier', validate(businessSchema.registerAdTier), businessController.registerAdTier);
 
-router.put('/business/:businessId/deregisterAdTier', validate(businessSchema.registerAdTier), businessController.deregisterAdTier);
+router.put('/business/:businessId/deregisterAdTier', validate(businessSchema.deregisterAdTier), businessController.deregisterAdTier);
 
 export = router;
