@@ -22,6 +22,7 @@ class Business extends Model<InferAttributes<Business, { omit: 'employees' | 'ac
     declare name: string;
     declare address: string;
     declare email: string;
+    declare adTier: number;
 
     declare employees?: NonAttribute<Employee[]>;
     declare activities?: NonAttribute<Activity[]>;
@@ -68,8 +69,11 @@ Business.init(
             type: DataTypes.STRING,
             unique: true,
             allowNull: false
+        },
+        adTier: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
         }
-        // TODO: More attributes for Business
     },
     {
         sequelize
